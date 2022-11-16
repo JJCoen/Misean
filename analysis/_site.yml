@@ -1,7 +1,7 @@
 name: Misean
 output_dir: ../docs
 navbar:
-  title: Misean Data Analyst
+  title: Misean Cara Operations
   type: inverse
   left:
   - text: Home
@@ -10,19 +10,29 @@ navbar:
     menu:
     - text: Common Data Problems
       icon: fa-clipboard-list
-      href: common-data-problems.html
+      href: Common-Data-Problems.html
     - text: Advanced Data Problems
       href: Advanced-Data-Problems.html
-  - text: Data Management
+  - text: Data Analysis
     menu:
-    - text: test
-      href: Deloitte-credit-scoring.pdf
-  - text: About
-    href: about.html
+    - text: Data Management
+      href: Data-Management.html
+    - text: Correlation
+      href: Correlation.html
+    - text: Classification
+      href: Classification.html
+  - text: Training
+    menu:
+    - text: Machine Learning
+      href: Interpretable-ML-Models.html
+    - text: Zoom Example
+      href: Zoom-digital-skills.html
+    - text: Zoom Systematic Training
+      href: Zoom-Training-Program.docx
   right:
   - icon: fab fa-github
     text: Source code
-    href: https://github.com/JJCoen/
+    href: https://github.com/JJCoen/Misean
 output:
   workflowr::wflow_html:
     toc: yes
