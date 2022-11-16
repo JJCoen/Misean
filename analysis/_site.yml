@@ -1,17 +1,32 @@
-name: "Misean"
+name: Misean
 output_dir: ../docs
 navbar:
-  title: "Misean"
+  title: Misean Data Analyst
+  type: inverse
   left:
   - text: Home
     href: index.html
+  - text: Data Integrity
+    menu:
+    - text: Common Data Problems
+      icon: fa-clipboard-list
+      href: common-data-problems.html
+    - text: Advanced Data Problems
+      href: Advanced-Data-Problems.html
+  - text: Data Management
+    menu:
+    - text: test
+      href: Deloitte-credit-scoring.pdf
   - text: About
     href: about.html
-  - text: License
-    href: license.html
+  right:
+  - icon: fab fa-github
+    text: Source code
+    href: https://github.com/JJCoen/
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
-    theme: cosmo
+    theme: readable
+    code_folding: hide
     highlight: textmate

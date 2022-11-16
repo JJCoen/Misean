@@ -1,5 +1,6 @@
 ---
 title: "Home"
+type: inverse
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -8,4 +9,37 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+<div class="row" style="padding-top: 10px;">
+
+# Misean Cara Operations
+
+::: col-sm-6
+## Purpose
+
+This website highlights work that I have carried out in Data Managment, Data Analysis and Training.
+
+It also documents ongoing training in Salesforce with the intention of achieving Salesforce Administrator Certification.
+
+## Background
+
+Misean Cara supports missionaries who a assist with the material and spiritual needs and promote the development of peoples in countries less fortunate than Ireland.
+
+## Business Understanding
+
+| Insight                                                   | Analysis           |
+|------------------------------------------------|------------------------|
+| Which subscribers are most profitable?                    | Descriptive        |
+| Do these subscribers have different value to Misean Cara? | Hypothesis Testing |
+| Will this new subscriber be profitable and by how much?   | Prediction         |
+| What happens if I show this ad?                           | Causal             |
+| What happened in the past when I showed this ad?          | Correlational      |
+:::
+
+<div class="col-sm-6">
+
+::: {style="text-align: right;"}
+<img src="./images/corporate-finance-inst.png" width="20%"/>
+:::
+
+> "He that offer the sacrifice of the goods of the poor is as one that sacrifice the son in the presence of his father."\
+> St Patrick

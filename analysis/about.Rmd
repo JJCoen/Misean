@@ -7,4 +7,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+Misean Cara is looking for a Data Analyst.  The main responsibilities are:
+
+1. Quality Control and Data Integrity  
+2. Data Management and Analysis Reporting  
+3. Maintenance and Further Development of the MissionLinks System   
+4. Salesforce CRM Systems Administration  
+5. Supporting Office IT systems
+
+Any other duties as required by your line manager or the CEO
+
