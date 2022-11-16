@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jim Coen and Datacamp" />
+
+
+<title>Common Data Problems</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Misean Data Analyst</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Integrity
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="common-data-problems.html">
+        <span class="fa fa-clipboard-list"></span>
+         
+        Common Data Problems
+      </a>
+    </li>
+    <li>
+      <a href="Advanced-Data-Problems.html">Advanced Data Problems</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Management
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Deloitte-credit-scoring.pdf">test</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JJCoen/">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Common Data Problems</h1>
+<h4 class="author">Jim Coen and Datacamp</h4>
+<h4 class="date">Wednesday, November 16, 2022</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-11-16
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Misean/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20221115code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20221115)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20221115code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20221115)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong35dcbbc">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> 35dcbbc
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrong35dcbbc"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 35dcbbc.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+
+Untracked files:
+    Untracked:  data/trip.csv
+    Untracked:  donation-tracking-excel-templates (2).zip
+    Untracked:  donation-tracking-excel-templates/
+    Untracked:  kickstarter.zip
+    Untracked:  kickstarter/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/common-data-problems.Rmd</code>)
+and HTML (<code>docs/common-data-problems.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+35dcbbc
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+wflow_publish("analysis/*")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p><img src="images/common-data-problems.png"
+style="width:100.0%" /></p>
+<div id="data-type-constraints" class="section level1">
+<h1>Data Type Constraints</h1>
+<div id="converting-data-types" class="section level2">
+<h2>Converting data types</h2>
+<p>Throughout this chapter, you’ll be working with San Francisco bike
+share ride data called bike_share_rides. It contains information on
+start and end stations of each trip, the trip duration, and some user
+information.</p>
+<p><strong>Defensive Programming</strong><br />
+<img src="images/assertive.png" style="width:50.0%" /></p>
+<p>ref: <a
+href="https://campus.datacamp.com/courses/cleaning-data-in-r/common-data-problems?ex=1"
+class="uri">https://campus.datacamp.com/courses/cleaning-data-in-r/common-data-problems?ex=1</a></p>
+<p>Before beginning to analyze any dataset, it’s important to take a
+look at the different types of columns you’ll be working with, which you
+can do using <code>glimpse()</code>.</p>
+<p>In this exercise, you’ll take a look at the data types contained in
+bike_share_rides and see how an incorrect data type can flaw your
+analysis.</p>
+<p><code>dplyr</code> and <code>assertive</code> are loaded and
+bike_share_rides is available.</p>
+<p>Examine the data types of the columns of bike_share_rides. Get a
+summary of the user_birth_year column of bike_share_rides.</p>
+<ul>
+<li>Dataset</li>
+<li>Downloaded from <a
+href="https://www.kaggle.com/benhamner/sf-bay-area-bike-share?select=trip.csv"
+class="uri">https://www.kaggle.com/benhamner/sf-bay-area-bike-share?select=trip.csv</a></li>
+<li>need to be logged in to kaggle to access</li>
+</ul>
+<pre class="r"><code>bike_share_rides &lt;- read_csv(&quot;./data/trip.csv&quot;,
+                  n_max = 35229) %&gt;% 
+  as.data.table
+
+# problems(bike_share_rides)
+
+# Glimpse at bike_share_rides
+summary(bike_share_rides)</code></pre>
+<pre><code>       id           duration       start_date        start_station_name
+ Min.   : 4069   Min.   :    60   Length:35229       Length:35229      
+ 1st Qu.:16615   1st Qu.:   398   Class :character   Class :character  
+ Median :28191   Median :   622   Mode  :character   Mode  :character  
+ Mean   :28099   Mean   :  1574                                        
+ 3rd Qu.:39688   3rd Qu.:   989                                        
+ Max.   :51121   Max.   :597517                                        
+                                                                       
+ start_station_id   end_date         end_station_name   end_station_id
+ Min.   : 2.0     Length:35229       Length:35229       Min.   : 2.0  
+ 1st Qu.:49.0     Class :character   Class :character   1st Qu.:49.0  
+ Median :60.0     Mode  :character   Mode  :character   Median :60.0  
+ Mean   :56.3                                           Mean   :56.3  
+ 3rd Qu.:70.0                                           3rd Qu.:70.0  
+ Max.   :77.0                                           Max.   :77.0  
+                                                                      
+    bike_id    subscription_type     zip_code    
+ Min.   :  9   Length:35229       Min.   : 1001  
+ 1st Qu.:347   Class :character   1st Qu.:94103  
+ Median :448   Mode  :character   Median :94110  
+ Mean   :437                      Mean   :88970  
+ 3rd Qu.:552                      3rd Qu.:94403  
+ Max.   :717                      Max.   :99999  
+                                  NA&#39;s   :2500   </code></pre>
+<ul>
+<li><p><code>factor</code> data type bike_share_rides dataset contains
+the variable <code>subscription_type</code> which needs to be converted
+from <code>character</code> to <code>factor</code></p></li>
+<li><p>This variable groups each trip according to year and is a
+categorical variable.</p></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Add a new column to bike_share_rides called
+subscription_type_fct.</li>
+<li>Assert that the subscription_type_fct is a factor to confirm the
+conversion.</li>
+</ol>
+<pre class="r"><code>bike_share_rides[ , subscription_type_fct := as.factor(subscription_type)]
+assert_is_factor(bike_share_rides$subscription_type_fct)
+# Summary 
+summary(bike_share_rides$subscription_type_fct)</code></pre>
+<pre><code>  Customer Subscriber 
+     12565      22664 </code></pre>
+<p>Dapper data type dexterity! In the previous exercise, you were able
+to identify the correct data type and convert
+<code>subscription_type</code> to the correct data type, allowing you to
+extract counts that gave you a bit more insight into the dataset.</p>
+<ul>
+<li>Trimming strings</li>
+</ul>
+<p>Suppose we have a variable:
+<code>$ duration         &lt;chr&gt; "1316.15 minutes", "8.13 minutes", "24.85 minutes"...</code></p>
+<p>Another common dirty data problem is having extra bits like percent
+signs or periods in numbers, causing them to be read in as characters.
+In order to be able to crunch these numbers, the extra bits need to be
+removed and the numbers need to be converted from character to numeric.
+In this exercise, you’ll need to convert the duration column from
+character to numeric, but before this can happen, the word “minutes”
+needs to be removed from each value.</p>
+<p>dplyr, assertive, and stringr are loaded and bike_share_rides is
+available.</p>
+<ol style="list-style-type: decimal">
+<li><p>Use str_remove() to remove “minutes” from the duration column of
+bike_share_rides. Add this as a new column called
+duration_trimmed.</p></li>
+<li><p>Convert the duration_trimmed column to a numeric type and add
+this as a new column called duration_mins.</p></li>
+<li><p>Glimpse at bike_share_rides and assert that the duration_mins
+column is numeric.</p></li>
+</ol>
+<!-- -->
+<pre><code>bike_share_rides &lt;- bike_share_rides %&gt;%
+  mutate(duration_trimmed = str_remove(duration, &quot;minutes&quot;),
+         duration_mins = as.numeric(duration_trimmed))
+
+# Glimpse at bike_share_rides
+glimpse(bike_share_rides)
+
+# Assert duration_mins is numeric
+assert_is_numeric(bike_share_rides$duration_mins)</code></pre>
+<ul>
+<li>Inspect local bike_share_rides dataset</li>
+</ul>
+<pre class="r"><code>bike_share_rides[, summary(duration)]</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+     60     398     622    1574     989  597517 </code></pre>
+<p>Convert <code>duration</code> from seconds to minutes.</p>
+<pre class="r"><code>bike_share_rides[ , duration_min := duration / 60]
+
+assert_is_numeric(bike_share_rides$duration_min)</code></pre>
+</div>
+</div>
+<div id="range-constraints" class="section level1">
+<h1>Range Constraints</h1>
+<ul>
+<li>Handling out of range values</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Remove rows<br />
+</li>
+<li>Replace with range limit<br />
+</li>
+<li>Treat as NA<br />
+</li>
+<li>Replace with value based on domain knowledge</li>
+</ol>
+<p><strong>1. Remove Rows</strong></p>
+<p>Consider imbd film ratings - values are between 0 and 5.</p>
+<pre><code>films %&gt;% 
+  filter(avg_rating &gt;= 0, avg_rating &lt;=5) %&gt;% 
+  ggplot(aes(avg_rating)) +
+    geom_histogram(breaks = 
+      c(min(avg_rating), 0, 5, max(avg_rating)))</code></pre>
+<p><strong>2 Replace with range limit</strong></p>
+<ul>
+<li>Ride duration constraints</li>
+</ul>
+<blockquote>
+<p>replace(col, condition, replacement)</p>
+</blockquote>
+<p>Values that are out of range can throw off an analysis, so it’s
+important to catch them early on. In this exercise, you’ll be examining
+the <code>duration_min</code> column more closely. Bikes are not allowed
+to be kept out for more than 24 hours, or 1440 minutes at a time, but
+issues with some of the bikes caused inaccurate recording of the time
+they were returned.</p>
+<p>In this exercise, you’ll replace erroneous data with the range limit
+(1440 minutes), however, you could just as easily replace these values
+with NAs.</p>
+<p>dplyr, assertive, and ggplot2 are loaded and bike_share_rides is
+available.</p>
+<ol style="list-style-type: decimal">
+<li>Create a three-bin histogram of the <code>duration_min</code> column
+of bike_share_rides using ggplot2 to identify if there is out-of-range
+data.</li>
+</ol>
+<pre class="r"><code># Create breaks
+fivenum(bike_share_rides$duration_min)</code></pre>
+<pre><code>[1]    1.00    6.63   10.37   16.48 9958.62</code></pre>
+<pre class="r"><code>breaks &lt;- c(min(bike_share_rides$duration_min), 1440, max(bike_share_rides$duration_min))
+
+# Create a histogram of duration_min
+ggplot(bike_share_rides, aes(duration_min)) +
+  geom_histogram(breaks = breaks)</code></pre>
+<p><img src="figure/common-data-problems.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Replace the values of duration_min that are greater than 1440
+minutes (24 hours) with 1440. Add this to bike_share_rides as a new
+column called duration_min_const.<br />
+</li>
+<li>Assert that all values of duration_min_const are between 0 and
+1440.</li>
+</ol>
+<pre class="r"><code>bike_share_rides[ , duration_min_const := 
+                    replace(duration_min, 
+                            duration_min &gt; 1440, 
+                           1440) ]
+assert_all_are_in_closed_range(bike_share_rides$duration_min_const, 
+                               lower = 0,
+                               upper = 1440)</code></pre>
+<ul>
+<li><strong>Back to the future</strong><br />
+Something has gone wrong and it looks like you have data with dates from
+the future, which is way outside of the date range you expected to be
+working with. To fix this, you’ll need to remove any rides from the
+dataset that have a date in the future. Before you can do this, the date
+column needs to be converted from a character to a <code>Date</code>.
+Having these as <code>Date</code> objects will make it much easier to
+figure out which rides are from the future, since R makes it easy to
+check if one Date object is before (&lt;) or after (&gt;) another.</li>
+</ul>
+<blockquote>
+<p>assert_all_in_past()</p>
+</blockquote>
+<p>dplyr and assertive are loaded and bike_share_rides is available.</p>
+<ol style="list-style-type: decimal">
+<li><p>Convert the date column of bike_share_rides from character to the
+<code>Date</code> data type.<br />
+</p></li>
+<li><p>Assert that all values in the date column happened sometime in
+the past and not in the future.</p></li>
+<li><p>Filter <code>bike_share_rides</code> to get only the rides from
+the past or today, and save this as bike_share_rides_past.<br />
+</p></li>
+<li><p>Assert that the dates in bike_share_rides_past occurred only in
+the past.</p></li>
+</ol>
+<!-- -->
+<pre><code>library(lubridate)
+# Convert date to Date type
+bike_share_rides &lt;- bike_share_rides %&gt;%
+  mutate(start_date = as.Date(start_date))
+
+# Make sure all dates are in the past
+assert_all_are_in_past(bike_share_rides$date)
+
+# Filter for rides that occurred before or on today&#39;s date
+bike_share_rides_past &lt;- bike_share_rides %&gt;%
+  filter(date &lt; today())
+
+# Make sure all dates from bike_share_rides_past are in the past
+assert_all_are_in_past(bike_share_rides_past$date)</code></pre>
+<p>“Fabulous filtering! Handling data from the future like this is much
+easier than trying to verify the data’s correctness by time
+traveling.”</p>
+<p><strong>3 Treat as NA</strong></p>
+<blockquote>
+<p>replace(col, condition, replacement)</p>
+</blockquote>
+<p><strong>4 Replace with value based on domain knowledge</strong></p>
+</div>
+<div id="uniqueness-constraints" class="section level1">
+<h1>Uniqueness Constraints</h1>
+<p><strong>Why do duplicates occur?</strong></p>
+<p><img src="images/why-duplicates-occur.PNG" /></p>
+<div id="full-duplicates" class="section level2">
+<h2>Full duplicates</h2>
+<blockquote>
+<p>Finding full duplicates duplicated(credit_score) %&gt;% sum()</p>
+<p>filter(credit_score, duplicated(credit_score)</p>
+</blockquote>
+<p>You’ve been notified that an update has been made to the bike sharing
+data pipeline to make it more efficient, but that duplicates are more
+likely to be generated as a result. To make sure that you can continue
+using the same scripts to run your weekly analyses about ride
+statistics, you’ll need to ensure that any duplicates in the dataset are
+removed first.</p>
+<p>When multiple rows of a data frame share the same values for all
+columns, they’re full duplicates of each other. Removing duplicates like
+this is important, since having the same value repeated multiple times
+can alter summary statistics like the mean and median. Each ride,
+including its ride_id should be unique.</p>
+<p>dplyr is loaded and bike_share_rides is available.</p>
+<p>Get the total number of full duplicates in bike_share_rides. Remove
+all full duplicates from bike_share_rides and save the new data frame as
+bike_share_rides_unique. Get the total number of full duplicates in the
+new bike_share_rides_unique data frame.</p>
+<pre><code># Count the number of full duplicates
+nrow(bike_share_rides) - nrow( distinct(bike_share_rides)) 
+
+# Remove duplicates
+bike_share_rides_unique &lt;- distinct(bike_share_rides)
+
+# Count the full duplicates in bike_share_rides_unique
+nrow(bike_share_rides_unique) - nrow( distinct(bike_share_rides_unique)) </code></pre>
+<p>Dazzling duplicate removal! Removing full duplicates will ensure that
+summary statistics aren’t altered by repeated data points.</p>
+<ul>
+<li>Removing partial duplicates</li>
+</ul>
+<blockquote>
+<p>credit_scores %&gt;% distinct(first_name, last_name, .keep_all =
+TRUE)</p>
+</blockquote>
+<p>Now that you’ve identified and removed the full duplicates, it’s time
+to check for partial duplicates. Partial duplicates are a bit tricker to
+deal with than full duplicates. In this exercise, you’ll first identify
+any partial duplicates and then practice the most common technique to
+deal with them, which involves dropping all partial duplicates, keeping
+only the first.</p>
+<p>Count the number of occurrences of each ride_id. Filter for ride_ids
+that occur multiple times.</p>
+<pre><code># Find duplicated ride_ids
+bike_share_rides %&gt;% duplicated() 
+  
+# Count the number of occurrences of each ride_id
+bike_share_rides %&gt;% 
+    count( ride_id)
+  
+# Filter for rows with a count &gt; 1
+bike_share_rides %&gt;% 
+    count( ride_id) %&gt;%
+    filter(n &gt; 1)</code></pre>
+<ul>
+<li>Removing partial duplicates<br />
+Now that you’ve identified and removed the full duplicates, it’s time to
+check for partial duplicates. Partial duplicates are a bit tricker to
+deal with than full duplicates. In this exercise, you’ll first identify
+any partial duplicates and then practice the most common technique to
+deal with them, which involves dropping all partial duplicates, keeping
+only the first.</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Remove full and partial duplicates from bike_share_rides based on
+ride_id only, keeping all columns. Store this as
+bike_share_rides_unique.<br />
+</li>
+<li>Find the duplicated ride_ids in bike_share_rides_unique.</li>
+</ol>
+<!-- -->
+<pre><code># Find duplicated ride_ids
+bike_share_rides %&gt;% 
+  count(ride_id) %&gt;% 
+  filter(n &gt; 1)
+
+# Remove full and partial duplicates
+bike_share_rides_unique &lt;- bike_share_rides %&gt;%
+  # Only based on ride_id instead of all cols
+  distinct(ride_id, .keep_all = TRUE)
+
+# Find duplicated ride_ids in bike_share_rides_unique
+bike_share_rides_unique %&gt;%
+  # Count the number of occurrences of each ride_id
+  count(ride_id) %&gt;%
+  # Filter for rows with a count &gt; 1
+  filter(n &gt; 1)</code></pre>
+<ul>
+<li>Aggregating partial duplicates</li>
+</ul>
+<p><img src="images/aggregate-partial-dublicates.PNG" /></p>
+<p>Another way of handling partial duplicates is to compute a summary
+statistic of the values that differ between partial duplicates, such as
+mean, median, maximum, or minimum. This can come in handy when you’re
+not sure how your data was collected and want an average, or if based on
+domain knowledge, you’d rather have too high of an estimate than too low
+of an estimate (or vice versa).</p>
+<p>Group bike_share_rides by ride_id and date. Add a column called
+duration_min_avg that contains the mean ride duration for the row’s
+ride_id and date. Remove duplicates based on ride_id and date, keeping
+all columns of the data frame. Remove the duration_min column.</p>
+<pre><code>bike_share_rides %&gt;%
+  # Group by ride_id and date
+  group_by(ride_id, date) %&gt;%
+    # Add duration_min_avg column
+    mutate(duration_min_avg = mean(duration_min) ) %&gt;%
+    # Remove duplicates based on ride_id and date, keep all cols
+    distinct(ride_id, date, .keep_all = TRUE) %&gt;%
+    # Remove duration_min column
+    select(-duration_min)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] tinytex_0.40      ggplot2_3.3.6     stringr_1.4.1     assertive_0.3-6  
+[5] dplyr_1.0.10      readr_2.1.3       data.table_1.14.2 workflowr_1.7.0  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9                 getPass_0.2-2             
+ [3] assertive.properties_0.0-5 assertive.types_0.0-3     
+ [5] assertive.data.us_0.0-2    ps_1.7.1                  
+ [7] assertthat_0.2.1           rprojroot_2.0.3           
+ [9] digest_0.6.29              utf8_1.2.2                
+[11] R6_2.5.1                   evaluate_0.17             
+[13] assertive.code_0.0-3       highr_0.9                 
+[15] httr_1.4.3                 pillar_1.8.1              
+[17] assertive.strings_0.0-3    rlang_1.0.6               
+[19] rstudioapi_0.13            whisker_0.4               
+[21] callr_3.7.2                jquerylib_0.1.4           
+[23] assertive.data_0.0-3       rmarkdown_2.14            
+[25] labeling_0.4.2             bit_4.0.4                 
+[27] munsell_0.5.0              compiler_4.2.1            
+[29] httpuv_1.6.5               xfun_0.31                 
+[31] pkgconfig_2.0.3            htmltools_0.5.2           
+[33] tidyselect_1.2.0           tibble_3.1.8              
+[35] assertive.sets_0.0-3       codetools_0.2-18          
+[37] fansi_1.0.3                crayon_1.5.2              
+[39] withr_2.5.0                tzdb_0.3.0                
+[41] later_1.3.0                grid_4.2.1                
+[43] gtable_0.3.1               jsonlite_1.8.2            
+[45] assertive.base_0.0-9       lifecycle_1.0.3           
+[47] DBI_1.1.3                  git2r_0.30.1              
+[49] magrittr_2.0.3             scales_1.2.1              
+[51] assertive.models_0.0-2     vroom_1.6.0               
+[53] cli_3.3.0                  stringi_1.7.8             
+[55] farver_2.1.1               fs_1.5.2                  
+[57] promises_1.2.0.1           assertive.matrices_0.0-2  
+[59] assertive.reflection_0.0-5 bslib_0.3.1               
+[61] ellipsis_0.3.2             assertive.datetimes_0.0-3 
+[63] generics_0.1.3             vctrs_0.4.1               
+[65] tools_4.2.1                bit64_4.0.5               
+[67] glue_1.6.2                 assertive.numbers_0.0-2   
+[69] hms_1.1.2                  parallel_4.2.1            
+[71] processx_3.7.0             fastmap_1.1.0             
+[73] yaml_2.3.5                 colorspace_2.0-3          
+[75] assertive.files_0.0-2      assertive.data.uk_0.0-2   
+[77] knitr_1.39                 sass_0.4.1                </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jim Coen and Datacamp" />
+
+
+<title>Advanced Data Problems</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Misean Data Analyst</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Integrity
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="common-data-problems.html">
+        <span class="fa fa-clipboard-list"></span>
+         
+        Common Data Problems
+      </a>
+    </li>
+    <li>
+      <a href="Advanced-Data-Problems.html">Advanced Data Problems</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Management
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Deloitte-credit-scoring.pdf">test</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JJCoen/">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Advanced Data Problems</h1>
+<h4 class="author">Jim Coen and Datacamp</h4>
+<h4 class="date">Wednesday, November 16, 2022</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-11-16
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Misean/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20221115code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20221115)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20221115code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20221115)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong35dcbbc">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> 35dcbbc
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrong35dcbbc"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 35dcbbc.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+
+Untracked files:
+    Untracked:  data/trip.csv
+    Untracked:  donation-tracking-excel-templates (2).zip
+    Untracked:  donation-tracking-excel-templates/
+    Untracked:  kickstarter.zip
+    Untracked:  kickstarter/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/Advanced-Data-Problems.Rmd</code>) and HTML
+(<code>docs/Advanced-Data-Problems.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+35dcbbc
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+wflow_publish("analysis/*")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="types-of-problems" class="section level1">
+<h1>Types of Problems</h1>
+<p><img src="images/advanced-data-problems.png" /></p>
+<p><img src="images/uniformity.png" style="width:75.0%" /></p>
+</div>
+<div id="uniformity" class="section level1">
+<h1>Uniformity</h1>
+<div id="date-uniformity" class="section level2">
+<h2>Date Uniformity</h2>
+<p><img src="images/date-uniformity.png" style="width:35.0%" /></p>
+<p><strong>Parsing Multiple Date Formats</strong></p>
+<blockquote>
+<p>library(lubridate)<br />
+parse_date_time(df$date,</p>
+<blockquote>
+<p>orders = c(“%Y-%m-%d”, “%m-%d-%y”, “%B %d, %Y”))</p>
+</blockquote>
+</blockquote>
+<p>n this chapter, you work at an asset management company and you’ll be
+working with the <code>accounts</code> dataset, which contains
+information about each customer, the amount in their account, and the
+date their account was opened. Your boss has asked you to calculate some
+summary statistics about the average value of each account and whether
+the age of the account is associated with a higher or lower account
+value. Before you can do this, you need to make sure that the accounts
+dataset you’ve been given doesn’t contain any uniformity problems. In
+this exercise, you’ll investigate the <em>date_opened</em> column and
+clean it up so that all the dates are in the same format.</p>
+<ol style="list-style-type: decimal">
+<li>Convert the dates in the date_opened column to the same format using
+the formats vector and store this as a new column called
+date_opened_clean.</li>
+</ol>
+<pre><code># Define the date formats
+formats &lt;- c(&quot;%Y-%m-%d&quot;, &quot;%B %d, %Y&quot;)
+
+# Convert dates to the same format
+accounts %&gt;%
+  mutate(date_opened_clean = parse_date_time(date_opened, orders = formats))</code></pre>
+</div>
+<div id="currency-uniformity" class="section level2">
+<h2>Currency uniformity</h2>
+<p>Now that your dates are in order, you’ll need to correct any unit
+differences. When you first plot the data, you’ll notice that there’s a
+group of very high values, and a group of relatively lower values. The
+bank has two different offices - one in New York, and one in Tokyo, so
+you suspect that the accounts managed by the Tokyo office are in
+Japanese yen instead of U.S. dollars. Luckily, you have a data frame
+called account_offices that indicates which office manages each
+customer’s account, so you can use this information to figure out which
+totals need to be converted from yen to dollars.</p>
+<p>The formula to convert yen to dollars is <span
+class="math inline">\(USD = \frac{JPY}{104}\)</span>.</p>
+<p>dplyr and ggplot2 are loaded and the accounts and account_offices
+data frames are available.</p>
+<ol style="list-style-type: decimal">
+<li>Create a scatter plot with date_opened on the x-axis and total on
+the y-axis.<br />
+</li>
+<li>Left join accounts and account_offices by their id columns.<br />
+</li>
+<li>Convert the <em>totals</em> from the Tokyo office from yen to
+dollars, and keep the total from the New York office in dollars. Store
+this as a new column called total_usd.<br />
+</li>
+<li>Create a scatter plot of your new uniform data using date_opened on
+the x-axis and total_usd on the y-axis.</li>
+</ol>
+<pre><code># Scatter plot of opening date and total amount
+accounts %&gt;%
+  ggplot(aes(x = date_opened, y = total)) +
+  geom_point()
+
+# Left join accounts to account_offices by id
+accounts %&gt;%
+  left_join(account_offices, by = &quot;id&quot;) %&gt;%
+  # Convert totals from the Tokyo office to USD
+  mutate(total_usd = ifelse(office == &quot;Tokyo&quot;, total / 104, total)) %&gt;%
+  # Scatter plot of opening date vs total_usd
+  ggplot(aes(x = date_opened, y = total_usd)) +
+    geom_point()</code></pre>
+</div>
+</div>
+<div id="cross-field-validation" class="section level1">
+<h1>Cross Field Validation</h1>
+<p><img src="images/validation.png" style="width:75.0%" /></p>
+<div id="validating-totals" class="section level2">
+<h2>Validating totals</h2>
+<p>In this lesson, you’ll continue to work with the accounts data frame,
+but this time, you have a bit more information about each account. There
+are three different funds that account holders can store their money in.
+In this exercise, you’ll validate whether the total amount in each
+account is equal to the sum of the amount in fund_A, fund_B, and fund_C.
+If there are any accounts that don’t match up, you can look into them
+further to see what went wrong in the bookkeeping that led to
+inconsistencies.</p>
+<ol style="list-style-type: decimal">
+<li>Create a new column called theoretical_total that contains the sum
+of the amounts in each fund.</li>
+<li>Find the accounts where the total doesn’t match the
+theoretical_total.</li>
+</ol>
+<pre><code># Find invalid totals
+accounts %&gt;%
+  # theoretical_total: sum of the three funds
+  mutate(theoretical_total = fund_A + fund_B + fund_C) %&gt;%
+  # Find accounts where total doesn&#39;t match theoretical_total
+  filter(total != theoretical_total)</code></pre>
+</div>
+<div id="validating-age" class="section level2">
+<h2>Validating age</h2>
+<p><strong>Calculating Age Difference</strong> &gt; library(libridate)
+&gt; date_diff &lt;- as.Date(“2015-04-21”) %–% today() &gt;
+as.numeric(date_diff, “years”)</p>
+<p>Now that you found some inconsistencies in the total amounts, you’re
+suspicious that there may also be inconsistencies in the acct_age
+column, and you want to see if these inconsistencies are related. Using
+the skills you learned from the video exercise, you’ll need to validate
+the age of each account and see if rows with inconsistent acct_ages are
+the same ones that had inconsistent totals</p>
+<ol style="list-style-type: decimal">
+<li>Create a new column called <em>theoretical_age</em> that contains
+the age of each account based on the date_opened.<br />
+</li>
+<li>Find the accounts where the <em>acct_age</em> doesn’t match the
+<em>theoretical_age</em></li>
+</ol>
+<pre><code># Find invalid acct_age
+accounts %&gt;%
+  # theoretical_age: age of acct based on date_opened
+  mutate(theoretical_age = floor(
+          as.numeric(date_opened %--% today(), &quot;years&quot; )
+          ) ) %&gt;%
+  # Filter for rows where acct_age is different from theoretical_age
+  filter(theoretical_age != acct_age)</code></pre>
+</div>
+</div>
+<div id="completeness" class="section level1">
+<h1>Completeness</h1>
+<p><img src="images/types-of-missingness.png" /></p>
+<p><strong>Examples</strong></p>
+<p><img src="images/missing-examples.png" /></p>
+<div id="investigating-missing-values" class="section level2">
+<h2>Investigating Missing Values</h2>
+<blockquote>
+<p>library(visdat)<br />
+vis_mis(airquality)</p>
+</blockquote>
+<p>=&gt; “Ozone” var has missing values</p>
+<pre class="r"><code>data(&quot;airquality&quot;)
+airquality %&gt;% 
+  mutate(missing_ozone = is.na(Ozone)) %&gt;% 
+  group_by(missing_ozone)  %&gt;% 
+  summarise_all(mean, na.rm = TRUE)</code></pre>
+<pre><code># A tibble: 2 × 7
+  missing_ozone Ozone Solar.R  Wind  Temp Month   Day
+  &lt;lgl&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 FALSE          42.1    185.  9.86  77.9  7.20  15.5
+2 TRUE          NaN      190. 10.3   77.9  6.35  16.6</code></pre>
+<p>Dealing with missing data is one of the most common tasks in data
+science. There are a variety of types of missingness, as well as a
+variety of types of solutions to missing data.</p>
+<p>You just received a new version of the accounts data frame containing
+data on the amount held and amount invested for new and existing
+customers. However, there are rows with missing <em>inv_amount</em>
+values.</p>
+<p>You know for a fact that most customers below 25 do not have
+investment accounts yet, and suspect it could be driving the
+missingness. The dplyr and visdat packages have been loaded and accounts
+is available.</p>
+<ol style="list-style-type: decimal">
+<li>Add a logical column to accounts called missing_inv that indicates
+whether each row is missing the <em>inv_amount</em> or not. Group by
+missing_inv.<br />
+</li>
+<li>Calculate the mean age for each group of missing_inv.</li>
+</ol>
+<blockquote>
+<p>summarise( .data, . . .)</p>
+<blockquote>
+<p>. . .<br />
+<data-masking> Name-value pairs of summary functions.<br />
+The name will be the name of the variable in the result.</p>
+</blockquote>
+</blockquote>
+<pre><code># Visualize the missing values by column
+vis_miss(accounts)
+
+accounts %&gt;%
+  # missing_inv: Is inv_amount missing?
+  mutate(missing_inv = is.na(inv_amount)) %&gt;%
+  # Group by missing_inv
+  group_by(missing_inv) %&gt;%
+  # Calculate mean age for each missing_inv group
+  summarise(avg_age = mean(age))</code></pre>
+<p>missing_inv avg_age <lgl> <dbl> 1 FALSE 43.6 2 TRUE 21.8</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Sort accounts by age.<br />
+</li>
+<li>Visualize missing data by column.</li>
+</ol>
+<blockquote>
+<p>arrange(.data, …, .by_group = FALSE)</p>
+</blockquote>
+<pre><code># Sort by age and visualize missing vals
+accounts %&gt;%
+  arrange(age) %&gt;%
+  vis_miss()</code></pre>
+<p>Fabulous visualizations! Investigating summary statistics based on
+missingness is a great way to determine if data is missing completely at
+random or missing at random.</p>
+</div>
+<div id="dealing-with-missing-data" class="section level2">
+<h2>Dealing with Missing Data</h2>
+<p>In this exercise, you’re working with another version of the accounts
+data that contains missing values for both the <em>cust_id</em> and
+<em>acct_amount</em> columns.</p>
+<p>You want to figure out how many unique customers the bank has, as
+well as the average amount held by customers. You know that rows with
+missing <em>cust_id</em> don’t really help you, and that on average, the
+acct_amount is usually 5 times the amount of inv_amount.</p>
+<p>In this exercise, you will <strong>drop rows</strong> of accounts
+with missing cust_ids, and impute missing values of inv_amount with some
+domain knowledge. dplyr and assertive are loaded and accounts is
+available.</p>
+<ol style="list-style-type: decimal">
+<li><p>Filter accounts to remove rows with missing cust_ids and save as
+accounts_clean.</p></li>
+<li><p>Create a new column called <em>acct_amount_filled</em>, which
+contains the values of acct_amount, except all NA values should be
+replaced with 5 times the amount in inv_amount.</p></li>
+<li><p>Assert that there are no missing values in the <em>cust_id</em>
+column of <code>accounts_clean</code></p></li>
+</ol>
+<pre><code># Create accounts_clean
+accounts_clean &lt;- accounts %&gt;%
+
+  # Filter to remove rows with missing cust_id
+  filter(!is.na(cust_id))
+
+  # Add new col acct_amount_filled with replaced NAs
+  mutate(acct_amount_filled = 
+      ifelse(is.na(acct_amount), 
+              5 * inv_amount,     
+              acct_amount))
+# Assert that cust_id has no missing vals
+assert_all_are_not_na(accounts_clean$cust_id)
+
+# Assert that acct_amount_filled has no missing vals
+assert_all_are_not_na(accounts_clean$acct_amount_filled)
+</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] tinytex_0.40      ggplot2_3.3.6     stringr_1.4.1     assertive_0.3-6  
+[5] dplyr_1.0.10      readr_2.1.3       data.table_1.14.2 workflowr_1.7.0  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9                 getPass_0.2-2             
+ [3] assertive.properties_0.0-5 assertive.types_0.0-3     
+ [5] assertive.data.us_0.0-2    ps_1.7.1                  
+ [7] assertthat_0.2.1           rprojroot_2.0.3           
+ [9] digest_0.6.29              utf8_1.2.2                
+[11] R6_2.5.1                   evaluate_0.17             
+[13] assertive.code_0.0-3       httr_1.4.3                
+[15] pillar_1.8.1               assertive.strings_0.0-3   
+[17] rlang_1.0.6                rstudioapi_0.13           
+[19] whisker_0.4                callr_3.7.2               
+[21] jquerylib_0.1.4            assertive.data_0.0-3      
+[23] rmarkdown_2.14             munsell_0.5.0             
+[25] compiler_4.2.1             httpuv_1.6.5              
+[27] xfun_0.31                  pkgconfig_2.0.3           
+[29] htmltools_0.5.2            tidyselect_1.2.0          
+[31] tibble_3.1.8               assertive.sets_0.0-3      
+[33] codetools_0.2-18           fansi_1.0.3               
+[35] withr_2.5.0                tzdb_0.3.0                
+[37] later_1.3.0                grid_4.2.1                
+[39] gtable_0.3.1               jsonlite_1.8.2            
+[41] assertive.base_0.0-9       lifecycle_1.0.3           
+[43] DBI_1.1.3                  git2r_0.30.1              
+[45] magrittr_2.0.3             scales_1.2.1              
+[47] assertive.models_0.0-2     cli_3.3.0                 
+[49] stringi_1.7.8              fs_1.5.2                  
+[51] promises_1.2.0.1           assertive.matrices_0.0-2  
+[53] assertive.reflection_0.0-5 bslib_0.3.1               
+[55] ellipsis_0.3.2             assertive.datetimes_0.0-3 
+[57] generics_0.1.3             vctrs_0.4.1               
+[59] tools_4.2.1                glue_1.6.2                
+[61] assertive.numbers_0.0-2    hms_1.1.2                 
+[63] processx_3.7.0             fastmap_1.1.0             
+[65] yaml_2.3.5                 colorspace_2.0-3          
+[67] assertive.files_0.0-2      assertive.data.uk_0.0-2   
+[69] knitr_1.39                 sass_0.4.1                </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
