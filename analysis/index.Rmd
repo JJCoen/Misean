@@ -11,11 +11,9 @@ editor_options:
 
 <div class="row" style="padding-top: 10px;">
 
-# Misean Cara Operations
-
-::: col-sm-6
 ## Purpose
 
+::: col-sm-6
 This website highlights work that I have carried out in Data Managment, Data Analysis and Training.
 
 It also documents ongoing training in Salesforce with the intention of achieving Salesforce Administrator Certification.
@@ -27,7 +25,7 @@ Misean Cara supports missionaries who a assist with the material and spiritual n
 ## Business Understanding
 
 | Insight                                                   | Analysis           |
-|------------------------------------------------|------------------------|
+|-----------------------------------------------------------|--------------------|
 | Which subscribers are most profitable?                    | Descriptive        |
 | Do these subscribers have different value to Misean Cara? | Hypothesis Testing |
 | Will this new subscriber be profitable and by how much?   | Prediction         |
