@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="David Svancer (George Mason Uni) adapted by Jim Coen" />
+
+
+<title>Modelling with tidymodels</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Misean Cara Operations</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Integrity
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Common-Data-Problems.html">
+        <span class="fa fa-clipboard-list"></span>
+         
+        Common Data Problems
+      </a>
+    </li>
+    <li>
+      <a href="Advanced-Data-Problems.html">Advanced Data Problems</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Data-Management.html">Data Management</a>
+    </li>
+    <li>
+      <a href="Correlation.html">Correlation</a>
+    </li>
+    <li>
+      <a href="Classification.html">Classification</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Training
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Interpretable-ML-Models.html">Machine Learning</a>
+    </li>
+    <li>
+      <a href="Zoom-digital-skills.html">Zoom Example</a>
+    </li>
+    <li>
+      <a href="Zoom-Training-Program.docx">Zoom Systematic Training</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JJCoen/">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Modelling with tidymodels</h1>
+<h3 class="subtitle">Feature Engineering</h3>
+<h4 class="author">David Svancer (George Mason Uni) adapted by Jim
+Coen</h4>
+<h4 class="date">Wednesday, November 16, 2022</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-11-16
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Misean/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20221115code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20221115)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20221115code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20221115)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong3ec87e6">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> 3ec87e6
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrong3ec87e6"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 3ec87e6.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  data/employee_data.rds
+    Untracked:  data/home_sales.rds
+    Untracked:  data/leads_df.rds
+    Untracked:  data/loan_df.rds
+    Untracked:  data/power_df.csv
+    Untracked:  data/telecom_df.rds
+    Untracked:  data/trip.csv
+    Untracked:  donation-tracking-excel-templates (2).zip
+    Untracked:  donation-tracking-excel-templates/
+    Untracked:  kickstarter.zip
+    Untracked:  kickstarter/
+
+Unstaged changes:
+    Modified:   README.md
+    Modified:   analysis/_site.yml
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Data-Management.Rmd</code>) and
+HTML (<code>docs/Data-Management.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+3ec87e6
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+add Data Analysis and Training
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="purpose" class="section level1">
+<h1>Purpose</h1>
+<p>Feature engineering is accomplished with the recipes package. It is
+designed to help with all stages of feature engineering, which
+include</p>
+<ol style="list-style-type: decimal">
+<li>assigning variable roles to the columns of our data,<br />
+either an outcome or predictor role and determining their data type</li>
+<li>defining preprocessing tasks and data transformations,<br />
+this involves defining a sequence of data preprocessing steps, which can
+include missing data imputation, centering and scaling numeric
+variables, creating new variables from ratios of existing variables</li>
+<li>training our data transformations,<br />
+This includes things such as calculating the mean and standard deviation
+of numeric columns for centering and scaling data and storing formulas
+for creating new columns. The <code>prep()</code> function is used for
+this task.</li>
+<li>applying them to new data sources<br />
+apply the trained data transformations to the training and test datasets
+as well as new sources of data for future predictions. The
+<code>bake()</code> function from recipes is used for this task.</li>
+</ol>
+<div id="primary-research-question" class="section level2">
+<h2>Primary Research Question</h2>
+<p>What are feature engineering tasks and steps to perform for each
+task?</p>
+</div>
+<div id="load-and-resample-data" class="section level2">
+<h2>Load and Resample Data</h2>
+<pre class="r"><code>telecom_df &lt;- readRDS(&quot;./data/telecom_df.rds&quot;)
+str(telecom_df)</code></pre>
+<pre><code>tibble [975 × 9] (S3: tbl_df/tbl/data.frame)
+ $ canceled_service   : Factor w/ 2 levels &quot;yes&quot;,&quot;no&quot;: 1 1 2 1 2 2 1 2 1 2 ...
+ $ cellular_service   : Factor w/ 2 levels &quot;multiple_lines&quot;,..: 2 2 2 1 1 2 1 1 2 1 ...
+ $ avg_data_gb        : num [1:975] 7.78 9.04 10.32 5.08 8.05 ...
+ $ avg_call_mins      : num [1:975] 497 336 262 250 328 326 525 312 417 340 ...
+ $ avg_intl_mins      : num [1:975] 127 88 55 107 122 114 97 147 96 136 ...
+ $ internet_service   : Factor w/ 2 levels &quot;fiber_optic&quot;,..: 1 1 1 2 2 1 1 1 2 1 ...
+ $ contract           : Factor w/ 3 levels &quot;month_to_month&quot;,..: 1 1 2 2 3 1 1 2 1 1 ...
+ $ months_with_company: num [1:975] 7 10 50 53 50 25 19 50 8 61 ...
+ $ monthly_charges    : num [1:975] 76.5 94.9 103 60 75.2 ...</code></pre>
+<div id="randomly-sample-training-and-test-sets" class="section level3">
+<h3>Randomly sample training and test sets</h3>
+<pre class="r"><code># Create data split object
+telecom_split &lt;- initial_split(telecom_df, prop = 0.75,
+                     strata = canceled_service)
+
+# Create the training data
+telecom_training &lt;- telecom_split %&gt;% 
+  training()
+
+# Create the test data
+telecom_test &lt;- telecom_split %&gt;% 
+  testing()
+
+# Check the number of rows
+nrow(telecom_training)</code></pre>
+<pre><code>[1] 731</code></pre>
+<pre class="r"><code>nrow(telecom_test)</code></pre>
+<pre><code>[1] 244</code></pre>
+</div>
+</div>
+</div>
+<div id="feature-engineering" class="section level1">
+<h1>Feature Engineering</h1>
+<div id="exploring-recipe-objects" class="section level2">
+<h2><strong>Exploring recipe objects</strong></h2>
+<p>The first step in feature engineering is to specify a
+<code>recipe</code> object with the <code>recipe()</code> function and
+add data pre-processing steps with one or more <code>step_*()</code>
+functions. Storing all of this information in a single
+<code>recipe</code> object makes it easier to manage complex feature
+engineering pipelines and transform new data sources.</p>
+<p>Use the R console to explore a <code>recipe</code> object named
+<code>telecom_rec</code>, which was specified using the
+<code>telecom_training</code> data</p>
+<pre class="r"><code>telecom_rec &lt;- recipe(canceled_service ~ .,
+                      data = telecom_df) %&gt;% 
+  step_log(avg_call_mins, base = 10)
+telecom_rec</code></pre>
+<pre><code>Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          8
+
+Operations:
+
+Log transformation on avg_call_mins</code></pre>
+<pre class="r"><code>summary(telecom_rec)</code></pre>
+<pre><code># A tibble: 9 × 4
+  variable            type    role      source  
+  &lt;chr&gt;               &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+1 cellular_service    nominal predictor original
+2 avg_data_gb         numeric predictor original
+3 avg_call_mins       numeric predictor original
+4 avg_intl_mins       numeric predictor original
+5 internet_service    nominal predictor original
+6 contract            nominal predictor original
+7 months_with_company numeric predictor original
+8 monthly_charges     numeric predictor original
+9 canceled_service    nominal outcome   original</code></pre>
+</div>
+<div id="recipe-object" class="section level2">
+<h2><strong>Recipe object</strong></h2>
+<p>In the previous chapter, you fit a logistic regression model using a
+subset of the predictor variables from the <code>telecom_df</code> data.
+This dataset contains information on customers of a telecommunications
+company and the goal is predict whether they will cancel their
+service.</p>
+<p>In this exercise, you will use the <code>recipes</code> package to
+apply a log transformation to the <code>avg_call_mins</code> and
+<code>avg_intl_mins</code> variables in the telecommunications data.
+This will reduce the range of these variables and potentially make their
+distributions more symmetric, which may increase the accuracy of your
+logistic regression model.</p>
+<pre class="r"><code># Specify feature engineering recipe
+telecom_log_rec &lt;- recipe(canceled_service ~., 
+                          data = telecom_training) %&gt;%
+  # Add log transformation step for numeric predictors
+  step_log(avg_call_mins, avg_intl_mins, base = 10)
+
+# Print recipe object
+telecom_log_rec</code></pre>
+<pre><code>Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          8
+
+Operations:
+
+Log transformation on avg_call_mins, avg_intl_mins</code></pre>
+<pre class="r"><code># View variable roles and data types
+telecom_log_rec %&gt;%
+  summary()</code></pre>
+<pre><code># A tibble: 9 × 4
+  variable            type    role      source  
+  &lt;chr&gt;               &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+1 cellular_service    nominal predictor original
+2 avg_data_gb         numeric predictor original
+3 avg_call_mins       numeric predictor original
+4 avg_intl_mins       numeric predictor original
+5 internet_service    nominal predictor original
+6 contract            nominal predictor original
+7 months_with_company numeric predictor original
+8 monthly_charges     numeric predictor original
+9 canceled_service    nominal outcome   original</code></pre>
+</div>
+<div id="training-a-recipe-object" class="section level2">
+<h2><strong>Training a recipe object</strong></h2>
+<p>In the previous exercise, you created a <code>recipe</code> object
+with instructions to apply a log transformation to the
+<code>avg_call_mins</code> and <code>avg_intl_mins</code> predictor
+variables in the telecommunications data.</p>
+<p>The next step in the feature engineering process is to train your
+<code>recipe</code> object using the training data. Then you will be
+able to apply your trained <code>recipe</code> to both the training and
+test datasets in order to prepare them for use in model fitting and
+model evaluation.</p>
+<pre class="r"><code># Train the telecom_log_rec object
+telecom_log_rec_prep &lt;- telecom_log_rec %&gt;% 
+  prep(training = telecom_training)
+
+# View results
+telecom_log_rec_prep</code></pre>
+<pre><code>Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          8
+
+Training data contained 731 data points and no missing data.
+
+Operations:
+
+Log transformation on avg_call_mins, avg_intl_mins [trained]</code></pre>
+<pre class="r"><code># Use your trained recipe to obtain the transformed training dataset.
+telecom_log_rec_prep %&gt;% 
+  bake(new_data = NULL)</code></pre>
+<pre><code># A tibble: 731 × 9
+   cellular_se…¹ avg_d…² avg_c…³ avg_i…⁴ inter…⁵ contr…⁶ month…⁷ month…⁸ cance…⁹
+   &lt;fct&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;  
+ 1 single_line     10.3     2.42    1.74 fiber_… one_ye…      50   103.  no     
+ 2 multiple_lin…    8.05    2.52    2.09 digital two_ye…      50    75.2 no     
+ 3 single_line      9.3     2.51    2.06 fiber_… month_…      25    95.7 no     
+ 4 multiple_lin…    9.96    2.53    2.13 fiber_… month_…      61   106.  no     
+ 5 single_line      6.69    2.55    1.96 digital month_…       6    59.2 no     
+ 6 single_line      9.37    2.58    1.94 fiber_… month_…       4    94.9 no     
+ 7 multiple_lin…    4.11    2.57    1.81 digital two_ye…      72    55.3 no     
+ 8 multiple_lin…   10.6     2.45    2.17 fiber_… two_ye…      54   108   no     
+ 9 multiple_lin…    7.86    2.58    2.21 digital one_ye…      23    73.8 no     
+10 single_line      8.67    1.97    2.12 fiber_… two_ye…      55    88.8 no     
+# … with 721 more rows, and abbreviated variable names ¹​cellular_service,
+#   ²​avg_data_gb, ³​avg_call_mins, ⁴​avg_intl_mins, ⁵​internet_service, ⁶​contract,
+#   ⁷​months_with_company, ⁸​monthly_charges, ⁹​canceled_service</code></pre>
+<p>Apply your trained <code>recipe</code> to the test dataset.</p>
+<pre class="r"><code># Apply to test data
+telecom_log_rec_prep %&gt;% 
+  bake(new_data = telecom_test)</code></pre>
+<pre><code># A tibble: 244 × 9
+   cellular_se…¹ avg_d…² avg_c…³ avg_i…⁴ inter…⁵ contr…⁶ month…⁷ month…⁸ cance…⁹
+   &lt;fct&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;  
+ 1 multiple_lin…    8.01    2.72    1.99 fiber_… month_…      19    83.6 yes    
+ 2 multiple_lin…    9.4     2.49    2.17 fiber_… one_ye…      50    99.4 no     
+ 3 single_line      6.23    2.63    1.98 fiber_… month_…      33    68.2 yes    
+ 4 multiple_lin…   10.2     2.60    2.06 fiber_… month_…      17    92.7 no     
+ 5 multiple_lin…    5.17    2.53    2.08 digital month_…       6    49.0 no     
+ 6 multiple_lin…   11.8     2.54    2.10 fiber_… two_ye…      71   115.  no     
+ 7 single_line      8.02    2.38    1.98 fiber_… month_…       9    88.4 no     
+ 8 multiple_lin…   11.0     2.49    2.12 fiber_… two_ye…      46   109.  no     
+ 9 single_line      6.19    2.29    1.91 digital one_ye…      14    59.1 no     
+10 multiple_lin…   12.2     2.57    2.18 fiber_… two_ye…      35   113.  no     
+# … with 234 more rows, and abbreviated variable names ¹​cellular_service,
+#   ²​avg_data_gb, ³​avg_call_mins, ⁴​avg_intl_mins, ⁵​internet_service, ⁶​contract,
+#   ⁷​months_with_company, ⁸​monthly_charges, ⁹​canceled_service</code></pre>
+</div>
+</div>
+<div id="numeric-features" class="section level1">
+<h1>Numeric Features</h1>
+<div id="discovering-correlated-predictors" class="section level2">
+<h2><strong>Discovering correlated predictors</strong></h2>
+<p>Correlated predictor variables provide redundant information and can
+negatively impact the model fitting process. When two variables are
+highly correlated, their values change linearly with each other and
+hence provide the same information to your machine learning algorithms.
+This phenomenon is know as multicollinearity.</p>
+<p>Before beginning the model fitting process, it’s important to explore
+your dataset to uncover these relationships and remove them in your
+feature engineering steps.</p>
+<pre class="r"><code>telecom_training %&gt;% 
+  # Select numeric columns
+  select_if(is.numeric) %&gt;% 
+  # Calculate correlation matrix
+  cor()</code></pre>
+<pre><code>                    avg_data_gb avg_call_mins avg_intl_mins months_with_company
+avg_data_gb               1.000       0.13688         0.164             0.41026
+avg_call_mins             0.137       1.00000         0.105             0.00396
+avg_intl_mins             0.164       0.10544         1.000             0.22193
+months_with_company       0.410       0.00396         0.222             1.00000
+monthly_charges           0.954       0.13970         0.167             0.43636
+                    monthly_charges
+avg_data_gb                   0.954
+avg_call_mins                 0.140
+avg_intl_mins                 0.167
+months_with_company           0.436
+monthly_charges               1.000</code></pre>
+<p>Create a scatter plot with avg_data_gb on the x-axis and
+monthly_charges on the y-axis.</p>
+<pre class="r"><code># Plot correlated predictors
+ggplot(telecom_training, aes(x = avg_data_gb, y = monthly_charges)) + 
+  # Add points
+  geom_point()  + 
+  # Add title
+  labs(title = &quot;Monthly Charges vs. Average Data Usage&quot;,
+       y = &#39;Monthly Charges ($)&#39;, x = &#39;Average Data Usage (GB)&#39;) </code></pre>
+<p><img src="figure/Data-Management.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>From the scatter plot, you can see that the more data customers use,
+the more they are charged every month. You will have to remove this
+redundant information with your feature engineering steps.</p>
+</div>
+<div id="processing-correlated-predictors" class="section level2">
+<h2><strong>Processing correlated predictors</strong></h2>
+<ol style="list-style-type: decimal">
+<li><p>To preprocess correlated predictor variables, we begin by
+specifying a recipe. We add the same model formula and data
+argument.</p></li>
+<li><p>Then we pass our recipe object to the <code>step_corr()</code>
+function, which has two Rs instead of one, and provide the names of all
+numeric columns in the training dataset separated by commas. We also
+provide a correlation threshold of 0.9 to the threshold
+argument.</p></li>
+<li><p>Train your <code>telecom_cor_rec</code> object using the
+telecom_training dataset.</p></li>
+<li><p>Use your trained recipe to obtain the transformed training
+dataset.</p></li>
+</ol>
+<pre class="r"><code># Specify a recipe object
+telecom_cor_rec &lt;- recipe(canceled_service ~.,
+                          data = telecom_training) %&gt;%
+  # Remove correlated variables
+  step_corr(all_numeric(), threshold = 0.8)
+
+# Train the recipe
+telecom_cor_rec_prep &lt;- telecom_cor_rec %&gt;% 
+  prep(training = telecom_training)
+
+# Apply to training data
+telecom_cor_rec_prep %&gt;% 
+  bake(new_data = NULL)</code></pre>
+<pre><code># A tibble: 731 × 8
+   cellular_service avg_data_gb avg_ca…¹ avg_i…² inter…³ contr…⁴ month…⁵ cance…⁶
+   &lt;fct&gt;                  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt; &lt;fct&gt;  
+ 1 single_line            10.3       262      55 fiber_… one_ye…      50 no     
+ 2 multiple_lines          8.05      328     122 digital two_ye…      50 no     
+ 3 single_line             9.3       326     114 fiber_… month_…      25 no     
+ 4 multiple_lines          9.96      340     136 fiber_… month_…      61 no     
+ 5 single_line             6.69      352      91 digital month_…       6 no     
+ 6 single_line             9.37      382      87 fiber_… month_…       4 no     
+ 7 multiple_lines          4.11      371      64 digital two_ye…      72 no     
+ 8 multiple_lines         10.6       281     147 fiber_… two_ye…      54 no     
+ 9 multiple_lines          7.86      378     164 digital one_ye…      23 no     
+10 single_line             8.67       93     131 fiber_… two_ye…      55 no     
+# … with 721 more rows, and abbreviated variable names ¹​avg_call_mins,
+#   ²​avg_intl_mins, ³​internet_service, ⁴​contract, ⁵​months_with_company,
+#   ⁶​canceled_service</code></pre>
+<pre class="r"><code># Apply to test data
+telecom_cor_rec_prep %&gt;% 
+  bake(new_data=telecom_test)</code></pre>
+<pre><code># A tibble: 244 × 8
+   cellular_service avg_data_gb avg_ca…¹ avg_i…² inter…³ contr…⁴ month…⁵ cance…⁶
+   &lt;fct&gt;                  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt; &lt;fct&gt;  
+ 1 multiple_lines          8.01      525      97 fiber_… month_…      19 yes    
+ 2 multiple_lines          9.4       312     147 fiber_… one_ye…      50 no     
+ 3 single_line             6.23      429      96 fiber_… month_…      33 yes    
+ 4 multiple_lines         10.2       402     116 fiber_… month_…      17 no     
+ 5 multiple_lines          5.17      341     119 digital month_…       6 no     
+ 6 multiple_lines         11.8       343     126 fiber_… two_ye…      71 no     
+ 7 single_line             8.02      240      95 fiber_… month_…       9 no     
+ 8 multiple_lines         11.0       310     133 fiber_… two_ye…      46 no     
+ 9 single_line             6.19      193      82 digital one_ye…      14 no     
+10 multiple_lines         12.2       369     150 fiber_… two_ye…      35 no     
+# … with 234 more rows, and abbreviated variable names ¹​avg_call_mins,
+#   ²​avg_intl_mins, ³​internet_service, ⁴​contract, ⁵​months_with_company,
+#   ⁶​canceled_service</code></pre>
+</div>
+<div id="normalization" class="section level2">
+<h2><strong>Normalization</strong></h2>
+<p>Another common task is centering and scaling numeric variables, known
+as normalization. For each numeric column, we subtract the mean and
+divide by the standard deviation. This transforms numeric variables to
+standard deviation units with a mean of 0 and standard deviation of 1.
+Interpreting normalized variable values is very intuitive. From the
+normalized total_time value, we see that spending 1,273 seconds on the
+website is 1-point-19 standard deviations greater than the average time
+spent by customers.</p>
+</div>
+<div id="multiple-feature-engineering-steps" class="section level2">
+<h2><strong>Multiple feature engineering steps</strong></h2>
+<p>The power of the <code>recipes</code> package is that you can include
+multiple pre-processing steps in a single <code>recipe</code> object.
+These steps will be carried out in the order they are entered with the
+<code>step_*()</code> functions.</p>
+<ol style="list-style-type: decimal">
+<li>Remove correlated predictors, and also normalize all numeric
+predictors in the telecommunications data.</li>
+<li>Train your <code>telecom_norm_rec</code> object using the
+<code>telecom_training</code> dataset.</li>
+<li>Apply your trained recipe to the test dataset.</li>
+</ol>
+<pre class="r"><code># Specify a recipe object
+telecom_norm_rec &lt;- recipe(canceled_service ~ .,data=telecom_training) %&gt;% 
+  # Remove correlated variables
+  step_corr(all_numeric(), threshold = 0.8) %&gt;% 
+  # Normalize numeric predictors
+  step_normalize(all_numeric_predictors())
+
+# Train the recipe
+telecom_norm_rec_prep &lt;- telecom_norm_rec %&gt;% 
+  prep(telecom_training)
+
+# Apply to test data
+telecom_norm_rec_prep %&gt;% 
+  bake(new_data = telecom_test)</code></pre>
+<pre><code># A tibble: 244 × 8
+   cellular_service avg_data_gb avg_ca…¹ avg_i…² inter…³ contr…⁴ month…⁵ cance…⁶
+   &lt;fct&gt;                  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt; &lt;fct&gt;  
+ 1 multiple_lines        -0.135   2.38    -0.375 fiber_… month_… -0.614  yes    
+ 2 multiple_lines         0.594  -0.451    1.21  fiber_… one_ye…  0.616  no     
+ 3 single_line           -1.07    1.10    -0.407 fiber_… month_… -0.0586 yes    
+ 4 multiple_lines         1.01    0.745    0.228 fiber_… month_… -0.694  no     
+ 5 multiple_lines        -1.62   -0.0654   0.323 digital month_… -1.13   no     
+ 6 multiple_lines         1.83   -0.0388   0.545 fiber_… two_ye…  1.45   no     
+ 7 single_line           -0.130  -1.41    -0.439 fiber_… month_… -1.01   no     
+ 8 multiple_lines         1.45   -0.477    0.768 fiber_… two_ye…  0.457  no     
+ 9 single_line           -1.09   -2.03    -0.852 digital one_ye… -0.813  no     
+10 multiple_lines         2.08    0.307    1.31  fiber_… two_ye…  0.0207 no     
+# … with 234 more rows, and abbreviated variable names ¹​avg_call_mins,
+#   ²​avg_intl_mins, ³​internet_service, ⁴​contract, ⁵​months_with_company,
+#   ⁶​canceled_service</code></pre>
+<p>In the test set, the normalised value for <code>avg_data_gb[1]</code>
+is 0.426. This is derived from the mean and standard deviation in the
+training set:</p>
+<p><span class="math display">\[
+m_{data-gb} = 8.23  \\
+s_{data-gb} = 1.9
+\]</span></p>
+<p>So, <code>avg_data_gb[1]</code> is 0.426 * 1.9 = 0.809. This means
+that this customer uses an average of 809Mb greater than the average
+amount of 8.23Gb.</p>
+<pre class="r"><code>setDT(telecom_training)
+setDT(telecom_test)
+
+data_gb1 &lt;- telecom_test[1, avg_data_gb]
+data_gb_m &lt;- telecom_training[, mean(avg_data_gb)]
+data_gb_sd &lt;- telecom_training[, sd(avg_data_gb)]
+(data_gb1 - data_gb_m)/data_gb_sd</code></pre>
+<pre><code>[1] -0.135</code></pre>
+<pre class="r"><code>0.426 * data_gb_sd + data_gb_m</code></pre>
+<pre><code>[1] 9.08</code></pre>
+<pre class="r"><code>data_gb_sd &lt;- telecom_training[, sd(avg_data_gb)]</code></pre>
+</div>
+</div>
+<div id="nominal-predictors" class="section level1">
+<h1>Nominal Predictors</h1>
+<div id="transforming-nominal-predictors" class="section level2">
+<h2><strong>Transforming nominal predictors</strong></h2>
+<p>Dummy variable encoding takes a different approach than one-hot
+encoding. It removes redundant information by excluding one value from
+the original set of data values. If we have n distinct values in our
+categorical data, we will get n - 1 indicator variables.</p>
+<p><img src="images/paste-367F155A.png" /></p>
+<p>In the example above, zeros in marketing and technology mean that the
+department is finance.</p>
+<div id="preprocessing-nominal-predictor-variables"
+class="section level3">
+<h3><strong>Preprocessing nominal predictor variables</strong></h3>
+<p>Many modeling engines in R include automatic dummy variable creation,
+so it is possible to fit models without having to use step_dummy().
+However, these methods are not consistent across engines in using
+one-hot versus dummy variables or naming conventions. Using the recipes
+package standardizes this process and will make your code less
+susceptible to errors.</p>
+</div>
+</div>
+<div id="ordering-of-step_-functions" class="section level2">
+<h2><strong>Ordering of step_*() functions</strong></h2>
+<p>The <code>step_*()</code> functions within a recipe are carried out
+in sequential order. It’s important to keep this in mind so that you
+avoid unexpected results in your feature engineering pipeline!</p>
+<ol style="list-style-type: decimal">
+<li><p>Specify the <code>telecom_recipe_1</code> object to normalize all
+numeric predictors and then create dummy variables for all nominal
+predictors in the training data, <code>telecom_training</code>.<br />
+Select columns <strong>by role</strong> in your <code>recipe</code>
+specification.</p></li>
+<li><p>Train <code>telecom_recipe_1</code> and use it to transform the
+test data, <code>telecom_test</code>.</p></li>
+<li><p>Now specify <code>telecom_recipe_2</code> to create dummy
+variables for all nominal predictors and then normalize all numeric
+predictors in the training data, <code>telecom_training</code>.<br />
+Select columns <strong>by role</strong> in your <code>recipe</code>
+specification.</p></li>
+</ol>
+<pre class="r"><code>telecom_recipe_1 &lt;- 
+  recipe(canceled_service ~ avg_data_gb + contract, data = telecom_training)  %&gt;% 
+  # Normalize numeric predictors
+  step_normalize(all_numeric_predictors())  %&gt;% 
+  # Create dummy variables for nominal predictors
+  step_dummy(all_nominal(), -all_outcomes())
+
+# Train and apply telecom_recipe_1 on the test data
+telecom_recipe_1 %&gt;% 
+  prep(telecom_training) %&gt;% 
+  bake(new_data = telecom_test)</code></pre>
+<pre><code># A tibble: 244 × 4
+   avg_data_gb canceled_service contract_one_year contract_two_year
+         &lt;dbl&gt; &lt;fct&gt;                        &lt;dbl&gt;             &lt;dbl&gt;
+ 1      -0.135 yes                              0                 0
+ 2       0.594 no                               1                 0
+ 3      -1.07  yes                              0                 0
+ 4       1.01  no                               0                 0
+ 5      -1.62  no                               0                 0
+ 6       1.83  no                               0                 1
+ 7      -0.130 no                               0                 0
+ 8       1.45  no                               0                 1
+ 9      -1.09  no                               1                 0
+10       2.08  no                               0                 1
+# … with 234 more rows</code></pre>
+<pre class="r"><code>telecom_recipe_2 &lt;- 
+  recipe(canceled_service ~ avg_data_gb + contract, data = telecom_training)  %&gt;% 
+  # Create dummy variables for nominal predictors
+  step_dummy(all_nominal(), -all_outcomes())  %&gt;% 
+  # Normalize numeric predictors
+  step_normalize(all_numeric_predictors())
+
+# Train and apply telecom_recipe_2 on the test data
+telecom_recipe_2 %&gt;% 
+  prep(telecom_training) %&gt;% 
+  bake(new_data = telecom_test)</code></pre>
+<pre><code># A tibble: 244 × 4
+   avg_data_gb canceled_service contract_one_year contract_two_year
+         &lt;dbl&gt; &lt;fct&gt;                        &lt;dbl&gt;             &lt;dbl&gt;
+ 1      -0.135 yes                         -0.514            -0.471
+ 2       0.594 no                           1.94             -0.471
+ 3      -1.07  yes                         -0.514            -0.471
+ 4       1.01  no                          -0.514            -0.471
+ 5      -1.62  no                          -0.514            -0.471
+ 6       1.83  no                          -0.514             2.12 
+ 7      -0.130 no                          -0.514            -0.471
+ 8       1.45  no                          -0.514             2.12 
+ 9      -1.09  no                           1.94             -0.471
+10       2.08  no                          -0.514             2.12 
+# … with 234 more rows</code></pre>
+<ul>
+<li><p>Notice that <code>telecom_recipe_1</code> produced [0, 1] values
+in the dummy variable columns while <code>telecom_recipe_2</code>
+produced dummy variables which were then normalized!</p></li>
+<li><p>The predictor <code>contract_two_year</code> created by
+<code>telecom_recipe_2</code> is -0.482 instead of 0 and 2.07 instead of
+1 due to normalization.</p></li>
+<li><p>For model interpretation, it’s best to normalize variables before
+creating dummy variables.</p></li>
+<li><p>Also notice that since you only specified two predictor variables
+in your model formula, the rest of the columns are ignored by your
+<code>recipe</code> objects when transforming new data sources.</p></li>
+</ul>
+</div>
+<div id="complete-feature-engineering-pipeline" class="section level2">
+<h2><strong>Complete feature engineering pipeline</strong></h2>
+<p>The <code>recipes</code> package is designed to encode multiple
+feature engineering steps into one object, making it easier to maintain
+data transformations in a machine learning workflow.</p>
+<p>In this exercise, you will train a feature engineering pipeline to
+prepare the telecommunications data for modeling.</p>
+<ul>
+<li>Train your recipe on the training data and apply it to the test
+data.</li>
+</ul>
+<pre class="r"><code># Create a recipe that predicts canceled_service using the training data
+telecom_recipe &lt;- recipe(canceled_service ~ ., data=telecom_training) %&gt;% 
+  # Remove correlated predictors
+  step_corr(all_numeric_predictors(), threshold = 0.8) %&gt;% 
+  # Normalize numeric predictors
+  step_normalize(all_numeric_predictors()) %&gt;% 
+  # Create dummy variables
+  step_dummy(all_nominal(), -all_outcomes())
+
+# Train your recipe and apply it to the test data
+telecom_recipe %&gt;% 
+  prep(telecom_training) %&gt;% 
+  bake(new_data=telecom_test)</code></pre>
+<pre><code># A tibble: 244 × 9
+   avg_data_gb avg_cal…¹ avg_i…² month…³ cance…⁴ cellu…⁵ inter…⁶ contr…⁷ contr…⁸
+         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+ 1      -0.135    2.38    -0.375 -0.614  yes           0       0       0       0
+ 2       0.594   -0.451    1.21   0.616  no            0       0       1       0
+ 3      -1.07     1.10    -0.407 -0.0586 yes           1       0       0       0
+ 4       1.01     0.745    0.228 -0.694  no            0       0       0       0
+ 5      -1.62    -0.0654   0.323 -1.13   no            0       1       0       0
+ 6       1.83    -0.0388   0.545  1.45   no            0       0       0       1
+ 7      -0.130   -1.41    -0.439 -1.01   no            1       0       0       0
+ 8       1.45    -0.477    0.768  0.457  no            0       0       0       1
+ 9      -1.09    -2.03    -0.852 -0.813  no            1       1       1       0
+10       2.08     0.307    1.31   0.0207 no            0       0       0       1
+# … with 234 more rows, and abbreviated variable names ¹​avg_call_mins,
+#   ²​avg_intl_mins, ³​months_with_company, ⁴​canceled_service,
+#   ⁵​cellular_service_single_line, ⁶​internet_service_digital,
+#   ⁷​contract_one_year, ⁸​contract_two_year</code></pre>
+</div>
+</div>
+<div id="complete-modeling-workflow" class="section level1">
+<h1>Complete Modeling Workflow</h1>
+<div id="feature-engineering-process" class="section level2">
+<h2><strong>Feature engineering process</strong></h2>
+<p>To incorporate feature engineering into the modeling process, the
+training and test datasets must be pre-processed before the model
+fitting stage. With the new skills you have learned in this chapter, you
+will be able to use all of the available predictor variables in the
+telecommunications data to train your logistic regression model.</p>
+<p>In this exercise, you will create a feature engineering pipeline on
+the telecommunications data and use it to transform the training and
+test datasets.</p>
+<pre class="r"><code>telecom_recipe &lt;- recipe(canceled_service ~., data = telecom_training) %&gt;% 
+  # Removed correlated predictors
+  step_corr(all_numeric_predictors(), threshold = 0.8) %&gt;% 
+  # Log transform numeric predictors
+  step_log(all_numeric_predictors(), base = 10) %&gt;%
+  # Normalize numeric predictors
+  step_normalize(all_numeric_predictors()) %&gt;%
+  # Create dummy variables
+  step_dummy(all_nominal(), -all_outcomes())
+
+# Train recipe
+telecom_recipe_prep &lt;- telecom_recipe %&gt;% 
+  prep(telecom_training)
+
+# Transform training data
+telecom_training_prep &lt;- telecom_recipe_prep %&gt;% 
+  bake(new_data = NULL)
+
+# Transform test data
+telecom_test_prep &lt;- telecom_recipe_prep %&gt;% 
+  bake(new_data = telecom_test)
+
+telecom_test_prep %&gt;% 
+  head() %&gt;% 
+  kbl() %&gt;% 
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+avg_data_gb
+</th>
+<th style="text-align:right;">
+avg_call_mins
+</th>
+<th style="text-align:right;">
+avg_intl_mins
+</th>
+<th style="text-align:right;">
+months_with_company
+</th>
+<th style="text-align:left;">
+canceled_service
+</th>
+<th style="text-align:right;">
+cellular_service_single_line
+</th>
+<th style="text-align:right;">
+internet_service_digital
+</th>
+<th style="text-align:right;">
+contract_one_year
+</th>
+<th style="text-align:right;">
+contract_two_year
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+-0.007
+</td>
+<td style="text-align:right;">
+1.848
+</td>
+<td style="text-align:right;">
+-0.211
+</td>
+<td style="text-align:right;">
+-0.032
+</td>
+<td style="text-align:left;">
+yes
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.625
+</td>
+<td style="text-align:right;">
+-0.320
+</td>
+<td style="text-align:right;">
+1.079
+</td>
+<td style="text-align:right;">
+0.692
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.999
+</td>
+<td style="text-align:right;">
+1.007
+</td>
+<td style="text-align:right;">
+-0.243
+</td>
+<td style="text-align:right;">
+0.381
+</td>
+<td style="text-align:left;">
+yes
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.943
+</td>
+<td style="text-align:right;">
+0.736
+</td>
+<td style="text-align:right;">
+0.344
+</td>
+<td style="text-align:right;">
+-0.116
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-1.735
+</td>
+<td style="text-align:right;">
+0.051
+</td>
+<td style="text-align:right;">
+0.423
+</td>
+<td style="text-align:right;">
+-0.895
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.505
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+0.601
+</td>
+<td style="text-align:right;">
+0.955
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-training-and-prediction" class="section level2">
+<h2><strong>Model training and prediction</strong></h2>
+<p>You have pre-processed your training and test data-sets in the
+previous exercise. Since you incorporated feature engineering into your
+modeling workflow, you are able to use all of the predictor variables
+available in the telecommunications data!</p>
+<p>The next step is training your logistic regression model and using it
+to obtain predictions on your new pre-processed test data-set.</p>
+<pre class="r"><code># default for logistic_reg is engine = &quot;glm&quot;, 
+# and mode = &quot;classification&quot;
+logistic_model &lt;- logistic_reg()
+
+# Train logistic model
+logistic_fit &lt;- logistic_model %&gt;% 
+  fit(canceled_service ~ ., data = telecom_training_prep)
+
+# Obtain class predictions
+class_preds &lt;- predict(logistic_fit, new_data = telecom_test_prep,
+                       type = &#39;class&#39;)
+
+# Obtain estimated probabilities
+prob_preds &lt;- predict(logistic_fit, new_data = telecom_test_prep, 
+                      type = &#39;prob&#39;)
+
+# Combine test set results
+telecom_results &lt;- telecom_test_prep %&gt;% 
+  select(canceled_service) %&gt;% 
+  bind_cols(class_preds, prob_preds)
+
+telecom_results</code></pre>
+<pre><code># A tibble: 244 × 4
+   canceled_service .pred_class .pred_yes .pred_no
+   &lt;fct&gt;            &lt;fct&gt;           &lt;dbl&gt;    &lt;dbl&gt;
+ 1 yes              yes            0.826     0.174
+ 2 no               no             0.0899    0.910
+ 3 yes              yes            0.516     0.484
+ 4 no               yes            0.613     0.387
+ 5 no               no             0.260     0.740
+ 6 no               no             0.0499    0.950
+ 7 no               no             0.271     0.729
+ 8 no               no             0.0397    0.960
+ 9 no               no             0.0262    0.974
+10 no               no             0.0709    0.929
+# … with 234 more rows</code></pre>
+</div>
+<div id="model-performance-metrics" class="section level2">
+<h2><strong>Model performance metrics</strong></h2>
+<p>In this exercise, you will use <code>yardstick</code> metric
+functions to evaluate your model’s performance on the test data-set.</p>
+<p>When you fit a logistic regression model to the telecommunications
+data in Chapter 2, you predicted <code>canceled_service</code> using
+<code>avg_call_mins</code>, <code>avg_intl_mins</code>, and
+<code>monthly_charges</code>. The sensitivity of your model was 0.42
+while the specificity was 0.895.</p>
+<p>Now that you have incorporated all available predictor variables
+using feature engineering, you can compare your new model’s performance
+to your previous results.</p>
+<pre class="r"><code># Create a confusion matrix
+telecom_results %&gt;% 
+  conf_mat(truth = canceled_service, estimate = .pred_class)</code></pre>
+<pre><code>          Truth
+Prediction yes  no
+       yes  59  18
+       no   23 144</code></pre>
+<pre class="r"><code># Calculate sensitivity
+telecom_results %&gt;% 
+  sens(truth = canceled_service, estimate = .pred_class)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 sens    binary         0.720</code></pre>
+<pre class="r"><code># Calculate specificity
+telecom_results %&gt;% 
+  spec(truth = canceled_service, estimate = .pred_class)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 spec    binary         0.889</code></pre>
+<pre class="r"><code># Plot ROC curve
+telecom_results %&gt;% 
+  roc_curve(truth = canceled_service, .pred_yes) %&gt;% 
+  autoplot()</code></pre>
+<p><img src="figure/Data-Management.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] yardstick_1.0.0    workflowsets_0.2.1 workflows_0.2.6    tune_0.2.0        
+ [5] rsample_1.0.0      parsnip_1.0.0      modeldata_0.1.1    infer_1.0.2       
+ [9] dials_1.0.0        scales_1.2.1       broom_1.0.0        tidymodels_0.2.0  
+[13] forcats_0.5.1      stringr_1.4.1      purrr_0.3.5        readr_2.1.3       
+[17] tidyr_1.2.1        tibble_3.1.8       tidyverse_1.3.1    recipes_0.2.0     
+[21] caret_6.0-92       lattice_0.20-45    skimr_2.1.4        kableExtra_1.3.4  
+[25] data.table_1.14.2  visdat_0.5.3       ggplot2_3.3.6      dplyr_1.0.10      
+[29] workflowr_1.7.0   
+
+loaded via a namespace (and not attached):
+  [1] colorspace_2.0-3     ellipsis_0.3.2       class_7.3-20        
+  [4] rprojroot_2.0.3      base64enc_0.1-3      fs_1.5.2            
+  [7] rstudioapi_0.13      farver_2.1.1         furrr_0.3.0         
+ [10] listenv_0.8.0        prodlim_2019.11.13   fansi_1.0.3         
+ [13] lubridate_1.8.0      xml2_1.3.3           codetools_0.2-18    
+ [16] splines_4.2.1        knitr_1.39           jsonlite_1.8.2      
+ [19] pROC_1.18.0          dbplyr_2.2.1         compiler_4.2.1      
+ [22] httr_1.4.3           backports_1.4.1      assertthat_0.2.1    
+ [25] Matrix_1.4-1         fastmap_1.1.0        cli_3.3.0           
+ [28] later_1.3.0          htmltools_0.5.2      tools_4.2.1         
+ [31] gtable_0.3.1         glue_1.6.2           reshape2_1.4.4      
+ [34] Rcpp_1.0.9           cellranger_1.1.0     jquerylib_0.1.4     
+ [37] DiceDesign_1.9       vctrs_0.4.1          svglite_2.1.0       
+ [40] nlme_3.1-157         iterators_1.0.14     timeDate_3043.102   
+ [43] gower_1.0.0          xfun_0.31            globals_0.15.1      
+ [46] ps_1.7.1             rvest_1.0.2          lifecycle_1.0.3     
+ [49] future_1.26.1        getPass_0.2-2        MASS_7.3-57         
+ [52] ipred_0.9-13         hms_1.1.2            promises_1.2.0.1    
+ [55] parallel_4.2.1       yaml_2.3.5           sass_0.4.1          
+ [58] rpart_4.1.16         stringi_1.7.8        highr_0.9           
+ [61] foreach_1.5.2        lhs_1.1.5            hardhat_1.2.0       
+ [64] lava_1.6.10          repr_1.1.4           rlang_1.0.6         
+ [67] pkgconfig_2.0.3      systemfonts_1.0.4    evaluate_0.17       
+ [70] labeling_0.4.2       processx_3.7.0       tidyselect_1.2.0    
+ [73] parallelly_1.32.0    plyr_1.8.7           magrittr_2.0.3      
+ [76] R6_2.5.1             generics_0.1.3       DBI_1.1.3           
+ [79] pillar_1.8.1         haven_2.5.0          whisker_0.4         
+ [82] withr_2.5.0          survival_3.3-1       nnet_7.3-17         
+ [85] future.apply_1.9.0   modelr_0.1.8         crayon_1.5.2        
+ [88] utf8_1.2.2           tzdb_0.3.0           rmarkdown_2.14      
+ [91] grid_4.2.1           readxl_1.4.0         callr_3.7.2         
+ [94] git2r_0.30.1         ModelMetrics_1.2.2.2 reprex_2.0.1        
+ [97] digest_0.6.29        webshot_0.5.3        httpuv_1.6.5        
+[100] GPfit_1.0-8          stats4_4.2.1         munsell_0.5.0       
+[103] viridisLite_0.4.1    bslib_0.3.1         </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

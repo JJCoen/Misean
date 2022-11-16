@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Jim Coen and Datacamp" />
+<meta name="author" content="David Svancer (George Mason Uni) adapted by Jim Coen" />
 
 
-<title>Common Data Problems</title>
+<title>Modelling with tidymodels</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -422,8 +422,10 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Common Data Problems</h1>
-<h4 class="author">Jim Coen and Datacamp</h4>
+<h1 class="title toc-ignore">Modelling with tidymodels</h1>
+<h3 class="subtitle">Linear Regression to model power plant output</h3>
+<h4 class="author">David Svancer (George Mason Uni) adapted by Jim
+Coen</h4>
 <h4 class="date">Wednesday, November 16, 2022</h4>
 
 </div>
@@ -650,11 +652,11 @@ have uncommitted changes.
 
 <p>
 These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/Common-Data-Problems.Rmd</code>)
-and HTML (<code>docs/common-data-problems.html</code>) files. If you’ve
-configured a remote Git repository (see <code>?wflow_git_remote</code>),
-click on the hyperlinks in the table below to view the files as they
-were in that past version.
+made to the R Markdown (<code>analysis/Correlation.Rmd</code>) and HTML
+(<code>docs/Correlation.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -680,10 +682,10 @@ Message
 <tbody>
 <tr>
 <td>
-html
+Rmd
 </td>
 <td>
-d00a3cc
+3ec87e6
 </td>
 <td>
 JJCoen
@@ -692,7 +694,7 @@ JJCoen
 2022-11-16
 </td>
 <td>
-Build site.
+add Data Analysis and Training
 </td>
 </tr>
 </tbody>
@@ -702,375 +704,391 @@ Build site.
 </div>
 </div>
 </div>
-<p><img src="images/common-data-problems.png"
-style="width:100.0%" /></p>
-<div id="data-type-constraints" class="section level1">
-<h1>Data Type Constraints</h1>
-<div id="converting-data-types" class="section level2">
-<h2>Converting data types</h2>
-<p>Throughout this chapter, you’ll be working with San Francisco bike
-share ride data called bike_share_rides. It contains information on
-start and end stations of each trip, the trip duration, and some user
-information.</p>
-<p><strong>Defensive Programming</strong><br />
-<img src="images/assertive.png" style="width:50.0%" /></p>
-<p>ref: <a
-href="https://campus.datacamp.com/courses/cleaning-data-in-r/common-data-problems?ex=1"
-class="uri">https://campus.datacamp.com/courses/cleaning-data-in-r/common-data-problems?ex=1</a></p>
-<p>Before beginning to analyze any dataset, it’s important to take a
-look at the different types of columns you’ll be working with, which you
-can do using <code>glimpse()</code>.</p>
-<p>In this exercise, you’ll take a look at the data types contained in
-bike_share_rides and see how an incorrect data type can flaw your
-analysis.</p>
-<p><code>dplyr</code> and <code>assertive</code> are loaded and
-bike_share_rides is available.</p>
-<p>Examine the data types of the columns of bike_share_rides. Get a
-summary of the user_birth_year column of bike_share_rides.</p>
-<ul>
-<li>Dataset</li>
-<li>Downloaded from <a
-href="https://www.kaggle.com/benhamner/sf-bay-area-bike-share?select=trip.csv"
-class="uri">https://www.kaggle.com/benhamner/sf-bay-area-bike-share?select=trip.csv</a></li>
-<li>need to be logged in to kaggle to access</li>
-</ul>
-<pre class="r"><code>bike_share_rides &lt;- read_csv(&quot;./data/trip.csv&quot;,
-                  n_max = 35229) %&gt;% 
-  as.data.table
-
-# problems(bike_share_rides)
-
-# Glimpse at bike_share_rides
-summary(bike_share_rides)</code></pre>
-<pre><code>       id           duration       start_date        start_station_name
- Min.   : 4069   Min.   :    60   Length:35229       Length:35229      
- 1st Qu.:16615   1st Qu.:   398   Class :character   Class :character  
- Median :28191   Median :   622   Mode  :character   Mode  :character  
- Mean   :28099   Mean   :  1574                                        
- 3rd Qu.:39688   3rd Qu.:   989                                        
- Max.   :51121   Max.   :597517                                        
-                                                                       
- start_station_id   end_date         end_station_name   end_station_id
- Min.   : 2.0     Length:35229       Length:35229       Min.   : 2.0  
- 1st Qu.:49.0     Class :character   Class :character   1st Qu.:49.0  
- Median :60.0     Mode  :character   Mode  :character   Median :60.0  
- Mean   :56.3                                           Mean   :56.3  
- 3rd Qu.:70.0                                           3rd Qu.:70.0  
- Max.   :77.0                                           Max.   :77.0  
-                                                                      
-    bike_id    subscription_type     zip_code    
- Min.   :  9   Length:35229       Min.   : 1001  
- 1st Qu.:347   Class :character   1st Qu.:94103  
- Median :448   Mode  :character   Median :94110  
- Mean   :437                      Mean   :88970  
- 3rd Qu.:552                      3rd Qu.:94403  
- Max.   :717                      Max.   :99999  
-                                  NA&#39;s   :2500   </code></pre>
-<ul>
-<li><p><code>factor</code> data type bike_share_rides dataset contains
-the variable <code>subscription_type</code> which needs to be converted
-from <code>character</code> to <code>factor</code></p></li>
-<li><p>This variable groups each trip according to year and is a
-categorical variable.</p></li>
-</ul>
+<div id="purpose" class="section level1">
+<h1>Purpose</h1>
+<p>We are trying to predict power output given a set of readings from
+various sensors in a gas-fired power generation plant. Power generation
+is a complex process, and understanding and predicting power output is
+an important element in managing a plant and its connection to the power
+grid.</p>
+<p>A combined cycle power plant (CCPP) is composed of gas turbines (GT),
+steam turbines (ST) and heat recovery steam generators. In a CCPP, the
+electricity is generated by gas and steam turbines, which are combined
+in one cycle, and is transferred from one turbine to another. While the
+Vacuum is colected from and has effect on the Steam Turbine, he other
+three of the ambient variables effect the GT performance.</p>
+<div id="business-understanding" class="section level2">
+<h2>Business Understanding</h2>
 <ol style="list-style-type: decimal">
-<li>Add a new column to bike_share_rides called
-subscription_type_fct.</li>
-<li>Assert that the subscription_type_fct is a factor to confirm the
-conversion.</li>
+<li>What is the effect of each sensor on power output?</li>
+<li>Is there a critical sensor or threshold values for each sensor in
+terms of power output?</li>
+<li>Is it possible to predict, with low error, the power output of a
+CCPP.</li>
 </ol>
-<pre class="r"><code>bike_share_rides[ , subscription_type_fct := as.factor(subscription_type)]
-assert_is_factor(bike_share_rides$subscription_type_fct)
-# Summary 
-summary(bike_share_rides$subscription_type_fct)</code></pre>
-<pre><code>  Customer Subscriber 
-     12565      22664 </code></pre>
-<p>Dapper data type dexterity! In the previous exercise, you were able
-to identify the correct data type and convert
-<code>subscription_type</code> to the correct data type, allowing you to
-extract counts that gave you a bit more insight into the dataset.</p>
-<ul>
-<li>Trimming strings</li>
-</ul>
-<p>Suppose we have a variable:
-<code>$ duration         &lt;chr&gt; "1316.15 minutes", "8.13 minutes", "24.85 minutes"...</code></p>
-<p>Another common dirty data problem is having extra bits like percent
-signs or periods in numbers, causing them to be read in as characters.
-In order to be able to crunch these numbers, the extra bits need to be
-removed and the numbers need to be converted from character to numeric.
-In this exercise, you’ll need to convert the duration column from
-character to numeric, but before this can happen, the word “minutes”
-needs to be removed from each value.</p>
-<p>dplyr, assertive, and stringr are loaded and bike_share_rides is
-available.</p>
-<ol style="list-style-type: decimal">
-<li><p>Use str_remove() to remove “minutes” from the duration column of
-bike_share_rides. Add this as a new column called
-duration_trimmed.</p></li>
-<li><p>Convert the duration_trimmed column to a numeric type and add
-this as a new column called duration_mins.</p></li>
-<li><p>Glimpse at bike_share_rides and assert that the duration_mins
-column is numeric.</p></li>
-</ol>
-<!-- -->
-<pre><code>bike_share_rides &lt;- bike_share_rides %&gt;%
-  mutate(duration_trimmed = str_remove(duration, &quot;minutes&quot;),
-         duration_mins = as.numeric(duration_trimmed))
-
-# Glimpse at bike_share_rides
-glimpse(bike_share_rides)
-
-# Assert duration_mins is numeric
-assert_is_numeric(bike_share_rides$duration_mins)</code></pre>
-<ul>
-<li>Inspect local bike_share_rides dataset</li>
-</ul>
-<pre class="r"><code>bike_share_rides[, summary(duration)]</code></pre>
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-     60     398     622    1574     989  597517 </code></pre>
-<p>Convert <code>duration</code> from seconds to minutes.</p>
-<pre class="r"><code>bike_share_rides[ , duration_min := duration / 60]
-
-assert_is_numeric(bike_share_rides$duration_min)</code></pre>
 </div>
 </div>
-<div id="range-constraints" class="section level1">
-<h1>Range Constraints</h1>
-<ul>
-<li>Handling out of range values</li>
-</ul>
-<ol style="list-style-type: decimal">
-<li>Remove rows<br />
-</li>
-<li>Replace with range limit<br />
-</li>
-<li>Treat as NA<br />
-</li>
-<li>Replace with value based on domain knowledge</li>
-</ol>
-<p><strong>1. Remove Rows</strong></p>
-<p>Consider imbd film ratings - values are between 0 and 5.</p>
-<pre><code>films %&gt;% 
-  filter(avg_rating &gt;= 0, avg_rating &lt;=5) %&gt;% 
-  ggplot(aes(avg_rating)) +
-    geom_histogram(breaks = 
-      c(min(avg_rating), 0, 5, max(avg_rating)))</code></pre>
-<p><strong>2 Replace with range limit</strong></p>
-<ul>
-<li>Ride duration constraints</li>
-</ul>
-<blockquote>
-<p>replace(col, condition, replacement)</p>
-</blockquote>
-<p>Values that are out of range can throw off an analysis, so it’s
-important to catch them early on. In this exercise, you’ll be examining
-the <code>duration_min</code> column more closely. Bikes are not allowed
-to be kept out for more than 24 hours, or 1440 minutes at a time, but
-issues with some of the bikes caused inaccurate recording of the time
-they were returned.</p>
-<p>In this exercise, you’ll replace erroneous data with the range limit
-(1440 minutes), however, you could just as easily replace these values
-with NAs.</p>
-<p>dplyr, assertive, and ggplot2 are loaded and bike_share_rides is
-available.</p>
-<ol style="list-style-type: decimal">
-<li>Create a three-bin histogram of the <code>duration_min</code> column
-of bike_share_rides using ggplot2 to identify if there is out-of-range
-data.</li>
-</ol>
-<pre class="r"><code># Create breaks
-fivenum(bike_share_rides$duration_min)</code></pre>
-<pre><code>[1]    1.00    6.63   10.37   16.48 9958.62</code></pre>
-<pre class="r"><code>breaks &lt;- c(min(bike_share_rides$duration_min), 1440, max(bike_share_rides$duration_min))
-
-# Create a histogram of duration_min
-ggplot(bike_share_rides, aes(duration_min)) +
-  geom_histogram(breaks = breaks)</code></pre>
-<p><img src="figure/Common-Data-Problems.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<ol start="2" style="list-style-type: decimal">
-<li>Replace the values of duration_min that are greater than 1440
-minutes (24 hours) with 1440. Add this to bike_share_rides as a new
-column called duration_min_const.<br />
-</li>
-<li>Assert that all values of duration_min_const are between 0 and
-1440.</li>
-</ol>
-<pre class="r"><code>bike_share_rides[ , duration_min_const := 
-                    replace(duration_min, 
-                            duration_min &gt; 1440, 
-                           1440) ]
-assert_all_are_in_closed_range(bike_share_rides$duration_min_const, 
-                               lower = 0,
-                               upper = 1440)</code></pre>
-<ul>
-<li><strong>Back to the future</strong><br />
-Something has gone wrong and it looks like you have data with dates from
-the future, which is way outside of the date range you expected to be
-working with. To fix this, you’ll need to remove any rides from the
-dataset that have a date in the future. Before you can do this, the date
-column needs to be converted from a character to a <code>Date</code>.
-Having these as <code>Date</code> objects will make it much easier to
-figure out which rides are from the future, since R makes it easy to
-check if one Date object is before (&lt;) or after (&gt;) another.</li>
-</ul>
-<blockquote>
-<p>assert_all_in_past()</p>
-</blockquote>
-<p>dplyr and assertive are loaded and bike_share_rides is available.</p>
-<ol style="list-style-type: decimal">
-<li><p>Convert the date column of bike_share_rides from character to the
-<code>Date</code> data type.<br />
-</p></li>
-<li><p>Assert that all values in the date column happened sometime in
-the past and not in the future.</p></li>
-<li><p>Filter <code>bike_share_rides</code> to get only the rides from
-the past or today, and save this as bike_share_rides_past.<br />
-</p></li>
-<li><p>Assert that the dates in bike_share_rides_past occurred only in
-the past.</p></li>
-</ol>
-<!-- -->
-<pre><code>library(lubridate)
-# Convert date to Date type
-bike_share_rides &lt;- bike_share_rides %&gt;%
-  mutate(start_date = as.Date(start_date))
-
-# Make sure all dates are in the past
-assert_all_are_in_past(bike_share_rides$date)
-
-# Filter for rides that occurred before or on today&#39;s date
-bike_share_rides_past &lt;- bike_share_rides %&gt;%
-  filter(date &lt; today())
-
-# Make sure all dates from bike_share_rides_past are in the past
-assert_all_are_in_past(bike_share_rides_past$date)</code></pre>
-<p>“Fabulous filtering! Handling data from the future like this is much
-easier than trying to verify the data’s correctness by time
-traveling.”</p>
-<p><strong>3 Treat as NA</strong></p>
-<blockquote>
-<p>replace(col, condition, replacement)</p>
-</blockquote>
-<p><strong>4 Replace with value based on domain knowledge</strong></p>
+<div id="data-inspection" class="section level1">
+<h1>Data Inspection</h1>
+<div id="data-set-information" class="section level2">
+<h2>Data Set Information:</h2>
+<p>The data-set contains 9568 data points collected from a Combined
+Cycle Power Plant over 6 years (2006-2011), when the power plant was set
+to work with full load. Features consist of hourly average ambient
+variables Temperature (T), Ambient Pressure (AP), Relative Humidity (RH)
+and Exhaust Vacuum (V) to predict the net hourly electrical energy
+output (EP) of the plant.</p>
+<div id="data-dictionary" class="section level3">
+<h3>Data Dictionary</h3>
+<p>- Temperature (T) in the range 1.81°C and 37.11°C,<br />
+- Ambient Pressure (AP) in the range 992.89-1033.30 milibar,<br />
+- Relative Humidity (RH) in the range 25.56% to 100.16%<br />
+- Exhaust Vacuum (V) in the range 25.36-81.56 cm Hg<br />
+- Net hourly electrical energy output (EP) 420.26-495.76 MW<br />
+The averages are taken from various sensors located around the plant
+that record the ambient variables every second. The variables are given
+without normalization.</p>
 </div>
-<div id="uniqueness-constraints" class="section level1">
-<h1>Uniqueness Constraints</h1>
-<p><strong>Why do duplicates occur?</strong></p>
-<p><img src="images/why-duplicates-occur.PNG" /></p>
-<div id="full-duplicates" class="section level2">
-<h2>Full duplicates</h2>
-<blockquote>
-<p>Finding full duplicates duplicated(credit_score) %&gt;% sum()</p>
-<p>filter(credit_score, duplicated(credit_score)</p>
-</blockquote>
-<p>You’ve been notified that an update has been made to the bike sharing
-data pipeline to make it more efficient, but that duplicates are more
-likely to be generated as a result. To make sure that you can continue
-using the same scripts to run your weekly analyses about ride
-statistics, you’ll need to ensure that any duplicates in the dataset are
-removed first.</p>
-<p>When multiple rows of a data frame share the same values for all
-columns, they’re full duplicates of each other. Removing duplicates like
-this is important, since having the same value repeated multiple times
-can alter summary statistics like the mean and median. Each ride,
-including its ride_id should be unique.</p>
-<p>dplyr is loaded and bike_share_rides is available.</p>
-<p>Get the total number of full duplicates in bike_share_rides. Remove
-all full duplicates from bike_share_rides and save the new data frame as
-bike_share_rides_unique. Get the total number of full duplicates in the
-new bike_share_rides_unique data frame.</p>
-<pre><code># Count the number of full duplicates
-nrow(bike_share_rides) - nrow( distinct(bike_share_rides)) 
-
-# Remove duplicates
-bike_share_rides_unique &lt;- distinct(bike_share_rides)
-
-# Count the full duplicates in bike_share_rides_unique
-nrow(bike_share_rides_unique) - nrow( distinct(bike_share_rides_unique)) </code></pre>
-<p>Dazzling duplicate removal! Removing full duplicates will ensure that
-summary statistics aren’t altered by repeated data points.</p>
-<ul>
-<li>Removing partial duplicates</li>
-</ul>
-<blockquote>
-<p>credit_scores %&gt;% distinct(first_name, last_name, .keep_all =
-TRUE)</p>
-</blockquote>
-<p>Now that you’ve identified and removed the full duplicates, it’s time
-to check for partial duplicates. Partial duplicates are a bit tricker to
-deal with than full duplicates. In this exercise, you’ll first identify
-any partial duplicates and then practice the most common technique to
-deal with them, which involves dropping all partial duplicates, keeping
-only the first.</p>
-<p>Count the number of occurrences of each ride_id. Filter for ride_ids
-that occur multiple times.</p>
-<pre><code># Find duplicated ride_ids
-bike_share_rides %&gt;% duplicated() 
-  
-# Count the number of occurrences of each ride_id
-bike_share_rides %&gt;% 
-    count( ride_id)
-  
-# Filter for rows with a count &gt; 1
-bike_share_rides %&gt;% 
-    count( ride_id) %&gt;%
-    filter(n &gt; 1)</code></pre>
-<ul>
-<li>Removing partial duplicates<br />
-Now that you’ve identified and removed the full duplicates, it’s time to
-check for partial duplicates. Partial duplicates are a bit tricker to
-deal with than full duplicates. In this exercise, you’ll first identify
-any partial duplicates and then practice the most common technique to
-deal with them, which involves dropping all partial duplicates, keeping
-only the first.</li>
-</ul>
+</div>
+<div id="load" class="section level2">
+<h2>Load</h2>
+<p>Source: <a
+href="https://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant">UCI
+Machine Learning Repository Combined Cycle Power Plant Data Set</a></p>
+<pre class="r"><code>if (!file.exists(&quot;./data/power_df.csv&quot;)) {
+  power_df &lt;- read_excel(&quot;./data/Power-Plant/Folds5x2_pp.xlsx&quot;)
+  write_csv(power_df, file = &quot;./data/power_df.csv&quot;)
+  setDT(power_df)
+} else {
+  power_df &lt;- fread(&quot;./data/power_df.csv&quot;)
+}
+str(power_df)</code></pre>
+<pre><code>Classes &#39;data.table&#39; and &#39;data.frame&#39;:  9568 obs. of  5 variables:
+ $ AT: num  14.96 25.18 5.11 20.86 10.82 ...
+ $ V : num  41.8 63 39.4 57.3 37.5 ...
+ $ AP: num  1024 1020 1012 1010 1009 ...
+ $ RH: num  73.2 59.1 92.1 76.6 96.6 ...
+ $ PE: num  463 444 489 446 474 ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </code></pre>
+<div id="randomly-sample-training-and-test-sets" class="section level3">
+<h3>Randomly sample training and test sets</h3>
 <ol style="list-style-type: decimal">
-<li>Remove full and partial duplicates from bike_share_rides based on
-ride_id only, keeping all columns. Store this as
-bike_share_rides_unique.<br />
-</li>
-<li>Find the duplicated ride_ids in bike_share_rides_unique.</li>
+<li>Create an <code>rsample</code> object, <code>power_split</code>,
+that contains the instructions for randomly splitting the
+<code>home_sales</code> data into a training and test data-set.</li>
+<li>Allocate 70% of the data into training and stratify the results by
+<code>PE.</code></li>
 </ol>
-<!-- -->
-<pre><code># Find duplicated ride_ids
-bike_share_rides %&gt;% 
-  count(ride_id) %&gt;% 
-  filter(n &gt; 1)
+<pre class="r"><code># Create data split object
+power_split &lt;- initial_split(power_df, prop = 0.7,
+                     strata = PE)
 
-# Remove full and partial duplicates
-bike_share_rides_unique &lt;- bike_share_rides %&gt;%
-  # Only based on ride_id instead of all cols
-  distinct(ride_id, .keep_all = TRUE)
+# Create the training data
+power_training &lt;- power_split %&gt;% 
+  training()
 
-# Find duplicated ride_ids in bike_share_rides_unique
-bike_share_rides_unique %&gt;%
-  # Count the number of occurrences of each ride_id
-  count(ride_id) %&gt;%
-  # Filter for rows with a count &gt; 1
-  filter(n &gt; 1)</code></pre>
+# Create the test data
+power_test &lt;- power_split %&gt;% 
+  testing()
+
+# Check the number of rows
+nrow(power_training)</code></pre>
+<pre><code>[1] 6696</code></pre>
+<pre class="r"><code>nrow(power_test)</code></pre>
+<pre><code>[1] 2872</code></pre>
+</div>
+</div>
+<div id="target-variable" class="section level2">
+<h2>Target Variable</h2>
+<div id="distribution-of-outcome-variable-values"
+class="section level3">
+<h3><strong>Distribution of outcome variable values</strong></h3>
+<p>Stratifying by the outcome variable when generating training and test
+data-sets ensures that the outcome variable values have a similar range
+in both data-sets.</p>
+<ol style="list-style-type: decimal">
+<li>Calculate the minimum, maximum, mean, and standard deviation of the
+<code>PE</code> variable</li>
+</ol>
+<pre class="r"><code># Distribution of PE in training data
+power_training %&gt;% 
+  summarize(min_power_out = min(PE),
+            max_power_out = max(PE),
+            mean_power_out = mean(PE),
+            sd_power_out = sd(PE)) </code></pre>
+<pre><code>  min_power_out max_power_out mean_power_out sd_power_out
+1           422           496            454           17</code></pre>
+<pre class="r"><code>ggplot(data=power_training, aes(x = PE )) +
+  geom_histogram(color=&quot;black&quot;, fill=&quot;white&quot;, bins=50) +
+  geom_vline(aes(xintercept=mean(PE)), color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=1)</code></pre>
+<p><img src="figure/Correlation.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\rightarrow\)</span> Target variable is
+bi-modal.</p>
+</div>
+</div>
+<div id="features" class="section level2">
+<h2>Features</h2>
+<div id="distribution" class="section level3">
+<h3>Distribution</h3>
+<p>Reshape <code>power_df</code> to long format with key value pairs</p>
+<p>Create histograms</p>
+<pre class="r"><code>ggplot(gather(power_training[, -(&quot;PE&quot;)]), aes(value)) + 
+    geom_histogram(color=&quot;black&quot;, fill=&quot;white&quot;, bins=50) +
+    facet_wrap(~key, scales = &#39;free_x&#39;)</code></pre>
+<p><img src="figure/Correlation.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\rightarrow\)</span> right skew in RH can
+be reduced with Box-Cox transformation.</p>
+<p><span class="math inline">\(\rightarrow\)</span> AP has a normal
+distribution while AT is approximately normal.</p>
+</div>
+</div>
+<div id="relationship-between-features-and-target-variable"
+class="section level2">
+<h2>Relationship between features and target variable</h2>
+<div id="check-for-outliers" class="section level3">
+<h3>Check for outliers</h3>
+<pre class="r"><code>grid.arrange(g1, g2, g3, g4, ncol = 2, nrow =2)</code></pre>
+<p><img src="figure/Correlation.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\rightarrow\)</span> despite certain
+points on the edges of the main clusters, there are no distinct
+outliers.</p>
+</div>
+<div id="co-linearity-among-features" class="section level3">
+<h3>Co-linearity among features</h3>
+<pre class="r"><code># install.packages(&quot;corrr&quot;)
+library(corrr)</code></pre>
+<pre><code>
+Attaching package: &#39;corrr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:skimr&#39;:
+
+    focus</code></pre>
+<pre class="r"><code>power_training %&gt;%
+       correlate() %&gt;%    # Create correlation data frame (cor_df)
+       # focus(-PE, mirror = TRUE) %&gt;%  # Focus on cor_df without &#39;PE&#39;
+       rearrange() %&gt;%  # rearrange by correlations
+       shave() # Shave off the upper triangle for a clean result</code></pre>
+<pre><code>Correlation computed with
+• Method: &#39;pearson&#39;
+• Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
+<pre><code># A tibble: 5 × 6
+  term      AT      V     RH     AP    PE
+  &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1 AT    NA     NA     NA     NA        NA
+2 V      0.843 NA     NA     NA        NA
+3 RH    -0.541 -0.308 NA     NA        NA
+4 AP    -0.515 -0.421  0.100 NA        NA
+5 PE    -0.948 -0.869  0.388  0.526    NA</code></pre>
+<p><span class="math inline">\(\rightarrow\)</span> high negative
+correlation (-0.95) between atmospheric temp. and power outpupt.</p>
+<p><span class="math inline">\(\rightarrow\)</span> high correlation
+(0.84) between atmospheric temp. and exhaust vacuum.</p>
+</div>
+</div>
+</div>
+<div id="fit-a-linear-regression-model" class="section level1">
+<h1>Fit a Linear Regression Model</h1>
+<pre class="r"><code># Specify a logistic regression model
+linear_model &lt;- linear_reg() %&gt;% 
+  # Set the engine
+  set_engine(&#39;lm&#39;) %&gt;% 
+  # Set the mode
+  set_mode(&#39;regression&#39;)
+
+# Fit to training data
+lm_fit &lt;- linear_model %&gt;% 
+  fit(PE ~ AT + V + AP + RH,
+      data = power_training)
+
+# Print model fit object
+lm_fit</code></pre>
+<pre><code>parsnip model object
+
+
+Call:
+stats::lm(formula = PE ~ AT + V + AP + RH, data = data)
+
+Coefficients:
+(Intercept)           AT            V           AP           RH  
+   454.6908      -1.9690      -0.2363       0.0618      -0.1563  </code></pre>
+<div id="predicting-power-output" class="section level2">
+<h2>Predicting power output</h2>
+<p>After fitting a model using the training data, the next step is to
+use it to make predictions on the test dataset. The test dataset acts as
+a new source of data for the model and will allow you to evaluate how
+well it performs.</p>
+<p>Before you can evaluate model performance, you must add your
+predictions to the test data-set.</p>
 <ul>
-<li>Aggregating partial duplicates</li>
+<li>Create a tibble with the <code>PE</code> and all predictor columns
+from the test data-set and the predicted home selling prices.</li>
 </ul>
-<p><img src="images/aggregate-partial-dublicates.PNG" /></p>
-<p>Another way of handling partial duplicates is to compute a summary
-statistic of the values that differ between partial duplicates, such as
-mean, median, maximum, or minimum. This can come in handy when you’re
-not sure how your data was collected and want an average, or if based on
-domain knowledge, you’d rather have too high of an estimate than too low
-of an estimate (or vice versa).</p>
-<p>Group bike_share_rides by ride_id and date. Add a column called
-duration_min_avg that contains the mean ride duration for the row’s
-ride_id and date. Remove duplicates based on ride_id and date, keeping
-all columns of the data frame. Remove the duration_min column.</p>
-<pre><code>bike_share_rides %&gt;%
-  # Group by ride_id and date
-  group_by(ride_id, date) %&gt;%
-    # Add duration_min_avg column
-    mutate(duration_min_avg = mean(duration_min) ) %&gt;%
-    # Remove duplicates based on ride_id and date, keep all cols
-    distinct(ride_id, date, .keep_all = TRUE) %&gt;%
-    # Remove duration_min column
-    select(-duration_min)</code></pre>
+<pre class="r"><code># Predict power output
+power_predictions &lt;- predict(lm_fit,
+                            new_data = power_test)
+
+# View predicted power output
+power_predictions %&gt;% head()</code></pre>
+<pre><code># A tibble: 6 × 1
+  .pred
+  &lt;dbl&gt;
+1  451.
+2  472.
+3  442.
+4  443.
+5  467.
+6  472.</code></pre>
+<pre class="r"><code># Combine test data with predictions
+power_test_results &lt;- power_test %&gt;% 
+  bind_cols(power_predictions)
+
+# View results
+power_test_results %&gt;% head()</code></pre>
+<pre><code>     AT    V   AP   RH  PE .pred
+1: 20.9 57.3 1010 76.6 446   451
+2: 10.8 37.5 1009 96.6 474   472
+3: 26.3 59.4 1012 58.8 444   442
+4: 25.7 58.6 1013 61.8 451   443
+5: 14.4 52.8 1024 63.6 460   467
+6: 14.0 38.5 1015 55.3 464   472</code></pre>
+</div>
+</div>
+<div id="evaluating-model-performance" class="section level1">
+<h1>Evaluating Model Performance</h1>
+<div id="root-mean-squared-error-rmse" class="section level2">
+<h2><strong>Root mean squared error (RMSE)</strong></h2>
+<p>A common performance metric for regression models is the root mean
+squared error, or RMSE. The RMSE estimates the average prediction error
+of a model and is calculated with the rmse() function. To calculate the
+RMSE on our mpg model, we pass <code>power_test_results</code> to the
+<code>rmse</code>() function and specify hwy as the truth and
+<code>.pred</code> as the estimate. We see that the average prediction
+error of our model is about 4.57 MW for the estimated power output
+values.</p>
+</div>
+<div id="r-squared-metric" class="section level2">
+<h2><strong>R squared metric</strong></h2>
+<p>Another important regression metric is R squared, also known as the
+coefficient of determination.</p>
+<ul>
+<li>R squared measures the squared correlation between actual and
+predicted values and</li>
+<li>ranges from 0 to 1, where 1 indicates that all predictions equal the
+true outcome values.</li>
+<li>R squared is calculated with the <code>rsq</code>() function and
+takes the same arguments as the <code>rmse</code>() function.</li>
+</ul>
+<pre class="r"><code># Print home_test_results
+power_test_results %&gt;% head()</code></pre>
+<pre><code>     AT    V   AP   RH  PE .pred
+1: 20.9 57.3 1010 76.6 446   451
+2: 10.8 37.5 1009 96.6 474   472
+3: 26.3 59.4 1012 58.8 444   442
+4: 25.7 58.6 1013 61.8 451   443
+5: 14.4 52.8 1024 63.6 460   467
+6: 14.0 38.5 1015 55.3 464   472</code></pre>
+<pre class="r"><code># Calculate the RMSE metric
+power_test_results %&gt;% 
+  rmse(truth = PE, estimate = .pred)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard        4.52</code></pre>
+<pre class="r"><code># Calculate the R squared metric
+power_test_results %&gt;% 
+  rsq(truth = PE, estimate = .pred)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rsq     standard       0.931</code></pre>
+</div>
+<div id="r-squared-plots" class="section level2">
+<h2><strong>R squared plots</strong></h2>
+<p>R squared plots are a way to visualize R squared and consist of a
+scatter plot with model predictions on the y-axis and true outcome
+values on the x-axis.</p>
+<ul>
+<li><p>The line y = x is also plotted and represents the case where all
+predictions and outcome values are equal, giving an R squared value of
+1.</p></li>
+<li><p>R squared plots are helpful for identifying problems with model
+performance, such as non-linear relationships between the outcome
+variable and predictors or regions where the model may be systematically
+under or over-predicting the outcome value.</p></li>
+<li><p><code>coord_obs_pred()</code> standardises the range on each
+axis.</p></li>
+</ul>
+<pre class="r"><code># Create an R squared plot of model performance
+ggplot(power_test_results, aes(x = PE, y = .pred)) +
+  geom_point(alpha = 0.5) + 
+  geom_abline(color = &#39;blue&#39;, linetype = 2) +
+  coord_obs_pred() +
+  labs(x = &#39;Actual Power Output&#39;, y = &#39;Predicted Power Output&#39;)</code></pre>
+<p><img src="figure/Correlation.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\rightarrow\)</span> There are a few
+outliers where the model over-predicts power output.</p>
+</div>
+<div id="streamlining-model-fitting" class="section level2">
+<h2><strong>Streamlining model fitting</strong></h2>
+<p>The <code>last_fit</code>() function is used to streamline the model
+fitting and evaluation process in tidymodels.</p>
+<ul>
+<li>It takes a parnsip model object,</li>
+<li>model formula, and</li>
+<li>rsample data split object</li>
+</ul>
+<p>and performs the following steps.</p>
+<ol style="list-style-type: decimal">
+<li>It creates training and test datasets,</li>
+<li>fits the model to the training data,</li>
+<li>calculates metrics and predictions on the test data, and</li>
+<li>returns an object with all the results.</li>
+</ol>
+<p>To fit our linear regression model on the mpg data, we pass the
+<code>lm_model</code> parsnip object to <code>last_fit</code>(), specify
+our model formula, and provide the mpg_split data split object.</p>
+<pre class="r"><code># Define a linear regression model
+linear_model &lt;- linear_reg() %&gt;% 
+  set_engine(&#39;lm&#39;) %&gt;% 
+  set_mode(&#39;regression&#39;)
+
+# Train linear_model with last_fit()
+linear_fit &lt;- linear_model %&gt;% 
+  last_fit(PE ~ ., split = power_split)
+
+# Collect predictions and view results
+predictions_df &lt;- linear_fit %&gt;% collect_predictions()
+predictions_df %&gt;% head()</code></pre>
+<pre><code># A tibble: 6 × 5
+  id               .pred  .row    PE .config             
+  &lt;chr&gt;            &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;               
+1 train/test split  451.     4  446. Preprocessor1_Model1
+2 train/test split  472.     5  474. Preprocessor1_Model1
+3 train/test split  442.     6  444. Preprocessor1_Model1
+4 train/test split  443.    14  451. Preprocessor1_Model1
+5 train/test split  467.    19  460. Preprocessor1_Model1
+6 train/test split  472.    20  464. Preprocessor1_Model1</code></pre>
+<pre class="r"><code># Make an R squared plot using predictions_df
+ggplot(predictions_df, aes(x = PE, y = .pred)) + 
+  geom_point(alpha = 0.5) + 
+  geom_abline(color = &#39;blue&#39;, linetype = 2) +
+  coord_obs_pred() +
+  labs(x = &#39;Actual Power Output&#39;, y = &#39;Predicted Power Output&#39;)</code></pre>
+<p><img src="figure/Correlation.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="collecting-metrics" class="section level2">
+<h2><strong>Collecting metrics</strong></h2>
+<p>Once the model is trained with the last_fit() function, we pass the
+lm_last_fit object to the collect_metrics() function to get a tibble
+with calculated metrics on the test data. The default metrics for
+regression models are RMSE and R squared and are always stored in the
+column named dot-estimate. We get the same performance metrics on the
+mpg_test data as before, just with a lot less work!</p>
+<pre class="r"><code>linear_fit %&gt;% collect_metrics()</code></pre>
+<pre><code># A tibble: 2 × 4
+  .metric .estimator .estimate .config             
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 rmse    standard       4.52  Preprocessor1_Model1
+2 rsq     standard       0.931 Preprocessor1_Model1</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1097,49 +1115,52 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] tinytex_0.40      ggplot2_3.3.6     stringr_1.4.1     assertive_0.3-6  
-[5] dplyr_1.0.10      readr_2.1.3       data.table_1.14.2 workflowr_1.7.0  
+ [1] corrr_0.4.4        yardstick_1.0.0    workflowsets_0.2.1 workflows_0.2.6   
+ [5] tune_0.2.0         rsample_1.0.0      parsnip_1.0.0      modeldata_0.1.1   
+ [9] infer_1.0.2        dials_1.0.0        scales_1.2.1       broom_1.0.0       
+[13] tidymodels_0.2.0   forcats_0.5.1      stringr_1.4.1      purrr_0.3.5       
+[17] tidyr_1.2.1        tibble_3.1.8       tidyverse_1.3.1    recipes_0.2.0     
+[21] caret_6.0-92       lattice_0.20-45    skimr_2.1.4        kableExtra_1.3.4  
+[25] data.table_1.14.2  visdat_0.5.3       gridExtra_2.3      ggplot2_3.3.6     
+[29] dplyr_1.0.10       readr_2.1.3        readxl_1.4.0       workflowr_1.7.0   
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.9                 getPass_0.2-2             
- [3] assertive.properties_0.0-5 assertive.types_0.0-3     
- [5] assertive.data.us_0.0-2    ps_1.7.1                  
- [7] assertthat_0.2.1           rprojroot_2.0.3           
- [9] digest_0.6.29              utf8_1.2.2                
-[11] R6_2.5.1                   evaluate_0.17             
-[13] assertive.code_0.0-3       highr_0.9                 
-[15] httr_1.4.3                 pillar_1.8.1              
-[17] assertive.strings_0.0-3    rlang_1.0.6               
-[19] rstudioapi_0.13            whisker_0.4               
-[21] callr_3.7.2                jquerylib_0.1.4           
-[23] assertive.data_0.0-3       rmarkdown_2.14            
-[25] labeling_0.4.2             bit_4.0.4                 
-[27] munsell_0.5.0              compiler_4.2.1            
-[29] httpuv_1.6.5               xfun_0.31                 
-[31] pkgconfig_2.0.3            htmltools_0.5.2           
-[33] tidyselect_1.2.0           tibble_3.1.8              
-[35] assertive.sets_0.0-3       codetools_0.2-18          
-[37] fansi_1.0.3                crayon_1.5.2              
-[39] withr_2.5.0                tzdb_0.3.0                
-[41] later_1.3.0                grid_4.2.1                
-[43] gtable_0.3.1               jsonlite_1.8.2            
-[45] assertive.base_0.0-9       lifecycle_1.0.3           
-[47] DBI_1.1.3                  git2r_0.30.1              
-[49] magrittr_2.0.3             scales_1.2.1              
-[51] assertive.models_0.0-2     vroom_1.6.0               
-[53] cli_3.3.0                  stringi_1.7.8             
-[55] farver_2.1.1               fs_1.5.2                  
-[57] promises_1.2.0.1           assertive.matrices_0.0-2  
-[59] assertive.reflection_0.0-5 bslib_0.3.1               
-[61] ellipsis_0.3.2             assertive.datetimes_0.0-3 
-[63] generics_0.1.3             vctrs_0.4.1               
-[65] tools_4.2.1                bit64_4.0.5               
-[67] glue_1.6.2                 assertive.numbers_0.0-2   
-[69] hms_1.1.2                  parallel_4.2.1            
-[71] processx_3.7.0             fastmap_1.1.0             
-[73] yaml_2.3.5                 colorspace_2.0-3          
-[75] assertive.files_0.0-2      assertive.data.uk_0.0-2   
-[77] knitr_1.39                 sass_0.4.1                </code></pre>
+  [1] backports_1.4.1      systemfonts_1.0.4    plyr_1.8.7          
+  [4] repr_1.1.4           splines_4.2.1        listenv_0.8.0       
+  [7] digest_0.6.29        foreach_1.5.2        htmltools_0.5.2     
+ [10] fansi_1.0.3          magrittr_2.0.3       tzdb_0.3.0          
+ [13] globals_0.15.1       modelr_0.1.8         gower_1.0.0         
+ [16] svglite_2.1.0        hardhat_1.2.0        colorspace_2.0-3    
+ [19] rvest_1.0.2          haven_2.5.0          xfun_0.31           
+ [22] callr_3.7.2          crayon_1.5.2         jsonlite_1.8.2      
+ [25] survival_3.3-1       iterators_1.0.14     glue_1.6.2          
+ [28] registry_0.5-1       gtable_0.3.1         ipred_0.9-13        
+ [31] webshot_0.5.3        future.apply_1.9.0   DBI_1.1.3           
+ [34] Rcpp_1.0.9           viridisLite_0.4.1    GPfit_1.0-8         
+ [37] stats4_4.2.1         lava_1.6.10          prodlim_2019.11.13  
+ [40] httr_1.4.3           ellipsis_0.3.2       pkgconfig_2.0.3     
+ [43] farver_2.1.1         nnet_7.3-17          sass_0.4.1          
+ [46] dbplyr_2.2.1         utf8_1.2.2           tidyselect_1.2.0    
+ [49] labeling_0.4.2       rlang_1.0.6          DiceDesign_1.9      
+ [52] reshape2_1.4.4       later_1.3.0          munsell_0.5.0       
+ [55] cellranger_1.1.0     tools_4.2.1          cli_3.3.0           
+ [58] generics_0.1.3       evaluate_0.17        fastmap_1.1.0       
+ [61] yaml_2.3.5           ModelMetrics_1.2.2.2 processx_3.7.0      
+ [64] knitr_1.39           fs_1.5.2             future_1.26.1       
+ [67] nlme_3.1-157         whisker_0.4          xml2_1.3.3          
+ [70] compiler_4.2.1       rstudioapi_0.13      reprex_2.0.1        
+ [73] lhs_1.1.5            bslib_0.3.1          stringi_1.7.8       
+ [76] highr_0.9            ps_1.7.1             Matrix_1.4-1        
+ [79] vctrs_0.4.1          pillar_1.8.1         lifecycle_1.0.3     
+ [82] furrr_0.3.0          jquerylib_0.1.4      seriation_1.3.6     
+ [85] httpuv_1.6.5         R6_2.5.1             promises_1.2.0.1    
+ [88] TSP_1.2-1            parallelly_1.32.0    codetools_0.2-18    
+ [91] MASS_7.3-57          assertthat_0.2.1     rprojroot_2.0.3     
+ [94] withr_2.5.0          mgcv_1.8-40          parallel_4.2.1      
+ [97] hms_1.1.2            grid_4.2.1           rpart_4.1.16        
+[100] timeDate_3043.102    class_7.3-20         rmarkdown_2.14      
+[103] git2r_0.30.1         getPass_0.2-2        pROC_1.18.0         
+[106] lubridate_1.8.0      base64enc_0.1-3     </code></pre>
 </div>
 </div>
 </div>

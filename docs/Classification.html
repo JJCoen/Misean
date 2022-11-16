@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="David Svancer (George Mason Uni) adapted by Jim Coen" />
+
+
+<title>Modelling with tidymodels</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Misean Cara Operations</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Integrity
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Common-Data-Problems.html">
+        <span class="fa fa-clipboard-list"></span>
+         
+        Common Data Problems
+      </a>
+    </li>
+    <li>
+      <a href="Advanced-Data-Problems.html">Advanced Data Problems</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Data-Management.html">Data Management</a>
+    </li>
+    <li>
+      <a href="Correlation.html">Correlation</a>
+    </li>
+    <li>
+      <a href="Classification.html">Classification</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Training
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Interpretable-ML-Models.html">Machine Learning</a>
+    </li>
+    <li>
+      <a href="Zoom-digital-skills.html">Zoom Example</a>
+    </li>
+    <li>
+      <a href="Zoom-Training-Program.docx">Zoom Systematic Training</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JJCoen/">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Modelling with tidymodels</h1>
+<h3 class="subtitle">Classification Models</h3>
+<h4 class="author">David Svancer (George Mason Uni) adapted by Jim
+Coen</h4>
+<h4 class="date">Wednesday, November 16, 2022</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-11-16
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Misean/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20221115code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20221115)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20221115code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20221115)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong3ec87e6">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> 3ec87e6
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrong3ec87e6"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 3ec87e6.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  data/employee_data.rds
+    Untracked:  data/home_sales.rds
+    Untracked:  data/leads_df.rds
+    Untracked:  data/loan_df.rds
+    Untracked:  data/power_df.csv
+    Untracked:  data/telecom_df.rds
+    Untracked:  data/trip.csv
+    Untracked:  donation-tracking-excel-templates (2).zip
+    Untracked:  donation-tracking-excel-templates/
+    Untracked:  kickstarter.zip
+    Untracked:  kickstarter/
+
+Unstaged changes:
+    Modified:   README.md
+    Modified:   analysis/_site.yml
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Classification.Rmd</code>) and
+HTML (<code>docs/Classification.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+3ec87e6
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+add Data Analysis and Training
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="purpose" class="section level1">
+<h1>Purpose</h1>
+<div id="primary-research-question" class="section level2">
+<h2>Primary Research Question</h2>
+</div>
+</div>
+<div id="logistic-regression-model" class="section level1">
+<h1>Logistic Regression Model</h1>
+<div id="load-and-re-sample-data" class="section level2">
+<h2>Load and Re-sample Data</h2>
+<pre class="r"><code>telecom_df &lt;- readRDS(&quot;./data/telecom_df.rds&quot;)</code></pre>
+<div id="randomly-sample-training-and-test-sets" class="section level3">
+<h3>Randomly sample training and test sets</h3>
+<pre class="r"><code># Create data split object
+telecom_split &lt;- initial_split(telecom_df, prop = 0.75,
+                     strata = canceled_service)
+
+# Create the training data
+telecom_training &lt;- telecom_split %&gt;% 
+  training()
+
+# Create the test data
+telecom_test &lt;- telecom_split %&gt;% 
+  testing()
+
+# Check the number of rows
+nrow(telecom_training)</code></pre>
+<pre><code>[1] 731</code></pre>
+<pre class="r"><code>nrow(telecom_test)</code></pre>
+<pre><code>[1] 244</code></pre>
+</div>
+</div>
+<div id="fit-a-logistic-regression-model" class="section level2">
+<h2>Fit a Logistic Regression Model</h2>
+<pre class="r"><code># Specify a logistic regression model
+logistic_model &lt;- logistic_reg() %&gt;% 
+  # Set the engine
+  set_engine(&#39;glm&#39;) %&gt;% 
+  # Set the mode
+  set_mode(&#39;classification&#39;)
+
+# Fit to training data
+logistic_fit &lt;- logistic_model %&gt;% 
+  fit(canceled_service ~ avg_call_mins + avg_intl_mins +
+  monthly_charges,
+      data = telecom_training)
+
+# Print model fit object
+logistic_fit</code></pre>
+<pre><code>parsnip model object
+
+
+Call:  stats::glm(formula = canceled_service ~ avg_call_mins + avg_intl_mins + 
+    monthly_charges, family = stats::binomial, data = data)
+
+Coefficients:
+    (Intercept)    avg_call_mins    avg_intl_mins  monthly_charges  
+        2.20133         -0.01087          0.02281         -0.00103  
+
+Degrees of Freedom: 730 Total (i.e. Null);  727 Residual
+Null Deviance:      932 
+Residual Deviance: 803  AIC: 811</code></pre>
+</div>
+<div id="combining-test-data-set-results" class="section level2">
+<h2><strong>Combining test data-set results</strong></h2>
+<p>Evaluating your model’s performance on the test data-set gives
+insights into how well your model predicts on new data sources. These
+insights will help you communicate your model’s value in solving
+problems or improving decision making.</p>
+<p>Before you can calculate classification metrics such as sensitivity
+or specificity, you must create a results tibble with the required
+columns for <code>yardstick</code> metric functions.</p>
+<p>In this exercise, you will use your trained model to predict the
+outcome variable in the <code>telecom_test</code> dataset and combine it
+with the true outcome values in the <code>canceled_service</code>
+column.</p>
+<ol style="list-style-type: decimal">
+<li>Use your trained model and the <code>predict()</code> function to
+create a tibble, <code>class_preds</code>, with predicted outcome
+variable categories using the test data-set.</li>
+<li>Now create a tibble, <code>prob_preds</code>, with the estimated
+probabilities for each category in the outcome variable using the test
+data-set.</li>
+<li>Select the outcome variable from the <code>telecom_test</code>
+data.</li>
+<li>Add the <code>class_preds</code> and <code>prob_preds</code> tibbles
+along the column axis.</li>
+</ol>
+<pre class="r"><code># Predict outcome categories
+class_preds &lt;- predict(logistic_fit, new_data = telecom_test,
+                       type = &#39;class&#39;)
+
+# Obtain estimated probabilities for each outcome value
+prob_preds &lt;- predict(logistic_fit, new_data = telecom_test, 
+                      type = &#39;prob&#39;)
+
+# Combine test set results
+telecom_results &lt;- telecom_test %&gt;% 
+  select(canceled_service) %&gt;% 
+  bind_cols(class_preds, prob_preds)
+
+# View results tibble
+telecom_results</code></pre>
+<pre><code># A tibble: 244 × 4
+   canceled_service .pred_class .pred_yes .pred_no
+   &lt;fct&gt;            &lt;fct&gt;           &lt;dbl&gt;    &lt;dbl&gt;
+ 1 yes              yes             0.799    0.201
+ 2 no               no              0.113    0.887
+ 3 yes              yes             0.585    0.415
+ 4 no               no              0.406    0.594
+ 5 no               no              0.239    0.761
+ 6 no               no              0.227    0.773
+ 7 no               no              0.159    0.841
+ 8 no               no              0.148    0.852
+ 9 no               no              0.129    0.871
+10 no               no              0.183    0.817
+# … with 234 more rows</code></pre>
+</div>
+</div>
+<div id="assessing-model-fit" class="section level1">
+<h1>Assessing Model Fit</h1>
+<div id="evaluating-performance-with-yardstick" class="section level2">
+<h2><strong>Evaluating performance with yardstick</strong></h2>
+<p>In the previous exercise, you calculated classification metrics from
+a sample confusion matrix. The <code>yardstick</code> package was
+designed to automate this process.</p>
+<p>For classification models, <code>yardstick</code> functions require a
+tibble of model results as the first argument. This should include the
+actual outcome values, predicted outcome values, and estimated
+probabilities for each value of the outcome variable.</p>
+<ol style="list-style-type: decimal">
+<li>Use the appropriate <code>yardstick</code> function to create a
+confusion matrix using the <code>telecom_results</code> tibble.</li>
+</ol>
+<pre class="r"><code>conf_mat(telecom_results, 
+         truth = canceled_service,
+         .pred_class)</code></pre>
+<pre><code>          Truth
+Prediction yes  no
+       yes  35  29
+       no   47 133</code></pre>
+<pre class="r"><code># Calculate the accuracy
+accuracy(telecom_results, truth = canceled_service,
+    estimate = .pred_class)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.689</code></pre>
+<pre class="r"><code>sens(telecom_results, truth = canceled_service,
+    estimate = .pred_class)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 sens    binary         0.427</code></pre>
+<pre class="r"><code>spec(telecom_results, truth = canceled_service,
+    estimate = .pred_class)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 spec    binary         0.821</code></pre>
+<p>The specificity of your logistic regression model is 0.895, which is
+more than double the sensitivity of 0.42. This indicates that your model
+is much better at detecting customers who will not cancel their
+telecommunications service versus the ones who will.</p>
+</div>
+<div id="creating-custom-metric-sets" class="section level2">
+<h2><strong>Creating custom metric sets</strong></h2>
+<p>The <code>yardstick</code> package also provides the ability to
+create custom sets of model metrics. In cases where the cost of
+obtaining false negative errors is different from the cost of false
+positive errors, it may be important to examine a specific set of
+performance metrics.</p>
+<p>Instead of calculating accuracy, sensitivity, and specificity
+separately, you can create your own metric function that calculates all
+three at the same time.</p>
+<p>In this exercise, you will use the results from your logistic
+regression model, <code>telecom_results</code>, to calculate a custom
+set of performance metrics. You will also use a confusion matrix to
+calculate all available binary classification metrics in
+<code>tidymodels</code>all at once.</p>
+<ul>
+<li><p>Create a custom metric function named
+<code>telecom_metrics</code> using the appropriate
+<code>yardstick</code> function.</p>
+<ul>
+<li>Include the <code>accuracy()</code>, <code>sens()</code>, and
+<code>spec()</code> functions in your custom metric function.</li>
+</ul></li>
+<li><p>Use your <code>telecom_metrics()</code> function to calculate
+metrics on the <code>telecom_results</code> tibble.</p></li>
+<li><p>Create a confusion matrix using the <code>telecom_results</code>
+tibble.</p></li>
+<li><p>Pass your confusion matrix to the <code>summary()</code> function
+in base R.</p></li>
+</ul>
+<pre class="r"><code># Create a custom metric function
+telecom_metrics &lt;- metric_set(accuracy, sens, spec)
+
+# Calculate metrics using model results tibble
+telecom_metrics(telecom_results, truth = canceled_service,
+                estimate = .pred_class)</code></pre>
+<pre><code># A tibble: 3 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.689
+2 sens     binary         0.427
+3 spec     binary         0.821</code></pre>
+<pre class="r"><code># Create a confusion matrix
+conf_mat(telecom_results, 
+       truth = canceled_service,
+                estimate = .pred_class) %&gt;% 
+  # Pass to the summary() function
+  summary()</code></pre>
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             binary         0.689
+ 2 kap                  binary         0.262
+ 3 sens                 binary         0.427
+ 4 spec                 binary         0.821
+ 5 ppv                  binary         0.547
+ 6 npv                  binary         0.739
+ 7 mcc                  binary         0.266
+ 8 j_index              binary         0.248
+ 9 bal_accuracy         binary         0.624
+10 detection_prevalence binary         0.262
+11 precision            binary         0.547
+12 recall               binary         0.427
+13 f_meas               binary         0.479</code></pre>
+</div>
+</div>
+<div id="visualising-model-performance" class="section level1">
+<h1>Visualising Model Performance</h1>
+<div id="plotting-the-confusion-matrix" class="section level2">
+<h2><strong>Plotting the confusion matrix</strong></h2>
+<p>Calculating performance metrics with the <code>yardstick</code>
+package provides insight into how well a classification model is
+performing on the test dataset. Most <code>yardstick</code> functions
+return a single number that summarizes classification performance.</p>
+<p>Many times, it is helpful to create visualizations of the confusion
+matrix to more easily communicate your results.</p>
+<pre class="r"><code># Create a confusion matrix
+conf_mat(telecom_results, 
+       truth = canceled_service,
+                estimate = .pred_class) %&gt;% 
+  # Create a heat map
+  autoplot(type = &#39;heatmap&#39;)</code></pre>
+<p><img src="figure/Classification.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Create a confusion matrix
+conf_mat(telecom_results, 
+       truth = canceled_service,
+                estimate = .pred_class) %&gt;% 
+  # Create a heat map
+  autoplot(type = &#39;mosaic&#39;)</code></pre>
+<p><img src="figure/Classification.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The mosaic plot clearly shows that your logistic regression model
+performs much better in terms of specificity than sensitivity. You can
+see that in the <code>yes</code> column, a large proportion of outcomes
+were incorrectly predicted as <code>no</code>.</p>
+</div>
+<div id="roc-curves-and-area-under-the-roc-curve"
+class="section level2">
+<h2><strong>ROC curves and area under the ROC curve</strong></h2>
+<ol style="list-style-type: decimal">
+<li>Create a tibble, <code>threshold_df</code>, which contains the
+sensitivity and specificity of your classification model across the
+unique probability thresholds in <code>telecom_results</code>.</li>
+<li>Use <code>threshold_df</code> to to plot your model’s ROC
+curve.</li>
+<li>Calculate the area under the ROC curve using the
+<code>telecom_results</code> tibble.</li>
+</ol>
+<pre class="r"><code># Calculate metrics across thresholds
+threshold_df &lt;- telecom_results %&gt;% 
+  roc_curve(truth = canceled_service, .pred_yes)
+
+# View results
+threshold_df</code></pre>
+<pre><code># A tibble: 246 × 3
+   .threshold specificity sensitivity
+        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1  -Inf          0             1    
+ 2     0.0108     0             1    
+ 3     0.0174     0             0.988
+ 4     0.0329     0.00617       0.988
+ 5     0.0353     0.0123        0.988
+ 6     0.0639     0.0185        0.988
+ 7     0.0649     0.0247        0.988
+ 8     0.0666     0.0309        0.988
+ 9     0.0693     0.0370        0.988
+10     0.0696     0.0432        0.988
+# … with 236 more rows</code></pre>
+<pre class="r"><code># Plot ROC curve
+threshold_df %&gt;% 
+  autoplot(roc_curve(truth = canceled_service, 
+  .pred_yes))</code></pre>
+<p><img src="figure/Classification.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Calculate ROC AUC
+roc_auc(telecom_results,
+    truth = canceled_service, 
+    .pred_yes)</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary         0.746</code></pre>
+</div>
+</div>
+<div id="automating-the-modeling-workflow" class="section level1">
+<h1>Automating the Modeling Workflow</h1>
+<div id="streamlining-the-modeling-process" class="section level2">
+<h2>Streamlining the modeling process</h2>
+<p>The <code>last_fit()</code> function is designed to streamline the
+modeling workflow in <code>tidymodels</code>. Instead of training your
+model on the training data and building a results tibble using the test
+data, last_fit() accomplishes this with one function.</p>
+<p>In this exercise, you will train the same logistic regression model
+as you fit in the previous exercises, except with the last_fit()
+function.</p>
+<ol style="list-style-type: decimal">
+<li><p>Pass your logistic_model object into the <code>last_fit()</code>
+function.</p></li>
+<li><p>Predict canceled_service using avg_call_mins, avg_intl_mins, and
+monthly_charges.</p></li>
+<li><p>Display the performance metrics of your trained model,
+<code>telecom_last_fit</code>.</p></li>
+</ol>
+<pre class="r"><code># Specify the model
+logistic_model &lt;- logistic_reg()
+
+# Train model with last_fit()
+telecom_last_fit &lt;- logistic_model %&gt;% 
+  last_fit(canceled_service ~ avg_call_mins + avg_intl_mins + monthly_charges,
+           split = telecom_split)
+
+# View test set metrics
+telecom_last_fit %&gt;% 
+  collect_metrics()</code></pre>
+<pre><code># A tibble: 2 × 4
+  .metric  .estimator .estimate .config             
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 accuracy binary         0.689 Preprocessor1_Model1
+2 roc_auc  binary         0.746 Preprocessor1_Model1</code></pre>
+</div>
+<div id="collecting-predictions-and-creating-custom-metrics"
+class="section level2">
+<h2>Collecting predictions and creating custom metrics</h2>
+<p>Using the <code>last_fit()</code> modeling workflow also saves time
+in collecting model predictions. Instead of manually creating a tibble
+of model results, there are helper functions that extract this
+information automatically.</p>
+<p>In this exercise, you will use your trained model,
+<code>telecom_last_fit</code>, to create a tibble of model results on
+the test data-set as well as calculate custom performance metrics.</p>
+<ol style="list-style-type: decimal">
+<li>Create a tibble, <code>last_fit_results</code>, that has the
+predictions from your <code>telecom_last_fit</code> model.</li>
+<li>Create a custom metric function, <code>last_fit_metrics</code>,
+using the <code>metric_set()</code> function.</li>
+<li>Include the accuracy, sensitivity, specificity, and area under the
+ROC curve in your metric function, in that order.</li>
+</ol>
+<pre class="r"><code># Collect predictions
+last_fit_results &lt;- telecom_last_fit %&gt;% 
+  collect_predictions()
+
+# View results
+last_fit_results</code></pre>
+<pre><code># A tibble: 244 × 7
+   id               .pred_yes .pred_no  .row .pred_class canceled_serv…¹ .config
+   &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;       &lt;fct&gt;           &lt;chr&gt;  
+ 1 train/test split     0.799    0.201     7 yes         yes             Prepro…
+ 2 train/test split     0.113    0.887     8 no          no              Prepro…
+ 3 train/test split     0.585    0.415    12 yes         yes             Prepro…
+ 4 train/test split     0.406    0.594    13 no          no              Prepro…
+ 5 train/test split     0.239    0.761    20 no          no              Prepro…
+ 6 train/test split     0.227    0.773    25 no          no              Prepro…
+ 7 train/test split     0.159    0.841    26 no          no              Prepro…
+ 8 train/test split     0.148    0.852    29 no          no              Prepro…
+ 9 train/test split     0.129    0.871    32 no          no              Prepro…
+10 train/test split     0.183    0.817    36 no          no              Prepro…
+# … with 234 more rows, and abbreviated variable name ¹​canceled_service</code></pre>
+<pre class="r"><code># Custom metrics function
+last_fit_metrics &lt;- metric_set(accuracy, sens,
+                               spec, roc_auc)
+
+# Calculate metrics
+last_fit_metrics(last_fit_results,
+                 truth = canceled_service,
+                 estimate = .pred_class,
+                 .pred_yes)</code></pre>
+<pre><code># A tibble: 4 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.689
+2 sens     binary         0.427
+3 spec     binary         0.821
+4 roc_auc  binary         0.746</code></pre>
+</div>
+<div id="complete-modeling-workflow" class="section level2">
+<h2><strong>Complete modeling workflow</strong></h2>
+<p>In this exercise, you will use the <code>last_fit()</code> function
+to train a logistic regression model and evaluate its performance on the
+test data by assessing the ROC curve and the area under the ROC
+curve.</p>
+<p>Similar to previous exercises, you will predict
+<code>canceled_service</code> in the <code>telecom_df</code> data, but
+with an additional predictor variable to see if you can improve model
+performance.</p>
+<p>The <code>telecom_split</code> object contains the instructions for
+randomly splitting the <code>telecom_df</code> tibble into training and
+test sets. The <code>logistic_model</code> object is a
+<code>parsnip</code> specification of a logistic regression model.</p>
+<ol style="list-style-type: decimal">
+<li>Train your model to predict <code>canceled_service</code> using
+<code>avg_call_mins</code>, <code>avg_intl_mins</code>,
+<code>monthly_charges</code>, and <code>months_with_company</code>.</li>
+<li>Collect and print the performance metrics on the test data-set.</li>
+<li>Collect your model predictions.</li>
+<li>Pass the predictions to the appropriate function to calculate
+sensitivity and specificity for different probability thresholds.</li>
+<li>Pass the results to the appropriate plotting function to create an
+ROC curve.</li>
+</ol>
+<pre class="r"><code># Train a logistic regression model
+logistic_fit &lt;- logistic_model %&gt;% 
+  last_fit(canceled_service ~ avg_call_mins + avg_intl_mins + monthly_charges + months_with_company, 
+           split = telecom_split)
+
+# Collect metrics
+logistic_fit %&gt;% 
+  collect_metrics()</code></pre>
+<pre><code># A tibble: 2 × 4
+  .metric  .estimator .estimate .config             
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 accuracy binary         0.791 Preprocessor1_Model1
+2 roc_auc  binary         0.864 Preprocessor1_Model1</code></pre>
+<pre class="r"><code># Collect model predictions
+logistic_fit %&gt;% 
+  collect_predictions() %&gt;% 
+  # Plot ROC curve
+  roc_curve(truth = canceled_service, .pred_yes) %&gt;% 
+  autoplot()</code></pre>
+<p><img src="figure/Classification.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\rightarrow\)</span> Adding the
+<code>months_with_company</code> predictor variable increased your area
+under the ROC curve from 0.783 in your previous model to 0.854!</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] yardstick_1.0.0    workflowsets_0.2.1 workflows_0.2.6    tune_0.2.0        
+ [5] rsample_1.0.0      parsnip_1.0.0      modeldata_0.1.1    infer_1.0.2       
+ [9] dials_1.0.0        scales_1.2.1       broom_1.0.0        tidymodels_0.2.0  
+[13] forcats_0.5.1      stringr_1.4.1      purrr_0.3.5        readr_2.1.3       
+[17] tidyr_1.2.1        tibble_3.1.8       tidyverse_1.3.1    recipes_0.2.0     
+[21] caret_6.0-92       lattice_0.20-45    skimr_2.1.4        kableExtra_1.3.4  
+[25] data.table_1.14.2  visdat_0.5.3       ggplot2_3.3.6      dplyr_1.0.10      
+[29] workflowr_1.7.0   
+
+loaded via a namespace (and not attached):
+  [1] colorspace_2.0-3     ellipsis_0.3.2       class_7.3-20        
+  [4] rprojroot_2.0.3      base64enc_0.1-3      fs_1.5.2            
+  [7] rstudioapi_0.13      farver_2.1.1         furrr_0.3.0         
+ [10] listenv_0.8.0        prodlim_2019.11.13   fansi_1.0.3         
+ [13] lubridate_1.8.0      xml2_1.3.3           codetools_0.2-18    
+ [16] splines_4.2.1        knitr_1.39           jsonlite_1.8.2      
+ [19] pROC_1.18.0          dbplyr_2.2.1         compiler_4.2.1      
+ [22] httr_1.4.3           backports_1.4.1      assertthat_0.2.1    
+ [25] Matrix_1.4-1         fastmap_1.1.0        cli_3.3.0           
+ [28] later_1.3.0          htmltools_0.5.2      tools_4.2.1         
+ [31] gtable_0.3.1         glue_1.6.2           reshape2_1.4.4      
+ [34] Rcpp_1.0.9           cellranger_1.1.0     jquerylib_0.1.4     
+ [37] DiceDesign_1.9       vctrs_0.4.1          svglite_2.1.0       
+ [40] nlme_3.1-157         iterators_1.0.14     timeDate_3043.102   
+ [43] gower_1.0.0          xfun_0.31            globals_0.15.1      
+ [46] ps_1.7.1             rvest_1.0.2          lifecycle_1.0.3     
+ [49] future_1.26.1        getPass_0.2-2        MASS_7.3-57         
+ [52] ipred_0.9-13         hms_1.1.2            promises_1.2.0.1    
+ [55] parallel_4.2.1       yaml_2.3.5           sass_0.4.1          
+ [58] rpart_4.1.16         stringi_1.7.8        highr_0.9           
+ [61] foreach_1.5.2        lhs_1.1.5            hardhat_1.2.0       
+ [64] lava_1.6.10          repr_1.1.4           rlang_1.0.6         
+ [67] pkgconfig_2.0.3      systemfonts_1.0.4    evaluate_0.17       
+ [70] labeling_0.4.2       processx_3.7.0       tidyselect_1.2.0    
+ [73] parallelly_1.32.0    plyr_1.8.7           magrittr_2.0.3      
+ [76] R6_2.5.1             generics_0.1.3       DBI_1.1.3           
+ [79] pillar_1.8.1         haven_2.5.0          whisker_0.4         
+ [82] withr_2.5.0          survival_3.3-1       nnet_7.3-17         
+ [85] future.apply_1.9.0   modelr_0.1.8         crayon_1.5.2        
+ [88] utf8_1.2.2           tzdb_0.3.0           rmarkdown_2.14      
+ [91] grid_4.2.1           readxl_1.4.0         callr_3.7.2         
+ [94] git2r_0.30.1         ModelMetrics_1.2.2.2 reprex_2.0.1        
+ [97] digest_0.6.29        webshot_0.5.3        httpuv_1.6.5        
+[100] GPfit_1.0-8          stats4_4.2.1         munsell_0.5.0       
+[103] viridisLite_0.4.1    bslib_0.3.1         </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
