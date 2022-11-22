@@ -110,7 +110,7 @@ Remove columns having all missing entries and inspect the remaining columns.
 
 ```{r, skim}
 donations_dt <- donations_dt[, c(1:8)]
-skim(donations_dt)
+glimpse(donations_dt)
 ```
 
 # Pre-Processing
