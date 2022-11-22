@@ -580,15 +580,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantreeac6180764490644675c6c2e41dc2f150ebe44463targetblankac61807a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantree2000cb73e8ec7558a8037ed888b58c4976503c24targetblank2000cb7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JJCoen/Misean/tree/ac6180764490644675c6c2e41dc2f150ebe44463" target="_blank">ac61807</a>
+<a href="https://github.com/JJCoen/Misean/tree/2000cb73e8ec7558a8037ed888b58c4976503c24" target="_blank">2000cb7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantreeac6180764490644675c6c2e41dc2f150ebe44463targetblankac61807a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantree2000cb73e8ec7558a8037ed888b58c4976503c24targetblank2000cb7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -598,7 +598,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JJCoen/Misean/tree/ac6180764490644675c6c2e41dc2f150ebe44463" target="_blank">ac61807</a>.
+<a href="https://github.com/JJCoen/Misean/tree/2000cb73e8ec7558a8037ed888b58c4976503c24" target="_blank">2000cb7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -698,6 +698,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JJCoen/Misean/blob/2000cb73e8ec7558a8037ed888b58c4976503c24/analysis/Data-Management.Rmd" target="_blank">2000cb7</a>
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-22
+</td>
+<td>
+wflow_publish("analysis/Data-Management.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JJCoen/Misean/723be95bfadb3e6ca388a878860047ea7b6aabf0/docs/Data-Management.html" target="_blank">723be95</a>
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -841,383 +875,17 @@ getSheets(donate_book)</code></pre>
 <p>Remove columns having all missing entries and inspect the remaining
 columns.</p>
 <pre class="r"><code>donations_dt &lt;- donations_dt[, c(1:8)]
-skim(donations_dt)</code></pre>
-<table style="width: auto;" class="table table-condensed">
-<caption>
-Data summary
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Name
-</td>
-<td style="text-align:left;">
-donations_dt
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of rows
-</td>
-<td style="text-align:left;">
-13573
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of columns
-</td>
-<td style="text-align:left;">
-8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Key
-</td>
-<td style="text-align:left;">
-NULL
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-_______________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Column type frequency:
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-________________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Group variables
-</td>
-<td style="text-align:left;">
-None
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-skim_variable
-</th>
-<th style="text-align:right;">
-n_missing
-</th>
-<th style="text-align:right;">
-complete_rate
-</th>
-<th style="text-align:right;">
-min
-</th>
-<th style="text-align:right;">
-max
-</th>
-<th style="text-align:right;">
-empty
-</th>
-<th style="text-align:right;">
-n_unique
-</th>
-<th style="text-align:right;">
-whitespace
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Party
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Name
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-77
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-10924
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Type
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Address
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-175
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-7223
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PAN Given
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Contribution Mode
-</td>
-<td style="text-align:right;">
-234
-</td>
-<td style="text-align:right;">
-0.98
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-181
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-10384
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Financial Year
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-skim_variable
-</th>
-<th style="text-align:right;">
-n_missing
-</th>
-<th style="text-align:right;">
-complete_rate
-</th>
-<th style="text-align:right;">
-mean
-</th>
-<th style="text-align:right;">
-sd
-</th>
-<th style="text-align:right;">
-p0
-</th>
-<th style="text-align:right;">
-p25
-</th>
-<th style="text-align:right;">
-p50
-</th>
-<th style="text-align:right;">
-p75
-</th>
-<th style="text-align:right;">
-p100
-</th>
-<th style="text-align:left;">
-hist
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Amount
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1045728
-</td>
-<td style="text-align:right;">
-8780605
-</td>
-<td style="text-align:right;">
-1875
-</td>
-<td style="text-align:right;">
-32000
-</td>
-<td style="text-align:right;">
-60000
-</td>
-<td style="text-align:right;">
-2e+05
-</td>
-<td style="text-align:right;">
-5e+08
-</td>
-<td style="text-align:left;">
-▇▁▁▁▁
-</td>
-</tr>
-</tbody>
-</table>
+glimpse(donations_dt)</code></pre>
+<pre><code>Rows: 13,573
+Columns: 8
+$ Party               &lt;chr&gt; &quot;CPI&quot;, &quot;CPI(M)&quot;, &quot;INC&quot;, &quot;INC&quot;, &quot;INC&quot;, &quot;BJP&quot;, &quot;BJP&quot;…
+$ Name                &lt;chr&gt; &quot;Aziz Pasha&quot;, &quot;V K Ramachandran&quot;, &quot;Dr. Manmohan Si…
+$ Type                &lt;chr&gt; &quot;Others&quot;, &quot;Others&quot;, &quot;Others&quot;, &quot;Others&quot;, &quot;Others&quot;, …
+$ Address             &lt;chr&gt; &quot;16-B, Ferozeshah Road New Delhi-1&quot;, &quot;No.1, First …
+$ `PAN Given`         &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, …
+$ Amount              &lt;dbl&gt; 3000000, 10000000, 108000, 54000, 54000, 100000, 1…
+$ `Contribution Mode` &lt;chr&gt; &quot;CASH&quot;, &quot;000037, HDFC Bank Bengaluru, Dt. 16.03.20…
+$ `Financial Year`    &lt;chr&gt; &quot;2010-11&quot;, &quot;2014-15&quot;, &quot;2014-15&quot;, &quot;2011-12&quot;, &quot;2011-…</code></pre>
 </div>
 </div>
 </div>
