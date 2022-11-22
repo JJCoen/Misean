@@ -9,12 +9,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="David Svancer (George Mason Uni) adapted by Jim Coen" />
+<meta name="author" content="Jim Coen" />
 
 
-<title>Modelling with tidymodels</title>
+<title>Donations Analysis</title>
 
-<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -37,8 +37,6 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -160,11 +158,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -193,8 +195,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -202,16 +204,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -373,10 +368,7 @@ div.tocify {
       <a href="Data-Management.html">Data Management</a>
     </li>
     <li>
-      <a href="Correlation.html">Correlation</a>
-    </li>
-    <li>
-      <a href="Classification.html">Classification</a>
+      <a href="Donations-Dashboard.html">Donations Dashboard</a>
     </li>
   </ul>
 </li>
@@ -401,7 +393,7 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/JJCoen/">
+  <a href="https://github.com/JJCoen/Misean">
     <span class="fab fa-github"></span>
      
     Source code
@@ -424,11 +416,11 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Modelling with tidymodels</h1>
-<h3 class="subtitle">Feature Engineering</h3>
-<h4 class="author">David Svancer (George Mason Uni) adapted by Jim
-Coen</h4>
-<h4 class="date">Wednesday, November 16, 2022</h4>
+<h1 class="title toc-ignore">Donations Analysis</h1>
+<h3 class="subtitle">Data management and analysis of Indian political
+party donations</h3>
+<h4 class="author">Jim Coen</h4>
+<h4 class="date">Tuesday, November 22, 2022</h4>
 
 </div>
 
@@ -457,7 +449,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-11-16
+<strong>Last updated:</strong> 2022-11-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -588,13 +580,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong4fd7495">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantreeac6180764490644675c6c2e41dc2f150ebe44463targetblankac61807a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 4fd7495
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/JJCoen/Misean/tree/ac6180764490644675c6c2e41dc2f150ebe44463" target="_blank">ac61807</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong4fd7495"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantreeac6180764490644675c6c2e41dc2f150ebe44463targetblankac61807a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -603,7 +597,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 4fd7495.
+The results in this page were generated with repository version
+<a href="https://github.com/JJCoen/Misean/tree/ac6180764490644675c6c2e41dc2f150ebe44463" target="_blank">ac61807</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -620,8 +615,11 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    data/.Rhistory
 
 Untracked files:
+    Untracked:  Establishing key performance indicators for charities.pdf
     Untracked:  analysis/images/check-code.png
     Untracked:  analysis/images/communicating.png
     Untracked:  analysis/images/corporate-finance-inst.png
@@ -633,21 +631,28 @@ Untracked files:
     Untracked:  analysis/images/sign-in.jpg
     Untracked:  analysis/images/zoom-on-mobile.webp
     Untracked:  analysis/images/zoom.png
+    Untracked:  code/Donations-Dashboard.Rmd
+    Untracked:  code/Donations-Dashboard.html
+    Untracked:  code/rsconnect/
+    Untracked:  code/styles.css
+    Untracked:  data/donate.RData
+    Untracked:  data/donations-India-update.xlsx
+    Untracked:  data/donations-political-parties-India.xlsx
     Untracked:  data/employee_data.rds
     Untracked:  data/home_sales.rds
     Untracked:  data/leads_df.rds
     Untracked:  data/loan_df.rds
     Untracked:  data/power_df.csv
+    Untracked:  data/reading-sheets.pdf
+    Untracked:  data/readr-cheat-sheet.pdf
     Untracked:  data/telecom_df.rds
     Untracked:  data/trip.csv
-    Untracked:  donation-tracking-excel-templates (2).zip
-    Untracked:  donation-tracking-excel-templates/
-    Untracked:  kickstarter.zip
     Untracked:  kickstarter/
 
 Unstaged changes:
     Modified:   README.md
     Modified:   analysis/_site.yml
+    Deleted:    data/README.md
 
 </code></pre>
 <p>
@@ -695,10 +700,44 @@ Message
 <tbody>
 <tr>
 <td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JJCoen/Misean/blob/ac6180764490644675c6c2e41dc2f150ebe44463/analysis/Data-Management.Rmd" target="_blank">ac61807</a>
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-22
+</td>
+<td>
+wflow_publish("analysis/Data-Management.Rmd")
+</td>
+</tr>
+<tr>
+<td>
 html
 </td>
 <td>
-4fd7495
+<a href="https://rawcdn.githack.com/JJCoen/Misean/3560d293a4a8cdecded605f96250f90769f2c0e3/docs/Data-Management.html" target="_blank">3560d29</a>
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JJCoen/Misean/4fd749539931eca6047737ff9906c60d9b3f1304/docs/Data-Management.html" target="_blank">4fd7495</a>
 </td>
 <td>
 JJCoen
@@ -715,7 +754,7 @@ Build site.
 Rmd
 </td>
 <td>
-3ec87e6
+<a href="https://github.com/JJCoen/Misean/blob/3ec87e622c2fd58d3a2315b6d9a79f4a65a39508/analysis/Data-Management.Rmd" target="_blank">3ec87e6</a>
 </td>
 <td>
 JJCoen
@@ -736,338 +775,622 @@ add Data Analysis and Training
 </div>
 <div id="purpose" class="section level1">
 <h1>Purpose</h1>
-<p>Feature engineering is accomplished with the recipes package. It is
-designed to help with all stages of feature engineering, which
-include</p>
+<p>Pre-process data so that it is amenable to analysis. Specifically,
+generate the tables needed for creating a Donations Dashboard
+displaying:</p>
 <ol style="list-style-type: decimal">
-<li>assigning variable roles to the columns of our data,<br />
-either an outcome or predictor role and determining their data type</li>
-<li>defining preprocessing tasks and data transformations,<br />
-this involves defining a sequence of data preprocessing steps, which can
-include missing data imputation, centering and scaling numeric
-variables, creating new variables from ratios of existing variables</li>
-<li>training our data transformations,<br />
-This includes things such as calculating the mean and standard deviation
-of numeric columns for centering and scaling data and storing formulas
-for creating new columns. The <code>prep()</code> function is used for
-this task.</li>
-<li>applying them to new data sources<br />
-apply the trained data transformations to the training and test datasets
-as well as new sources of data for future predictions. The
-<code>bake()</code> function from recipes is used for this task.</li>
+<li>Summary of data, showing comparisons.</li>
+<li>KPI: Donations Growth.</li>
+<li>KPI: Value of donations.</li>
+<li>KPI: Donor trend over time.</li>
 </ol>
+<p>Save tables to separate sheets in Excel Workbook.</p>
+<div id="characteristics-of-clean-data-and-messy-data"
+class="section level2">
+<h2><strong>Characteristics of Clean Data and Messy Data</strong></h2>
+<p>What exactly is clean data? Clean data is accurate, complete, and in
+a format that is ready to analyze. Characteristics of clean data include
+data that are:</p>
+<ul>
+<li>Free of duplicate rows/values</li>
+<li>Error-free (e.g. free of misspellings)</li>
+<li>Relevant (e.g. free of special characters)</li>
+<li>The appropriate data type for analysis</li>
+<li>Free of outliers (or only contain outliers have been
+identified/understood), and</li>
+<li>Follows a “tidy data” structure</li>
+</ul>
+<p>Common symptoms of messy data include data that contain:</p>
+<ul>
+<li>Special characters (e.g. commas in numeric values)</li>
+<li>Numeric values stored as text/character data types</li>
+<li>Duplicate rows</li>
+<li>Misspellings</li>
+<li>Inaccuracies</li>
+<li>White space</li>
+<li>Missing data</li>
+<li>Zeros instead of null values</li>
+</ul>
+<p>Source: <a
+href="https://www.dataquest.io/blog/load-clean-data-r-tidyverse/">Dataquest</a></p>
+</div>
 <div id="primary-research-question" class="section level2">
 <h2>Primary Research Question</h2>
-<p>What are feature engineering tasks and steps to perform for each
+<p>What are data management tasks and steps to perform for each
 task?</p>
 </div>
-<div id="load-and-resample-data" class="section level2">
-<h2>Load and Resample Data</h2>
-<pre class="r"><code>telecom_df &lt;- readRDS(&quot;./data/telecom_df.rds&quot;)
-str(telecom_df)</code></pre>
-<pre><code>tibble [975 × 9] (S3: tbl_df/tbl/data.frame)
- $ canceled_service   : Factor w/ 2 levels &quot;yes&quot;,&quot;no&quot;: 1 1 2 1 2 2 1 2 1 2 ...
- $ cellular_service   : Factor w/ 2 levels &quot;multiple_lines&quot;,..: 2 2 2 1 1 2 1 1 2 1 ...
- $ avg_data_gb        : num [1:975] 7.78 9.04 10.32 5.08 8.05 ...
- $ avg_call_mins      : num [1:975] 497 336 262 250 328 326 525 312 417 340 ...
- $ avg_intl_mins      : num [1:975] 127 88 55 107 122 114 97 147 96 136 ...
- $ internet_service   : Factor w/ 2 levels &quot;fiber_optic&quot;,..: 1 1 1 2 2 1 1 1 2 1 ...
- $ contract           : Factor w/ 3 levels &quot;month_to_month&quot;,..: 1 1 2 2 3 1 1 2 1 1 ...
- $ months_with_company: num [1:975] 7 10 50 53 50 25 19 50 8 61 ...
- $ monthly_charges    : num [1:975] 76.5 94.9 103 60 75.2 ...</code></pre>
-<div id="randomly-sample-training-and-test-sets" class="section level3">
-<h3>Randomly sample training and test sets</h3>
-<pre class="r"><code># Create data split object
-telecom_split &lt;- initial_split(telecom_df, prop = 0.75,
-                     strata = canceled_service)
-
-# Create the training data
-telecom_training &lt;- telecom_split %&gt;% 
-  training()
-
-# Create the test data
-telecom_test &lt;- telecom_split %&gt;% 
-  testing()
-
-# Check the number of rows
-nrow(telecom_training)</code></pre>
-<pre><code>[1] 731</code></pre>
-<pre class="r"><code>nrow(telecom_test)</code></pre>
-<pre><code>[1] 244</code></pre>
+<div id="load-data" class="section level2">
+<h2>Load Data</h2>
+<div id="dataset" class="section level3">
+<h3>Dataset</h3>
+<p>Donations to political parties from India, 12 Yrs data (2003-04 to
+2014-15). <a
+href="https://data.world/ambarishn/donations-to-political-parties">Source:
+data.world</a>.</p>
+<p>While there are some high value donations, most of the contributions
+are below $500,000. The Data Summary shows individual donations up to a
+value of $10,000,000. There are an additional 191 donations beyond that
+value. These are not shown since they tend to skew the data.</p>
+<p>Connect to Excel workbook and inspect names of sheets.</p>
+<pre class="r"><code>donate_book &lt;- loadWorkbook(&quot;./data/donations-political-parties-India.xlsx&quot;)
+getSheets(donate_book)</code></pre>
+<pre><code>[1] &quot;Donation_data&quot;</code></pre>
+<p>Store <code>Donation_data</code> sheet as a table.</p>
+<pre class="r"><code>donations_dt &lt;- read_excel(&quot;./data/donations-political-parties-India.xlsx&quot;, sheet =&quot;Donation_data&quot;) %&gt;% 
+  as.data.table()</code></pre>
+<p>Remove columns having all missing entries and inspect the remaining
+columns.</p>
+<pre class="r"><code>donations_dt &lt;- donations_dt[, c(1:8)]
+skim(donations_dt)</code></pre>
+<table style="width: auto;" class="table table-condensed">
+<caption>
+Data summary
+</caption>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Name
+</td>
+<td style="text-align:left;">
+donations_dt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of rows
+</td>
+<td style="text-align:left;">
+13573
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of columns
+</td>
+<td style="text-align:left;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Key
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+_______________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Column type frequency:
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+________________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Group variables
+</td>
+<td style="text-align:left;">
+None
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+empty
+</th>
+<th style="text-align:right;">
+n_unique
+</th>
+<th style="text-align:right;">
+whitespace
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Party
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Name
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+77
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10924
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Type
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Address
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+175
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+7223
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PAN Given
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Contribution Mode
+</td>
+<td style="text-align:right;">
+234
+</td>
+<td style="text-align:right;">
+0.98
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+181
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10384
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Financial Year
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+p0
+</th>
+<th style="text-align:right;">
+p25
+</th>
+<th style="text-align:right;">
+p50
+</th>
+<th style="text-align:right;">
+p75
+</th>
+<th style="text-align:right;">
+p100
+</th>
+<th style="text-align:left;">
+hist
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Amount
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1045728
+</td>
+<td style="text-align:right;">
+8780605
+</td>
+<td style="text-align:right;">
+1875
+</td>
+<td style="text-align:right;">
+32000
+</td>
+<td style="text-align:right;">
+60000
+</td>
+<td style="text-align:right;">
+2e+05
+</td>
+<td style="text-align:right;">
+5e+08
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
-<div id="feature-engineering" class="section level1">
-<h1>Feature Engineering</h1>
-<div id="exploring-recipe-objects" class="section level2">
-<h2><strong>Exploring recipe objects</strong></h2>
-<p>The first step in feature engineering is to specify a
-<code>recipe</code> object with the <code>recipe()</code> function and
-add data pre-processing steps with one or more <code>step_*()</code>
-functions. Storing all of this information in a single
-<code>recipe</code> object makes it easier to manage complex feature
-engineering pipelines and transform new data sources.</p>
-<p>Use the R console to explore a <code>recipe</code> object named
-<code>telecom_rec</code>, which was specified using the
-<code>telecom_training</code> data</p>
-<pre class="r"><code>telecom_rec &lt;- recipe(canceled_service ~ .,
-                      data = telecom_df) %&gt;% 
-  step_log(avg_call_mins, base = 10)
-telecom_rec</code></pre>
-<pre><code>Recipe
-
-Inputs:
-
-      role #variables
-   outcome          1
- predictor          8
-
-Operations:
-
-Log transformation on avg_call_mins</code></pre>
-<pre class="r"><code>summary(telecom_rec)</code></pre>
-<pre><code># A tibble: 9 × 4
-  variable            type    role      source  
-  &lt;chr&gt;               &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
-1 cellular_service    nominal predictor original
-2 avg_data_gb         numeric predictor original
-3 avg_call_mins       numeric predictor original
-4 avg_intl_mins       numeric predictor original
-5 internet_service    nominal predictor original
-6 contract            nominal predictor original
-7 months_with_company numeric predictor original
-8 monthly_charges     numeric predictor original
-9 canceled_service    nominal outcome   original</code></pre>
-</div>
-<div id="recipe-object" class="section level2">
-<h2><strong>Recipe object</strong></h2>
-<p>In the previous chapter, you fit a logistic regression model using a
-subset of the predictor variables from the <code>telecom_df</code> data.
-This dataset contains information on customers of a telecommunications
-company and the goal is predict whether they will cancel their
-service.</p>
-<p>In this exercise, you will use the <code>recipes</code> package to
-apply a log transformation to the <code>avg_call_mins</code> and
-<code>avg_intl_mins</code> variables in the telecommunications data.
-This will reduce the range of these variables and potentially make their
-distributions more symmetric, which may increase the accuracy of your
-logistic regression model.</p>
-<pre class="r"><code># Specify feature engineering recipe
-telecom_log_rec &lt;- recipe(canceled_service ~., 
-                          data = telecom_training) %&gt;%
-  # Add log transformation step for numeric predictors
-  step_log(avg_call_mins, avg_intl_mins, base = 10)
-
-# Print recipe object
-telecom_log_rec</code></pre>
-<pre><code>Recipe
-
-Inputs:
-
-      role #variables
-   outcome          1
- predictor          8
-
-Operations:
-
-Log transformation on avg_call_mins, avg_intl_mins</code></pre>
-<pre class="r"><code># View variable roles and data types
-telecom_log_rec %&gt;%
-  summary()</code></pre>
-<pre><code># A tibble: 9 × 4
-  variable            type    role      source  
-  &lt;chr&gt;               &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
-1 cellular_service    nominal predictor original
-2 avg_data_gb         numeric predictor original
-3 avg_call_mins       numeric predictor original
-4 avg_intl_mins       numeric predictor original
-5 internet_service    nominal predictor original
-6 contract            nominal predictor original
-7 months_with_company numeric predictor original
-8 monthly_charges     numeric predictor original
-9 canceled_service    nominal outcome   original</code></pre>
-</div>
-<div id="training-a-recipe-object" class="section level2">
-<h2><strong>Training a recipe object</strong></h2>
-<p>In the previous exercise, you created a <code>recipe</code> object
-with instructions to apply a log transformation to the
-<code>avg_call_mins</code> and <code>avg_intl_mins</code> predictor
-variables in the telecommunications data.</p>
-<p>The next step in the feature engineering process is to train your
-<code>recipe</code> object using the training data. Then you will be
-able to apply your trained <code>recipe</code> to both the training and
-test datasets in order to prepare them for use in model fitting and
-model evaluation.</p>
-<pre class="r"><code># Train the telecom_log_rec object
-telecom_log_rec_prep &lt;- telecom_log_rec %&gt;% 
-  prep(training = telecom_training)
-
-# View results
-telecom_log_rec_prep</code></pre>
-<pre><code>Recipe
-
-Inputs:
-
-      role #variables
-   outcome          1
- predictor          8
-
-Training data contained 731 data points and no missing data.
-
-Operations:
-
-Log transformation on avg_call_mins, avg_intl_mins [trained]</code></pre>
-<pre class="r"><code># Use your trained recipe to obtain the transformed training dataset.
-telecom_log_rec_prep %&gt;% 
-  bake(new_data = NULL)</code></pre>
-<pre><code># A tibble: 731 × 9
-   cellular_se…¹ avg_d…² avg_c…³ avg_i…⁴ inter…⁵ contr…⁶ month…⁷ month…⁸ cance…⁹
-   &lt;fct&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;  
- 1 single_line     10.3     2.42    1.74 fiber_… one_ye…      50   103.  no     
- 2 multiple_lin…    8.05    2.52    2.09 digital two_ye…      50    75.2 no     
- 3 single_line      9.3     2.51    2.06 fiber_… month_…      25    95.7 no     
- 4 multiple_lin…    9.96    2.53    2.13 fiber_… month_…      61   106.  no     
- 5 single_line      6.69    2.55    1.96 digital month_…       6    59.2 no     
- 6 single_line      9.37    2.58    1.94 fiber_… month_…       4    94.9 no     
- 7 multiple_lin…    4.11    2.57    1.81 digital two_ye…      72    55.3 no     
- 8 multiple_lin…   10.6     2.45    2.17 fiber_… two_ye…      54   108   no     
- 9 multiple_lin…    7.86    2.58    2.21 digital one_ye…      23    73.8 no     
-10 single_line      8.67    1.97    2.12 fiber_… two_ye…      55    88.8 no     
-# … with 721 more rows, and abbreviated variable names ¹​cellular_service,
-#   ²​avg_data_gb, ³​avg_call_mins, ⁴​avg_intl_mins, ⁵​internet_service, ⁶​contract,
-#   ⁷​months_with_company, ⁸​monthly_charges, ⁹​canceled_service</code></pre>
-<p>Apply your trained <code>recipe</code> to the test dataset.</p>
-<pre class="r"><code># Apply to test data
-telecom_log_rec_prep %&gt;% 
-  bake(new_data = telecom_test)</code></pre>
-<pre><code># A tibble: 244 × 9
-   cellular_se…¹ avg_d…² avg_c…³ avg_i…⁴ inter…⁵ contr…⁶ month…⁷ month…⁸ cance…⁹
-   &lt;fct&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;  
- 1 multiple_lin…    8.01    2.72    1.99 fiber_… month_…      19    83.6 yes    
- 2 multiple_lin…    9.4     2.49    2.17 fiber_… one_ye…      50    99.4 no     
- 3 single_line      6.23    2.63    1.98 fiber_… month_…      33    68.2 yes    
- 4 multiple_lin…   10.2     2.60    2.06 fiber_… month_…      17    92.7 no     
- 5 multiple_lin…    5.17    2.53    2.08 digital month_…       6    49.0 no     
- 6 multiple_lin…   11.8     2.54    2.10 fiber_… two_ye…      71   115.  no     
- 7 single_line      8.02    2.38    1.98 fiber_… month_…       9    88.4 no     
- 8 multiple_lin…   11.0     2.49    2.12 fiber_… two_ye…      46   109.  no     
- 9 single_line      6.19    2.29    1.91 digital one_ye…      14    59.1 no     
-10 multiple_lin…   12.2     2.57    2.18 fiber_… two_ye…      35   113.  no     
-# … with 234 more rows, and abbreviated variable names ¹​cellular_service,
-#   ²​avg_data_gb, ³​avg_call_mins, ⁴​avg_intl_mins, ⁵​internet_service, ⁶​contract,
-#   ⁷​months_with_company, ⁸​monthly_charges, ⁹​canceled_service</code></pre>
-</div>
-</div>
-<div id="numeric-features" class="section level1">
-<h1>Numeric Features</h1>
-<div id="discovering-correlated-predictors" class="section level2">
-<h2><strong>Discovering correlated predictors</strong></h2>
-<p>Correlated predictor variables provide redundant information and can
-negatively impact the model fitting process. When two variables are
-highly correlated, their values change linearly with each other and
-hence provide the same information to your machine learning algorithms.
-This phenomenon is know as multicollinearity.</p>
-<p>Before beginning the model fitting process, it’s important to explore
-your dataset to uncover these relationships and remove them in your
-feature engineering steps.</p>
-<pre class="r"><code>telecom_training %&gt;% 
-  # Select numeric columns
-  select_if(is.numeric) %&gt;% 
-  # Calculate correlation matrix
-  cor()</code></pre>
-<pre><code>                    avg_data_gb avg_call_mins avg_intl_mins months_with_company
-avg_data_gb               1.000       0.13688         0.164             0.41026
-avg_call_mins             0.137       1.00000         0.105             0.00396
-avg_intl_mins             0.164       0.10544         1.000             0.22193
-months_with_company       0.410       0.00396         0.222             1.00000
-monthly_charges           0.954       0.13970         0.167             0.43636
-                    monthly_charges
-avg_data_gb                   0.954
-avg_call_mins                 0.140
-avg_intl_mins                 0.167
-months_with_company           0.436
-monthly_charges               1.000</code></pre>
-<p>Create a scatter plot with avg_data_gb on the x-axis and
-monthly_charges on the y-axis.</p>
-<pre class="r"><code># Plot correlated predictors
-ggplot(telecom_training, aes(x = avg_data_gb, y = monthly_charges)) + 
-  # Add points
-  geom_point()  + 
-  # Add title
-  labs(title = &quot;Monthly Charges vs. Average Data Usage&quot;,
-       y = &#39;Monthly Charges ($)&#39;, x = &#39;Average Data Usage (GB)&#39;) </code></pre>
-<p><img src="figure/Data-Management.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>From the scatter plot, you can see that the more data customers use,
-the more they are charged every month. You will have to remove this
-redundant information with your feature engineering steps.</p>
-</div>
-<div id="processing-correlated-predictors" class="section level2">
-<h2><strong>Processing correlated predictors</strong></h2>
+<div id="pre-processing" class="section level1">
+<h1>Pre-Processing</h1>
+<div id="column-names" class="section level2">
+<h2>1. Column names</h2>
 <ol style="list-style-type: decimal">
-<li><p>To preprocess correlated predictor variables, we begin by
-specifying a recipe. We add the same model formula and data
-argument.</p></li>
-<li><p>Then we pass our recipe object to the <code>step_corr()</code>
-function, which has two Rs instead of one, and provide the names of all
-numeric columns in the training dataset separated by commas. We also
-provide a correlation threshold of 0.9 to the threshold
-argument.</p></li>
-<li><p>Train your <code>telecom_cor_rec</code> object using the
-telecom_training dataset.</p></li>
-<li><p>Use your trained recipe to obtain the transformed training
-dataset.</p></li>
+<li>Replace space between column names with underscore and convert to
+lower case.</li>
+<li>Print column names.</li>
 </ol>
-<pre class="r"><code># Specify a recipe object
-telecom_cor_rec &lt;- recipe(canceled_service ~.,
-                          data = telecom_training) %&gt;%
-  # Remove correlated variables
-  step_corr(all_numeric(), threshold = 0.8)
-
-# Train the recipe
-telecom_cor_rec_prep &lt;- telecom_cor_rec %&gt;% 
-  prep(training = telecom_training)
-
-# Apply to training data
-telecom_cor_rec_prep %&gt;% 
-  bake(new_data = NULL)</code></pre>
-<pre><code># A tibble: 731 × 8
-   cellular_service avg_data_gb avg_ca…¹ avg_i…² inter…³ contr…⁴ month…⁵ cance…⁶
-   &lt;fct&gt;                  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt; &lt;fct&gt;  
- 1 single_line            10.3       262      55 fiber_… one_ye…      50 no     
- 2 multiple_lines          8.05      328     122 digital two_ye…      50 no     
- 3 single_line             9.3       326     114 fiber_… month_…      25 no     
- 4 multiple_lines          9.96      340     136 fiber_… month_…      61 no     
- 5 single_line             6.69      352      91 digital month_…       6 no     
- 6 single_line             9.37      382      87 fiber_… month_…       4 no     
- 7 multiple_lines          4.11      371      64 digital two_ye…      72 no     
- 8 multiple_lines         10.6       281     147 fiber_… two_ye…      54 no     
- 9 multiple_lines          7.86      378     164 digital one_ye…      23 no     
-10 single_line             8.67       93     131 fiber_… two_ye…      55 no     
-# … with 721 more rows, and abbreviated variable names ¹​avg_call_mins,
-#   ²​avg_intl_mins, ³​internet_service, ⁴​contract, ⁵​months_with_company,
-#   ⁶​canceled_service</code></pre>
-<pre class="r"><code># Apply to test data
-telecom_cor_rec_prep %&gt;% 
-  bake(new_data=telecom_test)</code></pre>
-<pre><code># A tibble: 244 × 8
-   cellular_service avg_data_gb avg_ca…¹ avg_i…² inter…³ contr…⁴ month…⁵ cance…⁶
-   &lt;fct&gt;                  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt; &lt;fct&gt;  
- 1 multiple_lines          8.01      525      97 fiber_… month_…      19 yes    
- 2 multiple_lines          9.4       312     147 fiber_… one_ye…      50 no     
- 3 single_line             6.23      429      96 fiber_… month_…      33 yes    
- 4 multiple_lines         10.2       402     116 fiber_… month_…      17 no     
- 5 multiple_lines          5.17      341     119 digital month_…       6 no     
- 6 multiple_lines         11.8       343     126 fiber_… two_ye…      71 no     
- 7 single_line             8.02      240      95 fiber_… month_…       9 no     
- 8 multiple_lines         11.0       310     133 fiber_… two_ye…      46 no     
- 9 single_line             6.19      193      82 digital one_ye…      14 no     
-10 multiple_lines         12.2       369     150 fiber_… two_ye…      35 no     
-# … with 234 more rows, and abbreviated variable names ¹​avg_call_mins,
-#   ²​avg_intl_mins, ³​internet_service, ⁴​contract, ⁵​months_with_company,
-#   ⁶​canceled_service</code></pre>
+<pre class="r"><code>if (!require(&quot;stringr&quot;)) install.packages(&quot;stringr&quot;)
+library(&quot;stringr&quot;)
+names(donations_dt) &lt;- str_replace_all(names(donations_dt), 
+                                       &quot;\\s&quot;, &quot;_&quot;) %&gt;% 
+  tolower()
+colnames(donations_dt)</code></pre>
+<pre><code>[1] &quot;party&quot;             &quot;name&quot;              &quot;type&quot;             
+[4] &quot;address&quot;           &quot;pan_given&quot;         &quot;amount&quot;           
+[7] &quot;contribution_mode&quot; &quot;financial_year&quot;   </code></pre>
 </div>
-<div id="normalization" class="section level2">
-<h2><strong>Normalization</strong></h2>
+<div id="missing-entries" class="section level2">
+<h2><strong>2. Missing Entries</strong></h2>
+<p>The <code>contribution_mode</code> column has 234 missing entries and
+<code>address</code> has 1 missing. Replace these with `unknown`
+designation.</p>
+<pre class="r"><code>donations_dt[is.na(address), address := &quot;unknown&quot;]
+donations_dt[is.na(contribution_mode), contribution_mode := &quot;unknown&quot;]</code></pre>
+</div>
+<div id="type-conversion" class="section level2">
+<h2>3. Type Conversion</h2>
+<div id="convert-financial_year-to-numeric" class="section level3">
+<h3>Convert financial_year to numeric</h3>
+<ol style="list-style-type: decimal">
+<li>Strip last three characters from financial_year.</li>
+<li>Convert single year from character to numeric.</li>
+<li>Order donations table by year ascending.</li>
+</ol>
+<pre class="r"><code># Create new column named year
+donations_dt[, year := str_sub(financial_year, end=-4)][, financial_year := NULL]
+# Convert to numeric
+donations_dt[, year := as.numeric(year)]                      
+# Order data table by year
+donations_dt &lt;- donations_dt[order(year)]</code></pre>
+</div>
+<div id="convert-year-from-numeric-to-categorical"
+class="section level3">
+<h3>Convert year from numeric to categorical</h3>
+<pre class="r"><code>donations_dt[, year := as.factor(year)]</code></pre>
+</div>
+</div>
+<div id="check-for-outliers" class="section level2">
+<h2>4. Check for outliers</h2>
+<pre class="r"><code>library(scales)   # to display values in thousands</code></pre>
+<pre><code>
+Attaching package: &#39;scales&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    discard</code></pre>
+<pre><code>The following object is masked from &#39;package:readr&#39;:
+
+    col_factor</code></pre>
+<pre class="r"><code># Basic scatter plot
+ggplot(donations_dt, aes(x=year, y=amount)) + 
+  geom_point() +
+  labs(title=&quot;Individual donations&quot;,
+       x=&quot;Year&quot;, 
+       y = &quot;Amount&quot;) +
+  scale_y_continuous(label=comma ) </code></pre>
+<p><img src="figure/Data-Management.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\rightarrow\)</span> There are eleven
+contributions over $100 Million out of 13,573 separate donations. Since
+these points skew the data, it is better to set the limit for
+<code>amount</code> to $100 Million when plotting data. However, it is
+necessary to retain these contributions for the sake of accuracy.</p>
+</div>
+</div>
+<div id="key-performance-indicators" class="section level1">
+<h1>Key Performance Indicators</h1>
+<div id="donations-growth-over-time" class="section level2">
+<h2>Donations growth over time</h2>
+<p>Create a new table giving the total donations by year.</p>
+<pre class="r"><code>options(&quot;scipen&quot;=100, &quot;digits&quot;=4)
+donate_year &lt;- donations_dt[, .(year_sum = sum(amount)), by = year ]</code></pre>
+<p>Visualise.</p>
+<pre class="r"><code># Donations Growth
+g2 &lt;- ggplot(donate_year, 
+             aes(x=year, y = year_sum)) +
+  geom_point(color = &quot;blue&quot;) +
+  labs(title=&quot;Total Amount per Year&quot;,
+       x=&quot;Year&quot;, 
+       y = &quot;Annual Amount&quot;) +
+  theme(legend.position=&quot;none&quot;) +
+  # amount in thousands
+  # scale_y_continuous(label=comma ) +
+  # amount in Millions
+    scale_y_continuous(labels = label_number(suffix = &quot; M&quot;, 
+                                             scale = 1e-6),
+                       n.breaks=6) +  
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  coord_flip()
+
+g2</code></pre>
+<p><img src="figure/Data-Management.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ol style="list-style-type: decimal">
+<li>Write donations by year table to Excel Workbook.</li>
+<li>Save updated Workbook</li>
+</ol>
+<pre class="r"><code>createSheet(donate_book, name =&quot;Donation_year&quot;)
+writeWorksheet(donate_book, donate_year, sheet =&quot;Donation_year&quot;)</code></pre>
+</div>
+<div id="donor-growth" class="section level2">
+<h2>Donor Growth</h2>
+<p>Clean character strings in <code>name</code> column.</p>
+<ol style="list-style-type: decimal">
+<li>Remove punctuation marks.</li>
+<li>Replace white-space with underscore</li>
+</ol>
+<pre class="r"><code># remove punctuation and replace whitespace with underscore
+donations_dt$name &lt;- str_replace_all(donations_dt$name, 
+                pattern = &quot;[[:punct:]]&quot;, 
+                replacement = &quot;&quot;) 
+donations_dt$name &lt;- str_replace_all(donations_dt$name, 
+                pattern = &quot;\\s&quot;, 
+                replacement = &quot;_&quot;) </code></pre>
+<div id="unique-donors" class="section level3">
+<h3>Unique Donors</h3>
+<pre class="r"><code>donations_dt[, unique(name)] %&gt;% 
+  length()</code></pre>
+<pre><code>[1] 10807</code></pre>
+<p>There are 10,807 unique donors out of 13,573 total donations given.
+So, most donations are once-off.</p>
+<ol style="list-style-type: decimal">
+<li>Create a new table showing total amount each donor contributed.</li>
+<li>Save table as a new Excel sheet in WorkBook.</li>
+</ol>
+<pre class="r"><code>by_donor &lt;- donations_dt[, .(tot_amount = sum(amount)), by=name]
+
+createSheet(donate_book, name =&quot;Donation_donor&quot;)
+writeWorksheet(donate_book, by_donor, sheet =&quot;Donation_donor&quot;)</code></pre>
+</div>
+</div>
+<div id="number-of-donors" class="section level2">
+<h2>Number of Donors</h2>
+<p>Number of donors making contributions per year.</p>
+<pre class="r"><code>contributions &lt;-  donations_dt[, .N, by = year]
+contributions[, year := seq.int(from = 2003, to = 2014, 
+                                by = 1)]
+createSheet(donate_book, name =&quot;Contributions&quot;)
+writeWorksheet(donate_book, contributions, sheet =&quot;Contributions&quot;)</code></pre>
+</div>
+<div id="store-data" class="section level2">
+<h2>Store Data</h2>
+<ol style="list-style-type: decimal">
+<li>Save R tables in RData file.</li>
+<li>Write to Excel WorkBook file containing separate sheets for each new
+table.</li>
+</ol>
+<pre class="r"><code># Save RData
+save(by_donor, donate_year, contributions, donations_dt, 
+     file = &quot;./data/donate.RData&quot;)
+
+# Excel WorkBook
+saveWorkbook(donate_book, file = &quot;./data/donations-India-update.xlsx&quot;)</code></pre>
+</div>
+<div id="numeric-columns" class="section level2">
+<h2>Numeric Columns</h2>
+<div id="normalization" class="section level3">
+<h3><strong>Normalization</strong></h3>
 <p>Another common task is centering and scaling numeric variables, known
 as normalization. For each numeric column, we subtract the mean and
 divide by the standard deviation. This transforms numeric variables to
@@ -1077,551 +1400,9 @@ normalized total_time value, we see that spending 1,273 seconds on the
 website is 1-point-19 standard deviations greater than the average time
 spent by customers.</p>
 </div>
-<div id="multiple-feature-engineering-steps" class="section level2">
-<h2><strong>Multiple feature engineering steps</strong></h2>
-<p>The power of the <code>recipes</code> package is that you can include
-multiple pre-processing steps in a single <code>recipe</code> object.
-These steps will be carried out in the order they are entered with the
-<code>step_*()</code> functions.</p>
-<ol style="list-style-type: decimal">
-<li>Remove correlated predictors, and also normalize all numeric
-predictors in the telecommunications data.</li>
-<li>Train your <code>telecom_norm_rec</code> object using the
-<code>telecom_training</code> dataset.</li>
-<li>Apply your trained recipe to the test dataset.</li>
-</ol>
-<pre class="r"><code># Specify a recipe object
-telecom_norm_rec &lt;- recipe(canceled_service ~ .,data=telecom_training) %&gt;% 
-  # Remove correlated variables
-  step_corr(all_numeric(), threshold = 0.8) %&gt;% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors())
-
-# Train the recipe
-telecom_norm_rec_prep &lt;- telecom_norm_rec %&gt;% 
-  prep(telecom_training)
-
-# Apply to test data
-telecom_norm_rec_prep %&gt;% 
-  bake(new_data = telecom_test)</code></pre>
-<pre><code># A tibble: 244 × 8
-   cellular_service avg_data_gb avg_ca…¹ avg_i…² inter…³ contr…⁴ month…⁵ cance…⁶
-   &lt;fct&gt;                  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt; &lt;fct&gt;  
- 1 multiple_lines        -0.135   2.38    -0.375 fiber_… month_… -0.614  yes    
- 2 multiple_lines         0.594  -0.451    1.21  fiber_… one_ye…  0.616  no     
- 3 single_line           -1.07    1.10    -0.407 fiber_… month_… -0.0586 yes    
- 4 multiple_lines         1.01    0.745    0.228 fiber_… month_… -0.694  no     
- 5 multiple_lines        -1.62   -0.0654   0.323 digital month_… -1.13   no     
- 6 multiple_lines         1.83   -0.0388   0.545 fiber_… two_ye…  1.45   no     
- 7 single_line           -0.130  -1.41    -0.439 fiber_… month_… -1.01   no     
- 8 multiple_lines         1.45   -0.477    0.768 fiber_… two_ye…  0.457  no     
- 9 single_line           -1.09   -2.03    -0.852 digital one_ye… -0.813  no     
-10 multiple_lines         2.08    0.307    1.31  fiber_… two_ye…  0.0207 no     
-# … with 234 more rows, and abbreviated variable names ¹​avg_call_mins,
-#   ²​avg_intl_mins, ³​internet_service, ⁴​contract, ⁵​months_with_company,
-#   ⁶​canceled_service</code></pre>
-<p>In the test set, the normalised value for <code>avg_data_gb[1]</code>
-is 0.426. This is derived from the mean and standard deviation in the
-training set:</p>
-<p><span class="math display">\[
-m_{data-gb} = 8.23  \\
-s_{data-gb} = 1.9
-\]</span></p>
-<p>So, <code>avg_data_gb[1]</code> is 0.426 * 1.9 = 0.809. This means
-that this customer uses an average of 809Mb greater than the average
-amount of 8.23Gb.</p>
-<pre class="r"><code>setDT(telecom_training)
-setDT(telecom_test)
-
-data_gb1 &lt;- telecom_test[1, avg_data_gb]
-data_gb_m &lt;- telecom_training[, mean(avg_data_gb)]
-data_gb_sd &lt;- telecom_training[, sd(avg_data_gb)]
-(data_gb1 - data_gb_m)/data_gb_sd</code></pre>
-<pre><code>[1] -0.135</code></pre>
-<pre class="r"><code>0.426 * data_gb_sd + data_gb_m</code></pre>
-<pre><code>[1] 9.08</code></pre>
-<pre class="r"><code>data_gb_sd &lt;- telecom_training[, sd(avg_data_gb)]</code></pre>
 </div>
-</div>
-<div id="nominal-predictors" class="section level1">
-<h1>Nominal Predictors</h1>
-<div id="transforming-nominal-predictors" class="section level2">
-<h2><strong>Transforming nominal predictors</strong></h2>
-<p>Dummy variable encoding takes a different approach than one-hot
-encoding. It removes redundant information by excluding one value from
-the original set of data values. If we have n distinct values in our
-categorical data, we will get n - 1 indicator variables.</p>
-<p><img src="images/paste-367F155A.png" /></p>
-<p>In the example above, zeros in marketing and technology mean that the
-department is finance.</p>
-<div id="preprocessing-nominal-predictor-variables"
-class="section level3">
-<h3><strong>Preprocessing nominal predictor variables</strong></h3>
-<p>Many modeling engines in R include automatic dummy variable creation,
-so it is possible to fit models without having to use step_dummy().
-However, these methods are not consistent across engines in using
-one-hot versus dummy variables or naming conventions. Using the recipes
-package standardizes this process and will make your code less
-susceptible to errors.</p>
-</div>
-</div>
-<div id="ordering-of-step_-functions" class="section level2">
-<h2><strong>Ordering of step_*() functions</strong></h2>
-<p>The <code>step_*()</code> functions within a recipe are carried out
-in sequential order. It’s important to keep this in mind so that you
-avoid unexpected results in your feature engineering pipeline!</p>
-<ol style="list-style-type: decimal">
-<li><p>Specify the <code>telecom_recipe_1</code> object to normalize all
-numeric predictors and then create dummy variables for all nominal
-predictors in the training data, <code>telecom_training</code>.<br />
-Select columns <strong>by role</strong> in your <code>recipe</code>
-specification.</p></li>
-<li><p>Train <code>telecom_recipe_1</code> and use it to transform the
-test data, <code>telecom_test</code>.</p></li>
-<li><p>Now specify <code>telecom_recipe_2</code> to create dummy
-variables for all nominal predictors and then normalize all numeric
-predictors in the training data, <code>telecom_training</code>.<br />
-Select columns <strong>by role</strong> in your <code>recipe</code>
-specification.</p></li>
-</ol>
-<pre class="r"><code>telecom_recipe_1 &lt;- 
-  recipe(canceled_service ~ avg_data_gb + contract, data = telecom_training)  %&gt;% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors())  %&gt;% 
-  # Create dummy variables for nominal predictors
-  step_dummy(all_nominal(), -all_outcomes())
-
-# Train and apply telecom_recipe_1 on the test data
-telecom_recipe_1 %&gt;% 
-  prep(telecom_training) %&gt;% 
-  bake(new_data = telecom_test)</code></pre>
-<pre><code># A tibble: 244 × 4
-   avg_data_gb canceled_service contract_one_year contract_two_year
-         &lt;dbl&gt; &lt;fct&gt;                        &lt;dbl&gt;             &lt;dbl&gt;
- 1      -0.135 yes                              0                 0
- 2       0.594 no                               1                 0
- 3      -1.07  yes                              0                 0
- 4       1.01  no                               0                 0
- 5      -1.62  no                               0                 0
- 6       1.83  no                               0                 1
- 7      -0.130 no                               0                 0
- 8       1.45  no                               0                 1
- 9      -1.09  no                               1                 0
-10       2.08  no                               0                 1
-# … with 234 more rows</code></pre>
-<pre class="r"><code>telecom_recipe_2 &lt;- 
-  recipe(canceled_service ~ avg_data_gb + contract, data = telecom_training)  %&gt;% 
-  # Create dummy variables for nominal predictors
-  step_dummy(all_nominal(), -all_outcomes())  %&gt;% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors())
-
-# Train and apply telecom_recipe_2 on the test data
-telecom_recipe_2 %&gt;% 
-  prep(telecom_training) %&gt;% 
-  bake(new_data = telecom_test)</code></pre>
-<pre><code># A tibble: 244 × 4
-   avg_data_gb canceled_service contract_one_year contract_two_year
-         &lt;dbl&gt; &lt;fct&gt;                        &lt;dbl&gt;             &lt;dbl&gt;
- 1      -0.135 yes                         -0.514            -0.471
- 2       0.594 no                           1.94             -0.471
- 3      -1.07  yes                         -0.514            -0.471
- 4       1.01  no                          -0.514            -0.471
- 5      -1.62  no                          -0.514            -0.471
- 6       1.83  no                          -0.514             2.12 
- 7      -0.130 no                          -0.514            -0.471
- 8       1.45  no                          -0.514             2.12 
- 9      -1.09  no                           1.94             -0.471
-10       2.08  no                          -0.514             2.12 
-# … with 234 more rows</code></pre>
-<ul>
-<li><p>Notice that <code>telecom_recipe_1</code> produced [0, 1] values
-in the dummy variable columns while <code>telecom_recipe_2</code>
-produced dummy variables which were then normalized!</p></li>
-<li><p>The predictor <code>contract_two_year</code> created by
-<code>telecom_recipe_2</code> is -0.482 instead of 0 and 2.07 instead of
-1 due to normalization.</p></li>
-<li><p>For model interpretation, it’s best to normalize variables before
-creating dummy variables.</p></li>
-<li><p>Also notice that since you only specified two predictor variables
-in your model formula, the rest of the columns are ignored by your
-<code>recipe</code> objects when transforming new data sources.</p></li>
-</ul>
-</div>
-<div id="complete-feature-engineering-pipeline" class="section level2">
-<h2><strong>Complete feature engineering pipeline</strong></h2>
-<p>The <code>recipes</code> package is designed to encode multiple
-feature engineering steps into one object, making it easier to maintain
-data transformations in a machine learning workflow.</p>
-<p>In this exercise, you will train a feature engineering pipeline to
-prepare the telecommunications data for modeling.</p>
-<ul>
-<li>Train your recipe on the training data and apply it to the test
-data.</li>
-</ul>
-<pre class="r"><code># Create a recipe that predicts canceled_service using the training data
-telecom_recipe &lt;- recipe(canceled_service ~ ., data=telecom_training) %&gt;% 
-  # Remove correlated predictors
-  step_corr(all_numeric_predictors(), threshold = 0.8) %&gt;% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors()) %&gt;% 
-  # Create dummy variables
-  step_dummy(all_nominal(), -all_outcomes())
-
-# Train your recipe and apply it to the test data
-telecom_recipe %&gt;% 
-  prep(telecom_training) %&gt;% 
-  bake(new_data=telecom_test)</code></pre>
-<pre><code># A tibble: 244 × 9
-   avg_data_gb avg_cal…¹ avg_i…² month…³ cance…⁴ cellu…⁵ inter…⁶ contr…⁷ contr…⁸
-         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
- 1      -0.135    2.38    -0.375 -0.614  yes           0       0       0       0
- 2       0.594   -0.451    1.21   0.616  no            0       0       1       0
- 3      -1.07     1.10    -0.407 -0.0586 yes           1       0       0       0
- 4       1.01     0.745    0.228 -0.694  no            0       0       0       0
- 5      -1.62    -0.0654   0.323 -1.13   no            0       1       0       0
- 6       1.83    -0.0388   0.545  1.45   no            0       0       0       1
- 7      -0.130   -1.41    -0.439 -1.01   no            1       0       0       0
- 8       1.45    -0.477    0.768  0.457  no            0       0       0       1
- 9      -1.09    -2.03    -0.852 -0.813  no            1       1       1       0
-10       2.08     0.307    1.31   0.0207 no            0       0       0       1
-# … with 234 more rows, and abbreviated variable names ¹​avg_call_mins,
-#   ²​avg_intl_mins, ³​months_with_company, ⁴​canceled_service,
-#   ⁵​cellular_service_single_line, ⁶​internet_service_digital,
-#   ⁷​contract_one_year, ⁸​contract_two_year</code></pre>
-</div>
-</div>
-<div id="complete-modeling-workflow" class="section level1">
-<h1>Complete Modeling Workflow</h1>
-<div id="feature-engineering-process" class="section level2">
-<h2><strong>Feature engineering process</strong></h2>
-<p>To incorporate feature engineering into the modeling process, the
-training and test datasets must be pre-processed before the model
-fitting stage. With the new skills you have learned in this chapter, you
-will be able to use all of the available predictor variables in the
-telecommunications data to train your logistic regression model.</p>
-<p>In this exercise, you will create a feature engineering pipeline on
-the telecommunications data and use it to transform the training and
-test datasets.</p>
-<pre class="r"><code>telecom_recipe &lt;- recipe(canceled_service ~., data = telecom_training) %&gt;% 
-  # Removed correlated predictors
-  step_corr(all_numeric_predictors(), threshold = 0.8) %&gt;% 
-  # Log transform numeric predictors
-  step_log(all_numeric_predictors(), base = 10) %&gt;%
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors()) %&gt;%
-  # Create dummy variables
-  step_dummy(all_nominal(), -all_outcomes())
-
-# Train recipe
-telecom_recipe_prep &lt;- telecom_recipe %&gt;% 
-  prep(telecom_training)
-
-# Transform training data
-telecom_training_prep &lt;- telecom_recipe_prep %&gt;% 
-  bake(new_data = NULL)
-
-# Transform test data
-telecom_test_prep &lt;- telecom_recipe_prep %&gt;% 
-  bake(new_data = telecom_test)
-
-telecom_test_prep %&gt;% 
-  head() %&gt;% 
-  kbl() %&gt;% 
-  kable_styling()</code></pre>
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-avg_data_gb
-</th>
-<th style="text-align:right;">
-avg_call_mins
-</th>
-<th style="text-align:right;">
-avg_intl_mins
-</th>
-<th style="text-align:right;">
-months_with_company
-</th>
-<th style="text-align:left;">
-canceled_service
-</th>
-<th style="text-align:right;">
-cellular_service_single_line
-</th>
-<th style="text-align:right;">
-internet_service_digital
-</th>
-<th style="text-align:right;">
-contract_one_year
-</th>
-<th style="text-align:right;">
-contract_two_year
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
--0.007
-</td>
-<td style="text-align:right;">
-1.848
-</td>
-<td style="text-align:right;">
--0.211
-</td>
-<td style="text-align:right;">
--0.032
-</td>
-<td style="text-align:left;">
-yes
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.625
-</td>
-<td style="text-align:right;">
--0.320
-</td>
-<td style="text-align:right;">
-1.079
-</td>
-<td style="text-align:right;">
-0.692
-</td>
-<td style="text-align:left;">
-no
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.999
-</td>
-<td style="text-align:right;">
-1.007
-</td>
-<td style="text-align:right;">
--0.243
-</td>
-<td style="text-align:right;">
-0.381
-</td>
-<td style="text-align:left;">
-yes
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.943
-</td>
-<td style="text-align:right;">
-0.736
-</td>
-<td style="text-align:right;">
-0.344
-</td>
-<td style="text-align:right;">
--0.116
-</td>
-<td style="text-align:left;">
-no
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--1.735
-</td>
-<td style="text-align:right;">
-0.051
-</td>
-<td style="text-align:right;">
-0.423
-</td>
-<td style="text-align:right;">
--0.895
-</td>
-<td style="text-align:left;">
-no
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-1.505
-</td>
-<td style="text-align:right;">
-0.075
-</td>
-<td style="text-align:right;">
-0.601
-</td>
-<td style="text-align:right;">
-0.955
-</td>
-<td style="text-align:left;">
-no
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="model-training-and-prediction" class="section level2">
-<h2><strong>Model training and prediction</strong></h2>
-<p>You have pre-processed your training and test data-sets in the
-previous exercise. Since you incorporated feature engineering into your
-modeling workflow, you are able to use all of the predictor variables
-available in the telecommunications data!</p>
-<p>The next step is training your logistic regression model and using it
-to obtain predictions on your new pre-processed test data-set.</p>
-<pre class="r"><code># default for logistic_reg is engine = &quot;glm&quot;, 
-# and mode = &quot;classification&quot;
-logistic_model &lt;- logistic_reg()
-
-# Train logistic model
-logistic_fit &lt;- logistic_model %&gt;% 
-  fit(canceled_service ~ ., data = telecom_training_prep)
-
-# Obtain class predictions
-class_preds &lt;- predict(logistic_fit, new_data = telecom_test_prep,
-                       type = &#39;class&#39;)
-
-# Obtain estimated probabilities
-prob_preds &lt;- predict(logistic_fit, new_data = telecom_test_prep, 
-                      type = &#39;prob&#39;)
-
-# Combine test set results
-telecom_results &lt;- telecom_test_prep %&gt;% 
-  select(canceled_service) %&gt;% 
-  bind_cols(class_preds, prob_preds)
-
-telecom_results</code></pre>
-<pre><code># A tibble: 244 × 4
-   canceled_service .pred_class .pred_yes .pred_no
-   &lt;fct&gt;            &lt;fct&gt;           &lt;dbl&gt;    &lt;dbl&gt;
- 1 yes              yes            0.826     0.174
- 2 no               no             0.0899    0.910
- 3 yes              yes            0.516     0.484
- 4 no               yes            0.613     0.387
- 5 no               no             0.260     0.740
- 6 no               no             0.0499    0.950
- 7 no               no             0.271     0.729
- 8 no               no             0.0397    0.960
- 9 no               no             0.0262    0.974
-10 no               no             0.0709    0.929
-# … with 234 more rows</code></pre>
-</div>
-<div id="model-performance-metrics" class="section level2">
-<h2><strong>Model performance metrics</strong></h2>
-<p>In this exercise, you will use <code>yardstick</code> metric
-functions to evaluate your model’s performance on the test data-set.</p>
-<p>When you fit a logistic regression model to the telecommunications
-data in Chapter 2, you predicted <code>canceled_service</code> using
-<code>avg_call_mins</code>, <code>avg_intl_mins</code>, and
-<code>monthly_charges</code>. The sensitivity of your model was 0.42
-while the specificity was 0.895.</p>
-<p>Now that you have incorporated all available predictor variables
-using feature engineering, you can compare your new model’s performance
-to your previous results.</p>
-<pre class="r"><code># Create a confusion matrix
-telecom_results %&gt;% 
-  conf_mat(truth = canceled_service, estimate = .pred_class)</code></pre>
-<pre><code>          Truth
-Prediction yes  no
-       yes  59  18
-       no   23 144</code></pre>
-<pre class="r"><code># Calculate sensitivity
-telecom_results %&gt;% 
-  sens(truth = canceled_service, estimate = .pred_class)</code></pre>
-<pre><code># A tibble: 1 × 3
-  .metric .estimator .estimate
-  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 sens    binary         0.720</code></pre>
-<pre class="r"><code># Calculate specificity
-telecom_results %&gt;% 
-  spec(truth = canceled_service, estimate = .pred_class)</code></pre>
-<pre><code># A tibble: 1 × 3
-  .metric .estimator .estimate
-  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 spec    binary         0.889</code></pre>
-<pre class="r"><code># Plot ROC curve
-telecom_results %&gt;% 
-  roc_curve(truth = canceled_service, .pred_yes) %&gt;% 
-  autoplot()</code></pre>
-<p><img src="figure/Data-Management.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="section" class="section level2">
+<h2></h2>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1631,7 +1412,7 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+<pre><code>R version 4.2.2 (2022-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 10 x64 (build 22000)
 
@@ -1648,51 +1429,39 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] yardstick_1.0.0    workflowsets_0.2.1 workflows_0.2.6    tune_0.2.0        
- [5] rsample_1.0.0      parsnip_1.0.0      modeldata_0.1.1    infer_1.0.2       
- [9] dials_1.0.0        scales_1.2.1       broom_1.0.0        tidymodels_0.2.0  
-[13] forcats_0.5.1      stringr_1.4.1      purrr_0.3.5        readr_2.1.3       
-[17] tidyr_1.2.1        tibble_3.1.8       tidyverse_1.3.1    recipes_0.2.0     
-[21] caret_6.0-92       lattice_0.20-45    skimr_2.1.4        kableExtra_1.3.4  
-[25] data.table_1.14.2  visdat_0.5.3       ggplot2_3.3.6      dplyr_1.0.10      
-[29] workflowr_1.7.0   
+ [1] scales_1.2.1      readxl_1.4.1      forcats_0.5.2     stringr_1.4.1    
+ [5] purrr_0.3.5       readr_2.1.3       tibble_3.1.8      tidyverse_1.3.2  
+ [9] skimr_2.1.4       kableExtra_1.3.4  data.table_1.14.4 visdat_0.5.3     
+[13] ggplot2_3.4.0     dplyr_1.0.10      tidyr_1.2.1       XLConnect_1.0.6  
+[17] workflowr_1.7.0  
 
 loaded via a namespace (and not attached):
-  [1] colorspace_2.0-3     ellipsis_0.3.2       class_7.3-20        
-  [4] rprojroot_2.0.3      base64enc_0.1-3      fs_1.5.2            
-  [7] rstudioapi_0.13      farver_2.1.1         furrr_0.3.0         
- [10] listenv_0.8.0        prodlim_2019.11.13   fansi_1.0.3         
- [13] lubridate_1.8.0      xml2_1.3.3           codetools_0.2-18    
- [16] splines_4.2.1        knitr_1.39           jsonlite_1.8.2      
- [19] pROC_1.18.0          dbplyr_2.2.1         compiler_4.2.1      
- [22] httr_1.4.3           backports_1.4.1      assertthat_0.2.1    
- [25] Matrix_1.4-1         fastmap_1.1.0        cli_3.3.0           
- [28] later_1.3.0          htmltools_0.5.2      tools_4.2.1         
- [31] gtable_0.3.1         glue_1.6.2           reshape2_1.4.4      
- [34] Rcpp_1.0.9           cellranger_1.1.0     jquerylib_0.1.4     
- [37] DiceDesign_1.9       vctrs_0.4.1          svglite_2.1.0       
- [40] nlme_3.1-157         iterators_1.0.14     timeDate_3043.102   
- [43] gower_1.0.0          xfun_0.31            globals_0.15.1      
- [46] ps_1.7.1             rvest_1.0.2          lifecycle_1.0.3     
- [49] future_1.26.1        getPass_0.2-2        MASS_7.3-57         
- [52] ipred_0.9-13         hms_1.1.2            promises_1.2.0.1    
- [55] parallel_4.2.1       yaml_2.3.5           sass_0.4.1          
- [58] rpart_4.1.16         stringi_1.7.8        highr_0.9           
- [61] foreach_1.5.2        lhs_1.1.5            hardhat_1.2.0       
- [64] lava_1.6.10          repr_1.1.4           rlang_1.0.6         
- [67] pkgconfig_2.0.3      systemfonts_1.0.4    evaluate_0.17       
- [70] labeling_0.4.2       processx_3.7.0       tidyselect_1.2.0    
- [73] parallelly_1.32.0    plyr_1.8.7           magrittr_2.0.3      
- [76] R6_2.5.1             generics_0.1.3       DBI_1.1.3           
- [79] pillar_1.8.1         haven_2.5.0          whisker_0.4         
- [82] withr_2.5.0          survival_3.3-1       nnet_7.3-17         
- [85] future.apply_1.9.0   modelr_0.1.8         crayon_1.5.2        
- [88] utf8_1.2.2           tzdb_0.3.0           rmarkdown_2.14      
- [91] grid_4.2.1           readxl_1.4.0         callr_3.7.2         
- [94] git2r_0.30.1         ModelMetrics_1.2.2.2 reprex_2.0.1        
- [97] digest_0.6.29        webshot_0.5.3        httpuv_1.6.5        
-[100] GPfit_1.0-8          stats4_4.2.1         munsell_0.5.0       
-[103] viridisLite_0.4.1    bslib_0.3.1         </code></pre>
+ [1] httr_1.4.4          sass_0.4.2          jsonlite_1.8.3     
+ [4] viridisLite_0.4.1   modelr_0.1.10       bslib_0.4.1        
+ [7] assertthat_0.2.1    getPass_0.2-2       highr_0.9          
+[10] googlesheets4_1.0.1 cellranger_1.1.0    yaml_2.3.6         
+[13] pillar_1.8.1        backports_1.4.1     glue_1.6.2         
+[16] digest_0.6.30       promises_1.2.0.1    rvest_1.0.3        
+[19] colorspace_2.0-3    htmltools_0.5.3     httpuv_1.6.6       
+[22] pkgconfig_2.0.3     broom_1.0.1         haven_2.5.1        
+[25] webshot_0.5.4       processx_3.8.0      svglite_2.1.0      
+[28] whisker_0.4         later_1.3.0         tzdb_0.3.0         
+[31] timechange_0.1.1    git2r_0.30.1        googledrive_2.0.0  
+[34] farver_2.1.1        generics_0.1.3      ellipsis_0.3.2     
+[37] cachem_1.0.6        withr_2.5.0         repr_1.1.4         
+[40] cli_3.3.0           crayon_1.5.2        magrittr_2.0.3     
+[43] evaluate_0.18       ps_1.7.2            fs_1.5.2           
+[46] fansi_1.0.3         xml2_1.3.3          tools_4.2.2        
+[49] hms_1.1.2           gargle_1.2.1        lifecycle_1.0.3    
+[52] reprex_2.0.2        munsell_0.5.0       callr_3.7.3        
+[55] compiler_4.2.2      jquerylib_0.1.4     systemfonts_1.0.4  
+[58] rlang_1.0.6         grid_4.2.2          rstudioapi_0.14    
+[61] labeling_0.4.2      base64enc_0.1-3     rmarkdown_2.18     
+[64] gtable_0.3.1        DBI_1.1.3           R6_2.5.1           
+[67] lubridate_1.9.0     knitr_1.40          fastmap_1.1.0      
+[70] utf8_1.2.2          rprojroot_2.0.3     rJava_1.0-6        
+[73] stringi_1.7.8       Rcpp_1.0.9          vctrs_0.5.0        
+[76] dbplyr_2.2.1        tidyselect_1.2.0    xfun_0.31          </code></pre>
 </div>
 </div>
 </div>
