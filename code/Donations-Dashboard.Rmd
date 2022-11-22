@@ -1,0 +1,130 @@
+---
+title: "Donations Dashboard"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: column
+    vertical_layout: scroll
+resource_files:
+- styles.css
+css: styles.css
+---
+
+```{r setup, include=FALSE}
+
+library(plyr)    # for data manipulation
+library(ggplot2)  # for awesome graphics
+library(plotly)   # for interactive graphics
+library(flexdashboard)   # for Dashboards
+library(data.table) # primary data type for tabular data
+library(kableExtra) # kable for printing tabular data
+
+# Load data
+load(file = "./data/donate.RData")
+```
+
+# Summary
+
+Donations to political parties in India for the 12 years 2003-2014.   
+The Data Summary shows individual donations up to a value of $10,000,000.  There are an additional 191 donations beyond that value.  These are not shown since they tend to skew the data.
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+### 
+
+
+```{r}
+library(scales)
+
+g <- ggplot(donations_dt[amount <= 10000000], 
+       aes(x=year, y=amount)) + 
+  geom_boxplot(color="darkblue", fill="blue", 
+               alpha=0.2, outlier.size = 1) +
+  labs(title = "Data Summary", subtitle = "majority below $500,000",
+       x="Year", 
+       y = "Amount") +
+  theme(legend.position="none") +
+  # amount in Millions
+	scale_y_continuous(labels = label_number(suffix = " M", 
+	                                         scale = 1e-6)) +  
+    geom_hline(yintercept = 500000, linetype= "dashed", 
+             color = "red")  +
+  coord_flip() 
+g
+```
+
+
+Column {data-width=400, data-height=200}
+-----------------------------------------------------------------------
+
+### 
+
+
+```{r}
+amount_med <- median(donations_dt$amount)
+
+g3 <- ggplot(donations_dt[amount <= 500000], aes(x = amount)) +
+  geom_histogram(bins = 55, color="darkblue", fill="white" )+
+    labs(title = "Value of Individual Donations",
+         x="Amount", y = "Count") +
+    geom_vline(aes(xintercept = amount_med), 
+               linetype= "dashed", 
+             color = "red") +
+    scale_x_continuous(label=comma ) +
+  annotate(geom="text", x = 200000, y = 2600, label="$60,000 median value",
+              color="red") 
+
+ggplotly(g3)
+```
+
+# Growth Indicators
+
+Column 1
+----------------------------------------------
+
+### 
+
+```{r}
+# Donations Growth
+g2 <- ggplot(donate_year, 
+             aes(x=year, y = year_sum)) +
+  geom_point(color = "blue") +
+  labs(title="Total Amount per Year",
+       x="Year", 
+       y = "Annual Amount") +
+  theme(legend.position="none") +
+  # amount in thousands
+  # scale_y_continuous(label=comma ) +
+  # amount in Millions
+	scale_y_continuous(labels = label_number(suffix = " M", 
+	                                         scale = 1e-6),
+	                   n.breaks=6) +  
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) 
+
+ggplotly(g2)
+```
+
+
+Column 2
+-------------------------------------------------
+
+### 
+
+```{r trend, message=FALSE}
+library(mgcv)
+g4 <- ggplot(contributions, aes(x = year, y = N)) +
+  geom_point(shape=18, color="blue") +
+  labs(title="Trend in Number of Donors",
+       x="Year", y = "Count") +
+  geom_smooth(method = "gam", se=FALSE, color = "orange",
+              formula = y ~ s(x) ) + 
+  scale_x_continuous(n.breaks=12) +
+  annotate(geom="text", x = 2012, y = 3400, 
+           label="High in 2012 \n 3776 Donors",
+              color="darkblue") 
+ggplotly(g4)
+```
+

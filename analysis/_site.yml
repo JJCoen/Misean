@@ -17,10 +17,8 @@ navbar:
     menu:
     - text: Data Management
       href: Data-Management.html
-    - text: Correlation
-      href: Correlation.html
-    - text: Classification
-      href: Classification.html
+    - text: Donations Dashboard
+      href: Donations-Dashboard.html
   - text: Training
     menu:
     - text: Machine Learning
