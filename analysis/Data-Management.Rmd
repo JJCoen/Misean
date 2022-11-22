@@ -1,8 +1,8 @@
 ---
-title: "Modelling with tidymodels"
+title: "Donations Analysis"
 type: inverse
-subtitle: "Feature Engineering"
-author: "David Svancer (George Mason Uni) adapted by Jim Coen"
+subtitle: "Data management and analysis of Indian political party donations"
+author: "Jim Coen"
 date: "`r format(Sys.Date(), '%A, %B %d, %Y') `"
 output:
   html_document: 
@@ -10,6 +10,7 @@ output:
     fig.width: 4
     fig_caption: yes
     number_sections: yes
+    code_folding: hide
 editor_options: 
   markdown: 
     wrap: 80
@@ -21,6 +22,9 @@ knitr::opts_chunk$set(echo = TRUE)
 options(digits = 3)
 
 # Helper packages
+#install.packages("XLConnect")
+library(XLConnect)  # Reading / Writing Excel Worksheets
+library(tidyr)    # for tabular data
 library(dplyr)    # for data manipulation
 library(ggplot2)  # for awesome graphics
 library(visdat)   # for additional visualizations
@@ -29,222 +33,267 @@ library(kableExtra) # kable for printing tabular data
 library(skimr)    # Detailed summary of features and values
 
 # Feature engineering packages
-library(caret)    # for various ML tasks
-library(recipes)  # for feature engineering tasks
 library(tidyverse)  # data manipulation and visualization
-library(tidymodels) # data split
-library(parsnip)    # model fit
+library(readxl)   # get data out of Excel and into R
 ```
 
 # Purpose
 
-Feature engineering is accomplished with the recipes package. It is designed to
-help with all stages of feature engineering, which include
+Pre-process data so that it is amenable to analysis. Specifically, generate the
+tables needed for creating a Donations Dashboard displaying:
 
-1.  assigning variable roles to the columns of our data,\
-    either an outcome or predictor role and determining their data type
-2.  defining preprocessing tasks and data transformations,\
-    this involves defining a sequence of data preprocessing steps, which can
-    include missing data imputation, centering and scaling numeric variables,
-    creating new variables from ratios of existing variables
-3.  training our data transformations,\
-    This includes things such as calculating the mean and standard deviation of
-    numeric columns for centering and scaling data and storing formulas for
-    creating new columns. The `prep()` function is used for this task.
-4.  applying them to new data sources\
-    apply the trained data transformations to the training and test datasets as
-    well as new sources of data for future predictions. The `bake()` function
-    from recipes is used for this task.
+1.  Summary of data, showing comparisons.
+2.  KPI: Donations Growth.
+3.  KPI: Value of donations.
+4.  KPI: Donor trend over time.
+
+Save tables to separate sheets in Excel Workbook.
+
+## **Characteristics of Clean Data and Messy Data**
+
+What exactly is clean data? Clean data is accurate, complete, and in a format
+that is ready to analyze. Characteristics of clean data include data that are:
+
+-   Free of duplicate rows/values
+-   Error-free (e.g. free of misspellings)
+-   Relevant (e.g. free of special characters)
+-   The appropriate data type for analysis
+-   Free of outliers (or only contain outliers have been identified/understood),
+    and
+-   Follows a "tidy data" structure
+
+Common symptoms of messy data include data that contain:
+
+-   Special characters (e.g. commas in numeric values)
+-   Numeric values stored as text/character data types
+-   Duplicate rows
+-   Misspellings
+-   Inaccuracies
+-   White space
+-   Missing data
+-   Zeros instead of null values
+
+Source: [Dataquest](https://www.dataquest.io/blog/load-clean-data-r-tidyverse/)
 
 ## Primary Research Question
 
-What are feature engineering tasks and steps to perform for each task?
+What are data management tasks and steps to perform for each task?
 
-## Load and Resample Data
+## Load Data
 
-```{r}
-telecom_df <- readRDS("./data/telecom_df.rds")
-str(telecom_df)
+### Dataset
+
+Donations to political parties from India, 12 Yrs data (2003-04 to 2014-15).
+[Source:
+data.world](https://data.world/ambarishn/donations-to-political-parties).
+
+While there are some high value donations, most of the contributions are below
+\$500,000. The Data Summary shows individual donations up to a value of
+\$10,000,000. There are an additional 191 donations beyond that value. These are
+not shown since they tend to skew the data.
+
+Connect to Excel workbook and inspect names of sheets.
+
+```{r, donate_book}
+donate_book <- loadWorkbook("./data/donations-political-parties-India.xlsx")
+getSheets(donate_book)
 ```
 
-### Randomly sample training and test sets
+Store `Donation_data` sheet as a table.
 
-```{r}
-# Create data split object
-telecom_split <- initial_split(telecom_df, prop = 0.75,
-                     strata = canceled_service)
-
-# Create the training data
-telecom_training <- telecom_split %>% 
-  training()
-
-# Create the test data
-telecom_test <- telecom_split %>% 
-  testing()
-
-# Check the number of rows
-nrow(telecom_training)
-nrow(telecom_test)
+```{r, load data, message=FALSE}
+donations_dt <- read_excel("./data/donations-political-parties-India.xlsx", sheet ="Donation_data") %>% 
+  as.data.table()
 ```
 
-# Feature Engineering
+Remove columns having all missing entries and inspect the remaining columns.
 
-## **Exploring recipe objects**
-
-The first step in feature engineering is to specify a `recipe` object with the
-`recipe()` function and add data pre-processing steps with one or more
-`step_*()` functions. Storing all of this information in a single `recipe`
-object makes it easier to manage complex feature engineering pipelines and
-transform new data sources.
-
-Use the R console to explore a `recipe` object named `telecom_rec`, which was
-specified using the `telecom_training` data
-
-```{r}
-telecom_rec <- recipe(canceled_service ~ .,
-                      data = telecom_df) %>% 
-  step_log(avg_call_mins, base = 10)
-telecom_rec
+```{r, skim}
+donations_dt <- donations_dt[, c(1:8)]
+skim(donations_dt)
 ```
 
-```{r}
-summary(telecom_rec)
+# Pre-Processing
+
+## 1. Column names
+
+1.  Replace space between column names with underscore and convert to lower
+    case.
+2.  Print column names.
+
+```{r, col names}
+if (!require("stringr")) install.packages("stringr")
+library("stringr")
+names(donations_dt) <- str_replace_all(names(donations_dt), 
+                                       "\\s", "_") %>% 
+  tolower()
+colnames(donations_dt)
 ```
 
-## **Recipe object**
+## **2. Missing Entries**
 
-In the previous chapter, you fit a logistic regression model using a subset of
-the predictor variables from the `telecom_df` data. This dataset contains
-information on customers of a telecommunications company and the goal is predict
-whether they will cancel their service.
+The `contribution_mode` column has 234 missing entries and `address` has 1
+missing. Replace these with \`unknown\` designation.
 
-In this exercise, you will use the `recipes` package to apply a log
-transformation to the `avg_call_mins` and `avg_intl_mins` variables in the
-telecommunications data. This will reduce the range of these variables and
-potentially make their distributions more symmetric, which may increase the
-accuracy of your logistic regression model.
-
-```{r}
-# Specify feature engineering recipe
-telecom_log_rec <- recipe(canceled_service ~., 
-                          data = telecom_training) %>%
-  # Add log transformation step for numeric predictors
-  step_log(avg_call_mins, avg_intl_mins, base = 10)
-
-# Print recipe object
-telecom_log_rec
-
-# View variable roles and data types
-telecom_log_rec %>%
-  summary()
+```{r, missings}
+donations_dt[is.na(address), address := "unknown"]
+donations_dt[is.na(contribution_mode), contribution_mode := "unknown"]
 ```
 
-## **Training a recipe object**
+## 3. Type Conversion
 
-In the previous exercise, you created a `recipe` object with instructions to
-apply a log transformation to the `avg_call_mins` and `avg_intl_mins` predictor
-variables in the telecommunications data.
+### Convert financial_year to numeric
 
-The next step in the feature engineering process is to train your `recipe`
-object using the training data. Then you will be able to apply your trained
-`recipe` to both the training and test datasets in order to prepare them for use
-in model fitting and model evaluation.
+1.  Strip last three characters from financial_year.
+2.  Convert single year from character to numeric.
+3.  Order donations table by year ascending.
 
-```{r}
-# Train the telecom_log_rec object
-telecom_log_rec_prep <- telecom_log_rec %>% 
-  prep(training = telecom_training)
-
-# View results
-telecom_log_rec_prep
-
-# Use your trained recipe to obtain the transformed training dataset.
-telecom_log_rec_prep %>% 
-  bake(new_data = NULL)
+```{r, convert}
+# Create new column named year
+donations_dt[, year := str_sub(financial_year, end=-4)][, financial_year := NULL]
+# Convert to numeric
+donations_dt[, year := as.numeric(year)]                      
+# Order data table by year
+donations_dt <- donations_dt[order(year)]
 ```
 
-Apply your trained `recipe` to the test dataset.
+### Convert year from numeric to categorical
 
 ```{r}
-# Apply to test data
-telecom_log_rec_prep %>% 
-  bake(new_data = telecom_test)
+donations_dt[, year := as.factor(year)]
 ```
 
-# Numeric Features
-
-## **Discovering correlated predictors**
-
-Correlated predictor variables provide redundant information and can negatively
-impact the model fitting process. When two variables are highly correlated,
-their values change linearly with each other and hence provide the same
-information to your machine learning algorithms. This phenomenon is know as
-multicollinearity.
-
-Before beginning the model fitting process, it's important to explore your
-dataset to uncover these relationships and remove them in your feature
-engineering steps.
+## 4. Check for outliers
 
 ```{r}
-telecom_training %>% 
-  # Select numeric columns
-  select_if(is.numeric) %>% 
-  # Calculate correlation matrix
-  cor()
+library(scales)   # to display values in thousands
+
+# Basic scatter plot
+ggplot(donations_dt, aes(x=year, y=amount)) + 
+  geom_point() +
+  labs(title="Individual donations",
+       x="Year", 
+       y = "Amount") +
+  scale_y_continuous(label=comma ) 
 ```
 
-Create a scatter plot with avg_data_gb on the x-axis and monthly_charges on the
-y-axis.
+$\rightarrow$ There are eleven contributions over \$100 Million out of 13,573
+separate donations. Since these points skew the data, it is better to set the
+limit for `amount` to \$100 Million when plotting data. However, it is necessary
+to retain these contributions for the sake of accuracy.
+
+# Key Performance Indicators
+
+## Donations growth over time
+
+Create a new table giving the total donations by year.
+
+```{r, donate_year}
+
+options("scipen"=100, "digits"=4)
+donate_year <- donations_dt[, .(year_sum = sum(amount)), by = year ]
+```
+
+Visualise.
 
 ```{r}
-# Plot correlated predictors
-ggplot(telecom_training, aes(x = avg_data_gb, y = monthly_charges)) + 
-  # Add points
-  geom_point()  + 
-  # Add title
-  labs(title = "Monthly Charges vs. Average Data Usage",
-       y = 'Monthly Charges ($)', x = 'Average Data Usage (GB)') 
+# Donations Growth
+g2 <- ggplot(donate_year, 
+             aes(x=year, y = year_sum)) +
+  geom_point(color = "blue") +
+  labs(title="Total Amount per Year",
+       x="Year", 
+       y = "Annual Amount") +
+  theme(legend.position="none") +
+  # amount in thousands
+  # scale_y_continuous(label=comma ) +
+  # amount in Millions
+	scale_y_continuous(labels = label_number(suffix = " M", 
+	                                         scale = 1e-6),
+	                   n.breaks=6) +  
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  coord_flip()
+
+g2
 ```
 
-From the scatter plot, you can see that the more data customers use, the more
-they are charged every month. You will have to remove this redundant information
-with your feature engineering steps.
+1.  Write donations by year table to Excel Workbook.
+2.  Save updated Workbook
 
-## **Processing correlated predictors**
+```{r, save donate_year}
+createSheet(donate_book, name ="Donation_year")
+writeWorksheet(donate_book, donate_year, sheet ="Donation_year")
+```
 
-1.  To preprocess correlated predictor variables, we begin by specifying a
-    recipe. We add the same model formula and data argument.
+## Donor Growth
 
-2.  Then we pass our recipe object to the `step_corr()` function, which has two
-    Rs instead of one, and provide the names of all numeric columns in the
-    training dataset separated by commas. We also provide a correlation
-    threshold of 0.9 to the threshold argument.
+Clean character strings in `name` column.
 
-3.  Train your `telecom_cor_rec` object using the telecom_training dataset.
+1.  Remove punctuation marks.
+2.  Replace white-space with underscore
 
-4.  Use your trained recipe to obtain the transformed training dataset.
+```{r, clean names}
+# remove punctuation and replace whitespace with underscore
+donations_dt$name <- str_replace_all(donations_dt$name, 
+                pattern = "[[:punct:]]", 
+                replacement = "") 
+donations_dt$name <- str_replace_all(donations_dt$name, 
+                pattern = "\\s", 
+                replacement = "_") 
+```
+
+### Unique Donors
+
+```{r, unique donors}
+donations_dt[, unique(name)] %>% 
+  length()
+```
+
+There are 10,807 unique donors out of 13,573 total donations given. So, most
+donations are once-off.
+
+1.  Create a new table showing total amount each donor contributed.
+2.  Save table as a new Excel sheet in WorkBook.
+
+```{r, by_donor}
+by_donor <- donations_dt[, .(tot_amount = sum(amount)), by=name]
+
+createSheet(donate_book, name ="Donation_donor")
+writeWorksheet(donate_book, by_donor, sheet ="Donation_donor")
+```
+
+## Number of Donors
+
+Number of donors making contributions per year.
 
 ```{r}
-# Specify a recipe object
-telecom_cor_rec <- recipe(canceled_service ~.,
-                          data = telecom_training) %>%
-  # Remove correlated variables
-  step_corr(all_numeric(), threshold = 0.8)
-
-# Train the recipe
-telecom_cor_rec_prep <- telecom_cor_rec %>% 
-  prep(training = telecom_training)
-
-# Apply to training data
-telecom_cor_rec_prep %>% 
-  bake(new_data = NULL)
-
-# Apply to test data
-telecom_cor_rec_prep %>% 
-  bake(new_data=telecom_test)
+contributions <-  donations_dt[, .N, by = year]
+contributions[, year := seq.int(from = 2003, to = 2014, 
+                                by = 1)]
+createSheet(donate_book, name ="Contributions")
+writeWorksheet(donate_book, contributions, sheet ="Contributions")
 ```
 
-## **Normalization**
+## Store Data
+
+1.  Save R tables in RData file.
+2.  Write to Excel WorkBook file containing separate sheets for each new table.
+
+```{r}
+# Save RData
+save(by_donor, donate_year, contributions, donations_dt, 
+     file = "./data/donate.RData")
+
+# Excel WorkBook
+saveWorkbook(donate_book, file = "./data/donations-India-update.xlsx")
+```
+
+## Numeric Columns
+
+### **Normalization**
 
 Another common task is centering and scaling numeric variables, known as
 normalization. For each numeric column, we subtract the mean and divide by the
@@ -254,273 +303,4 @@ variable values is very intuitive. From the normalized total_time value, we see
 that spending 1,273 seconds on the website is 1-point-19 standard deviations
 greater than the average time spent by customers.
 
-## **Multiple feature engineering steps**
-
-The power of the `recipes` package is that you can include multiple
-pre-processing steps in a single `recipe` object. These steps will be carried
-out in the order they are entered with the `step_*()` functions.
-
-1.  Remove correlated predictors, and also normalize all numeric predictors in
-    the telecommunications data.
-2.  Train your `telecom_norm_rec` object using the `telecom_training` dataset.
-3.  Apply your trained recipe to the test dataset.
-
-```{r}
-# Specify a recipe object
-telecom_norm_rec <- recipe(canceled_service ~ .,data=telecom_training) %>% 
-  # Remove correlated variables
-  step_corr(all_numeric(), threshold = 0.8) %>% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors())
-
-# Train the recipe
-telecom_norm_rec_prep <- telecom_norm_rec %>% 
-  prep(telecom_training)
-
-# Apply to test data
-telecom_norm_rec_prep %>% 
-  bake(new_data = telecom_test)
-```
-
-In the test set, the normalised value for `avg_data_gb[1]` is 0.426. This is
-derived from the mean and standard deviation in the training set:
-
-$$
-m_{data-gb} = 8.23  \\
-s_{data-gb} = 1.9
-$$
-
-So, `avg_data_gb[1]` is 0.426 \* 1.9 = 0.809. This means that this customer uses
-an average of 809Mb greater than the average amount of 8.23Gb.
-
-```{r}
-setDT(telecom_training)
-setDT(telecom_test)
-
-data_gb1 <- telecom_test[1, avg_data_gb]
-data_gb_m <- telecom_training[, mean(avg_data_gb)]
-data_gb_sd <- telecom_training[, sd(avg_data_gb)]
-(data_gb1 - data_gb_m)/data_gb_sd
-0.426 * data_gb_sd + data_gb_m
-
-data_gb_sd <- telecom_training[, sd(avg_data_gb)]
-
-```
-
-# Nominal Predictors
-
-## **Transforming nominal predictors**
-
-Dummy variable encoding takes a different approach than one-hot encoding. It
-removes redundant information by excluding one value from the original set of
-data values. If we have n distinct values in our categorical data, we will get
-n - 1 indicator variables.
-
-![](images/paste-367F155A.png)
-
-In the example above, zeros in marketing and technology mean that the department
-is finance.
-
-### **Preprocessing nominal predictor variables**
-
-Many modeling engines in R include automatic dummy variable creation, so it is
-possible to fit models without having to use step_dummy(). However, these
-methods are not consistent across engines in using one-hot versus dummy
-variables or naming conventions. Using the recipes package standardizes this
-process and will make your code less susceptible to errors.
-
-## **Ordering of step\_\*() functions**
-
-The `step_*()` functions within a recipe are carried out in sequential order.
-It's important to keep this in mind so that you avoid unexpected results in your
-feature engineering pipeline!
-
-1.  Specify the `telecom_recipe_1` object to normalize all numeric predictors
-    and then create dummy variables for all nominal predictors in the training
-    data, `telecom_training`.\
-    Select columns **by role** in your `recipe` specification.
-
-2.  Train `telecom_recipe_1` and use it to transform the test data,
-    `telecom_test`.
-
-3.  Now specify `telecom_recipe_2` to create dummy variables for all nominal
-    predictors and then normalize all numeric predictors in the training data,
-    `telecom_training`.\
-    Select columns **by role** in your `recipe` specification.
-
-```{r}
-telecom_recipe_1 <- 
-  recipe(canceled_service ~ avg_data_gb + contract, data = telecom_training)  %>% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors())  %>% 
-  # Create dummy variables for nominal predictors
-  step_dummy(all_nominal(), -all_outcomes())
-
-# Train and apply telecom_recipe_1 on the test data
-telecom_recipe_1 %>% 
-  prep(telecom_training) %>% 
-  bake(new_data = telecom_test)
-
-telecom_recipe_2 <- 
-  recipe(canceled_service ~ avg_data_gb + contract, data = telecom_training)  %>% 
-  # Create dummy variables for nominal predictors
-  step_dummy(all_nominal(), -all_outcomes())  %>% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors())
-
-# Train and apply telecom_recipe_2 on the test data
-telecom_recipe_2 %>% 
-  prep(telecom_training) %>% 
-  bake(new_data = telecom_test)
-```
-
--   Notice that `telecom_recipe_1` produced [0, 1] values in the dummy variable
-    columns while `telecom_recipe_2` produced dummy variables which were then
-    normalized!
-
--   The predictor `contract_two_year` created by `telecom_recipe_2` is -0.482
-    instead of 0 and 2.07 instead of 1 due to normalization.
-
--   For model interpretation, it's best to normalize variables before creating
-    dummy variables.
-
--   Also notice that since you only specified two predictor variables in your
-    model formula, the rest of the columns are ignored by your `recipe` objects
-    when transforming new data sources.
-
-## **Complete feature engineering pipeline**
-
-The `recipes` package is designed to encode multiple feature engineering steps
-into one object, making it easier to maintain data transformations in a machine
-learning workflow.
-
-In this exercise, you will train a feature engineering pipeline to prepare the
-telecommunications data for modeling.
-
--   Train your recipe on the training data and apply it to the test data.
-
-```{r}
-# Create a recipe that predicts canceled_service using the training data
-telecom_recipe <- recipe(canceled_service ~ ., data=telecom_training) %>% 
-  # Remove correlated predictors
-  step_corr(all_numeric_predictors(), threshold = 0.8) %>% 
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors()) %>% 
-  # Create dummy variables
-  step_dummy(all_nominal(), -all_outcomes())
-
-# Train your recipe and apply it to the test data
-telecom_recipe %>% 
-  prep(telecom_training) %>% 
-  bake(new_data=telecom_test)
-```
-
-# Complete Modeling Workflow
-
-## **Feature engineering process**
-
-To incorporate feature engineering into the modeling process, the training and
-test datasets must be pre-processed before the model fitting stage. With the new
-skills you have learned in this chapter, you will be able to use all of the
-available predictor variables in the telecommunications data to train your
-logistic regression model.
-
-In this exercise, you will create a feature engineering pipeline on the
-telecommunications data and use it to transform the training and test datasets.
-
-```{r}
-telecom_recipe <- recipe(canceled_service ~., data = telecom_training) %>% 
-  # Removed correlated predictors
-  step_corr(all_numeric_predictors(), threshold = 0.8) %>% 
-  # Log transform numeric predictors
-  step_log(all_numeric_predictors(), base = 10) %>%
-  # Normalize numeric predictors
-  step_normalize(all_numeric_predictors()) %>%
-  # Create dummy variables
-  step_dummy(all_nominal(), -all_outcomes())
-
-# Train recipe
-telecom_recipe_prep <- telecom_recipe %>% 
-  prep(telecom_training)
-
-# Transform training data
-telecom_training_prep <- telecom_recipe_prep %>% 
-  bake(new_data = NULL)
-
-# Transform test data
-telecom_test_prep <- telecom_recipe_prep %>% 
-  bake(new_data = telecom_test)
-
-telecom_test_prep %>% 
-  head() %>% 
-  kbl() %>% 
-  kable_styling()
-```
-
-## **Model training and prediction**
-
-You have pre-processed your training and test data-sets in the previous
-exercise. Since you incorporated feature engineering into your modeling
-workflow, you are able to use all of the predictor variables available in the
-telecommunications data!
-
-The next step is training your logistic regression model and using it to obtain
-predictions on your new pre-processed test data-set.
-
-```{r}
-# default for logistic_reg is engine = "glm", 
-# and mode = "classification"
-logistic_model <- logistic_reg()
-
-# Train logistic model
-logistic_fit <- logistic_model %>% 
-  fit(canceled_service ~ ., data = telecom_training_prep)
-
-# Obtain class predictions
-class_preds <- predict(logistic_fit, new_data = telecom_test_prep,
-                       type = 'class')
-
-# Obtain estimated probabilities
-prob_preds <- predict(logistic_fit, new_data = telecom_test_prep, 
-                      type = 'prob')
-
-# Combine test set results
-telecom_results <- telecom_test_prep %>% 
-  select(canceled_service) %>% 
-  bind_cols(class_preds, prob_preds)
-
-telecom_results
-```
-
-## **Model performance metrics**
-
-In this exercise, you will use `yardstick` metric functions to evaluate your
-model's performance on the test data-set.
-
-When you fit a logistic regression model to the telecommunications data in
-Chapter 2, you predicted `canceled_service` using `avg_call_mins`,
-`avg_intl_mins`, and `monthly_charges`. The sensitivity of your model was 0.42
-while the specificity was 0.895.
-
-Now that you have incorporated all available predictor variables using feature
-engineering, you can compare your new model's performance to your previous
-results.
-
-```{r}
-# Create a confusion matrix
-telecom_results %>% 
-  conf_mat(truth = canceled_service, estimate = .pred_class)
-
-# Calculate sensitivity
-telecom_results %>% 
-  sens(truth = canceled_service, estimate = .pred_class)
-
-# Calculate specificity
-telecom_results %>% 
-  spec(truth = canceled_service, estimate = .pred_class)
-
-# Plot ROC curve
-telecom_results %>% 
-  roc_curve(truth = canceled_service, .pred_yes) %>% 
-  autoplot()
-```
+## 
