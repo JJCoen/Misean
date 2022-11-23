@@ -77,11 +77,9 @@ Source: [Dataquest](https://www.dataquest.io/blog/load-clean-data-r-tidyverse/)
 
 ## Primary Research Question
 
-What are data management tasks and steps to perform for each task?
+How to calculate donations KPI's and integrate results with Excel WorkBook?
 
 ## Load Data
-
-### Dataset
 
 Donations to political parties from India, 12 Yrs data (2003-04 to 2014-15).
 [Source:
@@ -159,8 +157,10 @@ donations_dt <- donations_dt[order(year)]
 
 ### Convert year from numeric to categorical
 
+This is in order to display axis marks correctly.
+
 ```{r}
-donations_dt[, year := as.factor(year)]
+donations_dt[, year_num := year][, year := as.factor(year)]
 ```
 
 ## 4. Check for outliers
@@ -265,6 +265,47 @@ createSheet(donate_book, name ="Donation_donor")
 writeWorksheet(donate_book, by_donor, sheet ="Donation_donor")
 ```
 
+### Donor retention - single year
+
+1.  Create a table giving the donor, year of contribution, and amount donor gave
+    in each year.
+2.  Sum total amount given by individual donors by year.
+3.  Calculate the donor retention between 2013 and 2014.
+
+```{r}
+donor_by_year <- donations_dt[, .(sum(amount)), 
+                              by = .(year_num, name)]
+setnames(donor_by_year, "V1", "year_amount")
+
+createSheet(donate_book, name ="Donors_by_Year")
+writeWorksheet(donate_book, donor_by_year, sheet ="Donors_by_Year")
+
+donors_13 <- donor_by_year[year_num == 2013, name]
+donors_14 <- donor_by_year[year_num == 2014, name]
+
+# donors in 2014 but not in 2013
+setdiff(donors_14, donors_13) %>% 
+  length()
+
+# donors who gave in 2013 and in 2014
+num_retain <- intersect(donors_14, donors_13) %>% 
+  length
+
+num_retain/length(donors_14) * 100
+```
+
+### Donor retention - all previous years
+
+```{r}
+donors_previous <- donor_by_year[year_num %in% 2003:2013, name]
+
+# donors who gave in 2014 and in any previous year
+num_retain_all <- intersect(donors_14, donors_previous) %>% 
+  length
+
+num_retain_all/length(donors_14) * 100
+```
+
 ## Number of Donors
 
 Number of donors making contributions per year.
@@ -284,7 +325,7 @@ writeWorksheet(donate_book, contributions, sheet ="Contributions")
 
 ```{r}
 # Save RData
-save(by_donor, donate_year, contributions, donations_dt, 
+save(by_donor, donate_year, contributions, donor_by_year,  donations_dt, 
      file = "./data/donate.RData")
 
 # Excel WorkBook

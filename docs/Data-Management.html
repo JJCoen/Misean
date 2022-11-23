@@ -420,7 +420,7 @@ div.tocify {
 <h3 class="subtitle">Data management and analysis of Indian political
 party donations</h3>
 <h4 class="author">Jim Coen</h4>
-<h4 class="date">Tuesday, November 22, 2022</h4>
+<h4 class="date">Wednesday, November 23, 2022</h4>
 
 </div>
 
@@ -428,7 +428,7 @@ party donations</h3>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -439,8 +439,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -449,13 +449,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-11-22
+<strong>Last updated:</strong> 2022-11-23
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Misean/</code> <span
@@ -478,18 +478,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -580,15 +583,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantree5c013c489792e4b7f04ecb372dcfcd18ed23a845targetblank5c013c4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantreeb5753a41b658f1ddca3655113c5bdf9af6514302targetblankb5753a4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JJCoen/Misean/tree/5c013c489792e4b7f04ecb372dcfcd18ed23a845" target="_blank">5c013c4</a>
+<a href="https://github.com/JJCoen/Misean/tree/b5753a41b658f1ddca3655113c5bdf9af6514302" target="_blank">b5753a4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantree5c013c489792e4b7f04ecb372dcfcd18ed23a845targetblank5c013c4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJJCoenMiseantreeb5753a41b658f1ddca3655113c5bdf9af6514302targetblankb5753a4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -598,7 +601,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JJCoen/Misean/tree/5c013c489792e4b7f04ecb372dcfcd18ed23a845" target="_blank">5c013c4</a>.
+<a href="https://github.com/JJCoen/Misean/tree/b5753a41b658f1ddca3655113c5bdf9af6514302" target="_blank">b5753a4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -631,8 +634,10 @@ Untracked files:
     Untracked:  data/trip.csv
 
 Unstaged changes:
-    Deleted:    analysis/Classification.Rmd
-    Deleted:    analysis/Correlation.Rmd
+    Modified:   analysis/Data-Management.Rmd
+    Modified:   code/Donations-Dashboard.Rmd
+    Modified:   code/Donations-Dashboard.html
+    Modified:   data/donations-India-update.xlsx
 
 </code></pre>
 <p>
@@ -678,6 +683,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JJCoen/Misean/032de5a65037ad6d8259986f34ef86362c20697c/docs/Data-Management.html" target="_blank">032de5a</a>
+</td>
+<td>
+JJCoen
+</td>
+<td>
+2022-11-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -847,13 +869,11 @@ href="https://www.dataquest.io/blog/load-clean-data-r-tidyverse/">Dataquest</a><
 </div>
 <div id="primary-research-question" class="section level2">
 <h2>Primary Research Question</h2>
-<p>What are data management tasks and steps to perform for each
-task?</p>
+<p>How to calculate donations KPI’s and integrate results with Excel
+WorkBook?</p>
 </div>
 <div id="load-data" class="section level2">
 <h2>Load Data</h2>
-<div id="dataset" class="section level3">
-<h3>Dataset</h3>
 <p>Donations to political parties from India, 12 Yrs data (2003-04 to
 2014-15). <a
 href="https://data.world/ambarishn/donations-to-political-parties">Source:
@@ -883,7 +903,6 @@ $ `PAN Given`         &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &
 $ Amount              &lt;dbl&gt; 3000000, 10000000, 108000, 54000, 54000, 100000, 1…
 $ `Contribution Mode` &lt;chr&gt; &quot;CASH&quot;, &quot;000037, HDFC Bank Bengaluru, Dt. 16.03.20…
 $ `Financial Year`    &lt;chr&gt; &quot;2010-11&quot;, &quot;2014-15&quot;, &quot;2014-15&quot;, &quot;2011-12&quot;, &quot;2011-…</code></pre>
-</div>
 </div>
 </div>
 <div id="pre-processing" class="section level1">
@@ -932,7 +951,8 @@ donations_dt &lt;- donations_dt[order(year)]</code></pre>
 <div id="convert-year-from-numeric-to-categorical"
 class="section level3">
 <h3>Convert year from numeric to categorical</h3>
-<pre class="r"><code>donations_dt[, year := as.factor(year)]</code></pre>
+<p>This is in order to display axis marks correctly.</p>
+<pre class="r"><code>donations_dt[, year_num := year][, year := as.factor(year)]</code></pre>
 </div>
 </div>
 <div id="check-for-outliers" class="section level2">
@@ -1027,6 +1047,43 @@ So, most donations are once-off.</p>
 
 createSheet(donate_book, name =&quot;Donation_donor&quot;)
 writeWorksheet(donate_book, by_donor, sheet =&quot;Donation_donor&quot;)</code></pre>
+</div>
+<div id="donor-retention---single-year" class="section level3">
+<h3>Donor retention - single year</h3>
+<ol style="list-style-type: decimal">
+<li>Create a table giving the donor, year of contribution, and amount
+donor gave in each year.</li>
+<li>Sum total amount given by individual donors by year.</li>
+<li>Calculate the donor retention between 2013 and 2014.</li>
+</ol>
+<pre class="r"><code>donor_by_year &lt;- donations_dt[, .(sum(amount)), 
+                              by = .(year_num, name)]
+setnames(donor_by_year, &quot;V1&quot;, &quot;year_amount&quot;)
+
+donors_13 &lt;- donor_by_year[year_num == 2013, name]
+donors_14 &lt;- donor_by_year[year_num == 2014, name]
+
+# donors in 2014 but not in 2013
+setdiff(donors_14, donors_13) %&gt;% 
+  length()</code></pre>
+<pre><code>[1] 1227</code></pre>
+<pre class="r"><code># donors who gave in 2013 and in 2014
+num_retain &lt;- intersect(donors_14, donors_13) %&gt;% 
+  length
+
+num_retain/length(donors_14) * 100</code></pre>
+<pre><code>[1] 13.41</code></pre>
+</div>
+<div id="donor-retention---all-previous-years" class="section level3">
+<h3>Donor retention - all previous years</h3>
+<pre class="r"><code>donors_previous &lt;- donor_by_year[year_num %in% 2003:2013, name]
+
+# donors who gave in 2014 and in any previous year
+num_retain_all &lt;- intersect(donors_14, donors_previous) %&gt;% 
+  length
+
+num_retain_all/length(donors_14) * 100</code></pre>
+<pre><code>[1] 18.28</code></pre>
 </div>
 </div>
 <div id="number-of-donors" class="section level2">

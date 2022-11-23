@@ -1,8 +1,8 @@
 ---
-title: "Donations Dashboard"
+title: "Donations Dashboard 2"
 output:
   flexdashboard::flex_dashboard:
-    orientation: column
+    orientation: row
     vertical_layout: scroll
 resource_files:
 - styles.css
@@ -17,30 +17,57 @@ library(plotly)   # for interactive graphics
 library(flexdashboard)   # for Dashboards
 library(data.table) # primary data type for tabular data
 library(kableExtra) # kable for printing tabular data
+library(scales)     # print values
 
 # Load data
 load(file = "./data/donate.RData")
+
+# Compute Critical Values
+# Total number of contributions in 2014
+computeContributions = function(...) {
+  return(  contributions[year == "2014", N] )
+} 
+
+# Value of all 2014 contributions
+computeValue = function(...) {
+  value <- donations_dt[year == "2014", sum(amount)]
+  value <- dollar(value)
+  return(value)
+}
+
+# number of donors in 2014
+computeDonors = function(...) {
+  return( donor_by_year[ year_num == 2014, .N] )
+}
+
+computeRetention = function (...) {
+  donors_13 <- donor_by_year[year_num == 2013, name]
+  donors_14 <- donor_by_year[year_num == 2014, name]
+
+  # donors who gave in 2013 and in 2014
+  num_retain <- intersect(donors_14, donors_13) %>% 
+    length
+
+  retain_2014 <- num_retain/length(donors_14) 
+  return(retain_2014)
+}
+
 ```
 
 # Summary
 
-Donations to political parties in India for the 12 years 2003-2014.   
-The Data Summary shows individual donations up to a value of $10,000,000.  There are an additional 191 donations beyond that value.  These are not shown since they tend to skew the data.
+## Plots
 
-Column {data-width=600}
------------------------------------------------------------------------
-
-### 
+### 1. Data Summary {data-width=600}
 
 
 ```{r}
-library(scales)
 
 g <- ggplot(donations_dt[amount <= 10000000], 
        aes(x=year, y=amount)) + 
   geom_boxplot(color="darkblue", fill="blue", 
                alpha=0.2, outlier.size = 1) +
-  labs(title = "Data Summary", subtitle = "majority below $500,000",
+  labs(title = "", subtitle = "majority below $500,000",
        x="Year", 
        y = "Amount") +
   theme(legend.position="none") +
@@ -54,10 +81,7 @@ g
 ```
 
 
-Column {data-width=400, data-height=200}
------------------------------------------------------------------------
-
-### 
+### 2. Value of Individual Donations {data-width=400, data-height=200}
 
 
 ```{r}
@@ -65,8 +89,7 @@ amount_med <- median(donations_dt$amount)
 
 g3 <- ggplot(donations_dt[amount <= 500000], aes(x = amount)) +
   geom_histogram(bins = 55, color="darkblue", fill="white" )+
-    labs(title = "Value of Individual Donations",
-         x="Amount", y = "Count") +
+    labs(x="Amount", y = "Count") +
     geom_vline(aes(xintercept = amount_med), 
                linetype= "dashed", 
              color = "red") +
@@ -77,12 +100,57 @@ g3 <- ggplot(donations_dt[amount <= 500000], aes(x = amount)) +
 ggplotly(g3)
 ```
 
+## Details
+
+### Note {data-width=600}
+The Data Summary shows individual donations up to a value of $10,000,000.  There are an additional 191 donations beyond that value.  These are not shown since they tend to skew the data.
+
+### Donation Amount {data-width=400}
+Chart 1 shows that there are some very high value donations of the order of \$10 M.  However, it is better to have many small donations.  Chart 2 shows that most donations are in the range of \$60,000
+
 # Growth Indicators
 
-Column 1
-----------------------------------------------
+## Critical Values
 
-### 
+### Total Contributions 2014
+
+```{r}
+num_contributions = computeContributions()
+valueBox(
+  num_contributions, icon="fa-reorder", 
+  color = "success")
+```
+
+
+### Value of Contributions 2014
+
+####
+
+```{r}
+value = computeValue()
+valueBox(
+  value, icon = "fa-money"
+)
+```
+
+### Total Donors 2014
+
+```{r}
+donors = computeDonors()
+valueBox(donors, icon = "fa-users")
+```
+
+### Donor Retention 2013 - 2014
+
+```{r}
+retention = computeRetention()
+valueBox(scales::percent(retention), icon = "fa-refresh",
+         color = "danger")
+```
+
+## Plots
+
+### Donations Growth
 
 ```{r}
 # Donations Growth
@@ -108,10 +176,7 @@ ggplotly(g2)
 ```
 
 
-Column 2
--------------------------------------------------
-
-### 
+### Trend
 
 ```{r trend, message=FALSE}
 library(mgcv)
