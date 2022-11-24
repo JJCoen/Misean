@@ -4,22 +4,26 @@ navbar:
   title: Misean Cara Operations
   type: inverse
   left:
-  - text: Home
+  - icon: fa fa-home
+    text: Home
     href: index.html
-  - text: Data Integrity
+  - icon: fa fa-folder-open-o
+    text: Data Integrity
     menu:
     - text: Common Data Problems
       icon: fa-clipboard-list
       href: Common-Data-Problems.html
     - text: Advanced Data Problems
       href: Advanced-Data-Problems.html
-  - text: Data Analysis
+  - icon: fa fa-bar-chart
+    text: Data Analysis
     menu:
     - text: Data Management
       href: Data-Management.html
     - text: Donations Dashboard
       href: Donations-Dashboard.html
-  - text: Training
+  - icon: far fa-edit
+    text: Training
     menu:
     - text: Machine Learning
       href: Interpretable-ML-Models.html
@@ -28,6 +32,9 @@ navbar:
     - text: Zoom Systematic Training
       href: Zoom-Training-Program.docx
   right:
+  - icon: fa fa-info
+    text: About
+    href: about.html
   - icon: fab fa-github
     text: Source code
     href: https://github.com/JJCoen/Misean
