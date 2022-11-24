@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Misean Cara is looking for a Data Analyst.  The main responsibilities are:
+Misean Cara is looking for a Data Analyst and Systems Administration specialist.  The main responsibilities are:
 
 1. Quality Control and Data Integrity  
 2. Data Management and Analysis Reporting  
@@ -15,5 +15,5 @@ Misean Cara is looking for a Data Analyst.  The main responsibilities are:
 4. Salesforce CRM Systems Administration  
 5. Supporting Office IT systems
 
-Any other duties as required by your line manager or the CEO
+
 
