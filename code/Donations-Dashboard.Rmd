@@ -1,5 +1,5 @@
 ---
-title: "Donations Dashboard 2"
+title: "Donations Dashboard"
 output:
   flexdashboard::flex_dashboard:
     orientation: row
@@ -143,9 +143,14 @@ valueBox(donors, icon = "fa-users")
 ### Donor Retention 2013 - 2014
 
 ```{r}
-retention = computeRetention()
-valueBox(scales::percent(retention), icon = "fa-refresh",
-         color = "danger")
+retention = computeRetention() %>% 
+  scales::percent()
+#valueBox(scales::percent(retention), icon = "fa-refresh",
+#         color = "danger")
+
+gauge(retention, min = 0, max = 100, symbol = '%', gaugeSectors(
+  success = c(80, 100), warning = c(40, 79), danger = c(0, 39)
+))
 ```
 
 ## Plots
