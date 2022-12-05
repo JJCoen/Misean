@@ -31,7 +31,6 @@ computeContributions = function(...) {
 # Value of all 2014 contributions
 computeValue = function(...) {
   value <- donations_dt[year == "2014", sum(amount)]
-  value <- dollar(value)
   return(value)
 }
 
@@ -93,7 +92,7 @@ g3 <- ggplot(donations_dt[amount <= 500000], aes(x = amount)) +
     geom_vline(aes(xintercept = amount_med), 
                linetype= "dashed", 
              color = "red") +
-    scale_x_continuous(label=comma ) +
+    scale_x_continuous(label=scales::dollar ) +
   annotate(geom="text", x = 200000, y = 2600, label="$60,000 median value",
               color="red") 
 
@@ -127,9 +126,11 @@ valueBox(
 ####
 
 ```{r}
-value = computeValue()
+value = computeValue() / 1000000 
+value <- ceiling(value)
+MillionForm <- dollar_format(prefix = "$",suffix="M")
 valueBox(
-  value, icon = "fa-money"
+  MillionForm(value), icon = "fa-money"
 )
 ```
 
