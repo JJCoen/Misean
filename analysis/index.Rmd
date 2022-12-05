@@ -14,16 +14,16 @@ editor_options:
 ## Purpose
 
 ::: col-sm-6
-This website highlights work that I have carried out in Data Managment, Data Analysis and Training . This is in support of my application to Misean Cara for the position of Data Analyst and Systems Administration specialist.
+This website highlights work that I have carried out as a Trainer . This is in support of my application to Terenure Enterprise Centre for the position of Digital Skills Trainer.
 
 ## Background
 
-Misean Cara supports missionaries who a assist with the material and spiritual needs and promote the development of peoples in countries less fortunate than Ireland.
+Terenure Enterprise Centre supports economic development and job creation in the community. Part of the facilities that it provides to service users in training in digital applications.
 
 ## Business Understanding
 
 | Insight                                                   | Analysis           |
-|----------------------------------------------------|--------------------|
+|---------------------------------------------------|---------------------|
 | Which subscribers are most profitable?                    | Descriptive        |
 | What are the characteristics of these subscribers?        | Segmentation       |
 | Do these subscribers have different value to Misean Cara? | Hypothesis Testing |
@@ -38,5 +38,4 @@ Misean Cara supports missionaries who a assist with the material and spiritual n
 <img src="./images/corporate-finance-inst.png" width="20%"/>
 :::
 
-> "I heard the voice of those very people . . . and they cried out, as with one voice: 'We appeal to you, holy servant boy, to come and walk among us.' "
-> St Patrick
+> "I heard the voice of those very people . . . and they cried out, as with one voice: 'We appeal to you, holy servant boy, to come and walk among us.'" St Patrick
