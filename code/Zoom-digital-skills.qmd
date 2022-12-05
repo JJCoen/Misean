@@ -1,0 +1,150 @@
+---
+title: "Zoom Digital Skills"
+author: "Jim Coen"
+format: 
+  revealjs:
+    incremental: true
+    preview-links: true
+    slide-number: true
+    preview-links: false
+    chalkboard: 
+      buttons: false
+    logo: Images/corporate-finance-inst.png
+    css: styles.css
+editor: visual
+---
+
+## What is Zoom
+
+::: columns
+::: {.column .fragment}
+![](./Images/zoom.png)
+:::
+
+::: {.column .fragment}
+-   Communication tool
+
+-   One-to-one conversations
+
+-   Group meetups and discussions
+
+-   Collaborate on a project
+
+-   Most popular communication app
+:::
+:::
+
+::: footer
+Learn more: [What is Zoom?](https://www.getcloudapp.com/blog/what-is-zoom/)
+:::
+
+## Why Zoom
+
+::: columns
+::: {.column .fragment}
+![](./Images/communicating.png) [Source](www.uschamber.com)
+:::
+
+::: {.column .fragment}
+-   Accessible
+-   Seeing someone in person
+-   One-to-one with friends and family
+    -   may be far away
+-   Stay connected when at home
+-   Share your work with others
+:::
+:::
+
+::: footer
+Learn more: [What is Zoom?](https://www.getcloudapp.com/blog/what-is-zoom/)
+:::
+
+## Setting up an Account
+
+::: columns
+::: {.column .fragment}
+![](./Images/setting-up.png) [Source](www.pexels.com)
+:::
+
+::: {.column .fragment}
+1.  Website: [www.zoom.com](https://zoom.us/)
+
+2.  [Zoom Sign Up](https://zoom.us/signup#/signup)
+
+    -   Enter birth year
+    -   Enter email
+
+3.  Zoom sends you an email
+
+    -   [Check the code](./Images/check-code.png)
+
+<!-- -->
+
+4.  [Sign up your account](./Images/create-account.png)
+:::
+:::
+
+::: footer
+Learn more: [Zoom Sign Up](https://zoom.us/signup#/signup)
+:::
+
+## Zoom Sign In
+
+::: columns
+::: {.column .fragment}
+![](./Images/sign-in.jpg)
+:::
+
+::: {.column .fragment}
+-   [Sign in to your account](https://zoom.us/signin)
+-   Profile
+    -   set up your picture
+    -   good for a group meetup
+-   Set Time Zone
+:::
+:::
+
+## How to schedule your first meeting
+
+::: columns
+::: {.column .fragment}
+![](./Images/schedule-meeting.png){width="300"}
+
+-   2 main ways to connect
+    -   Zoom Web
+    -   Zoom App
+:::
+
+::: column
+1.  [Sign in to your account](https://zoom.us/signin)
+    -   enter your email
+    -   enter your password
+2.  [Meetings](https://zoom.us/meeting#/upcoming)
+    -   Click **Schedule a Meeting\
+        **![](Images/schedule-button.png){width="300" height="80"}
+:::
+:::
+
+::: footer
+Learn more: [Getting started with Zoom](https://support.zoom.us/hc/en-us/articles/360034967471-Getting-started-guide-for-new-users)
+:::
+
+## Schedule a meeting - contd.
+
+::: {.columns .fragment}
+::: {.column .fragment}
+![](Images/clock.png)
+:::
+
+::: {.column .fragment}
+1.  Choose a topic
+    -   Optional: add description
+
+<!-- -->
+
+2.  When:
+    -   Date
+    -   Time - am or pm
+3.  Duration
+:::
+:::
