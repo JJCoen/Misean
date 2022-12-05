@@ -23,7 +23,7 @@ Terenure Enterprise Centre supports economic development and job creation in the
 ## Business Understanding
 
 | Insight                                                   | Analysis           |
-|---------------------------------------------------|---------------------|
+|-----------------------------------------------------------|--------------------|
 | Which subscribers are most profitable?                    | Descriptive        |
 | What are the characteristics of these subscribers?        | Segmentation       |
 | Do these subscribers have different value to Misean Cara? | Hypothesis Testing |
