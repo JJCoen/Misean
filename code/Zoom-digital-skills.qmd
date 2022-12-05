@@ -1,5 +1,9 @@
 ---
 title: "Zoom Digital Skills"
+title-slide-attributes:
+  data-background-image: ./Images/terenure.png
+  data-background-size: contain
+  data-background-opacity: "0.5"
 author: "Jim Coen"
 format: 
   revealjs:
